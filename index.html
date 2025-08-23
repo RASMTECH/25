@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2372,6 +2372,110 @@ button:hover {
 </div>
 
 
+<!-- Triangular Swap Modal (v3: with paywall/blur UI + navigation) --> 
+<div id="triangularSwapModal" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:10000;
+">
+  <div role="dialog" aria-modal="true" aria-labelledby="triSwapTitle" style="
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    max-width:420px;
+    width:90%;
+    max-height:80%;
+    overflow-y:auto;
+    position:relative;
+    box-shadow:0 8px 28px rgba(0,0,0,0.25);
+  ">
+    <!-- Close -->
+    <button id="closeTriangularSwapModal" style="
+      position:absolute;
+      top:8px; right:8px;
+      background:red; color:white;
+      border:none; padding:5px 8px;
+      border-radius:4px; cursor:pointer;">
+      ✖
+    </button>
+
+    <!-- Title -->
+    <h3 id="triSwapTitle" style="margin-top:0; color:#1a237e;">
+      🔺 Triangular Swap Results
+    </h3>
+
+    <!-- Notice / status (errors, 'searching...', success) -->
+    <div id="triangularSwapNotice" style="
+      display:none;
+      margin-bottom:10px;
+      padding:8px 10px;
+      border-radius:8px;
+      background:#e3f2fd;
+      color:#0d47a1;
+      font-size:14px;">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Results will be rendered here (3 teacher cards) -->
+    <div id="triangularSwapModalContent" style="display:block;">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Paywall: one contact locked -->
+    <div id="triangularSwapPaywall" style="
+      display:none;
+      margin-top:12px;
+      padding:12px;
+      background:#fff8e1;
+      border:1px dashed #ff9800;
+      border-radius:8px;">
+      <div style="font-weight:600; margin-bottom:6px;">
+     Swapmates   contacts  locked 🔒
+      </div>
+      <div style="font-size:14px; margin-bottom:10px; line-height:1.4;">
+        Unlock <span id="lockedTeacherName" style="font-weight:700;"></span>'s All numbers for
+        <span id="triangularUnlockPrice" style="font-weight:700;">Ksh 500</span>.
+      </div>
+      <button id="unlockTriangularContactBtn" style="
+        background:#e91e63; color:white;
+        border:none; padding:10px 12px;
+        border-radius:8px; cursor:pointer; font-weight:600;">
+        💳 Unlock Full Contact
+      </button>
+      <div style="font-size:12px; color:#616161; margin-top:6px;">
+        Admins & owners see all numbers for free.
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="margin-top:12px; display:flex; justify-content:space-between;">
+      <button id="prevSwapBtn" style="
+        background:#1976d2; color:white;
+        border:none; padding:8px 12px;
+        border-radius:6px; cursor:pointer; font-weight:600;">
+        ⬅ Previous
+      </button>
+      <button id="nextSwapBtn" style="
+        background:#1976d2; color:white;
+        border:none; padding:8px 12px;
+        border-radius:6px; cursor:pointer; font-weight:600;">
+        Next ➡
+      </button>
+    </div>
+
+    <!-- Spinner inside modal (for payment / loading) -->
+    <div id="triangularSwapModalSpinner" style="display:none; margin-top:10px; text-align:center; font-size:14px;">
+      Processing…
+    </div>
+  </div>
+</div>
+
+
 
 
 <!-- ✅ How to Use the System Section -->
@@ -2587,7 +2691,7 @@ button:hover {
     <div id="swaps" class="page" style="display:none;">
  <h2>
   <i class="fas fa-exchange-alt" style="color:#ff9800; margin-right: 8px;"></i>
-  Register Your Swap Here
+ 🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!
 </h2>
 
 <div class="scrolling-banner">
@@ -2809,18 +2913,51 @@ button:hover {
 
 <h3>
   <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
-  Registered Swaps
+ 🏆 Don’t wait – find your ideal swap partners and complete your triangular cycle today!
 </h3>
+<div id="triangularSwapSection" style="
+      margin:20px; 
+      padding:15px; 
+      background:#f1f1f1 url('https://i.imgur.com/sX7PxsF.jpeg') no-repeat center center; 
+      background-size:cover; 
+      border-radius:8px; 
+      max-width:500px; 
+      color:#fff;
+">
+  <h3 style="color:#1a237e; margin-bottom:6px;">🔺 Find Triangular Swap</h3>
+  
+  <!-- Short note for users -->
+  <p style="font-size:13px; color:red; margin-bottom:12px;">
+    Enter three counties to find a matching triangular swap. All three must have teachers wanting to swap in a cycle. Click "Find Triangular Swap" to see results.
+  </p>
+  
+  <input type="text" id="countyA" placeholder="Enter County A" 
+         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
+         
+  <input type="text" id="countyB" placeholder="Enter County B" 
+         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
+         
+  <input type="text" id="countyC" placeholder="Enter County C" 
+         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
+         
+  <button id="findTriangularSwapBtn" 
+          style="margin-top:10px; padding:10px 12px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; width:100%;">
+    Find Triangular Swap
+  </button>
+  
+  <div id="triangularSwapResult" style="margin-top:12px;"></div>
+</div>
+
+
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
   </div>
 </div>
-<div class="scrolling-banner">
-  <div class="scrolling-banner-content">
-    🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
-  </div>
-</div>
+<h3>
+  <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
+ 🔺 Unlock a perfect swap today – find teachers ready to exchange counties effortlessly lets scroll down!
+</h3>
 <!-- 🔥 VIP Swaps Modal -->
 <div id="vipSwapsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; max-height:80%; overflow:auto; background:white; padding:20px; border:2px solid crimson; border-radius:10px; z-index:9999; box-shadow:0 0 12px rgba(0,0,0,0.3);">
   <h3 style="color:crimson;">🔥 Available VIP Swaps</h3>
@@ -5294,6 +5431,195 @@ async function loadSwaps() {
     if (spinner) spinner.style.display = "none";
   }
 }
+
+
+// Open and close modal helpers
+function openTriangularModal(contentHTML) {
+  document.getElementById("triangularSwapModalContent").innerHTML = contentHTML;
+  document.getElementById("triangularSwapModal").style.display = "flex";
+}
+let lockedTeacherPhones = [];  // store all blurred phones
+let lockedTeacherIds = [];     // store teacher doc ids for payment reference
+let triangularSwaps = [];      // store all found swap objects
+let currentSwapIndex = 0;      // track which swap is currently displayed
+
+// Close modal
+document.getElementById("closeTriangularSwapModal").addEventListener("click", () => {
+  document.getElementById("triangularSwapModal").style.display = "none";
+});
+
+// Show floating alert inside modal
+function showModalAlert(message, color = "#ff9800") {
+  // Remove any existing alert
+  const existingAlert = document.getElementById("modalSwapAlert");
+  if (existingAlert) existingAlert.remove();
+
+  const alertDiv = document.createElement("div");
+  alertDiv.id = "modalSwapAlert";
+  alertDiv.style.cssText = `
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    background:${color};
+    color:white;
+    padding:8px 12px;
+    border-radius:6px;
+    font-weight:bold;
+    z-index:9999;
+    box-shadow:0 2px 6px rgba(0,0,0,0.3);
+  `;
+  alertDiv.innerText = message;
+
+  document.querySelector("#triangularSwapModal > div").appendChild(alertDiv);
+
+  setTimeout(() => alertDiv.remove(), 2500);
+}
+
+// Render the currently selected swap
+function renderSwap(index) {
+  if (!triangularSwaps.length) return;
+  const swap = triangularSwaps[index];
+  const container = document.getElementById("triangularSwapModalContent");
+
+  container.innerHTML = `
+    <div style="background:#e3f2fd;padding:10px;margin:8px 0;border-radius:6px;">
+      <p>👩‍🏫 <strong>${swap.a.teacherName}</strong><br>From: ${swap.a.county} ➡ Wants: ${swap.a.swapCounty}<br>📞 ${maskPhone(swap.a.phone)}</p>
+      <hr>
+      <p>👩‍🏫 <strong>${swap.b.teacherName}</strong><br>From: ${swap.b.county} ➡ Wants: ${swap.b.swapCounty}<br>📞 ${maskPhone(swap.b.phone)}</p>
+      <hr>
+      <p>👩‍🏫 <strong>${swap.c.teacherName}</strong><br>From: ${swap.c.county} ➡ Wants: ${swap.c.swapCounty}<br>📞 ${maskPhone(swap.c.phone)}</p>
+    </div>
+    <p style="text-align:center;font-weight:bold;">Swap ${index + 1} of ${triangularSwaps.length}</p>
+  `;
+
+  // Set locked phones & IDs for this swap
+  lockedTeacherPhones = [swap.a.phone, swap.b.phone, swap.c.phone];
+  lockedTeacherIds = [swap.a.id, swap.b.id, swap.c.id];
+
+  document.getElementById("triangularSwapPaywall").style.display = "block";
+  document.getElementById("triangularSwapModalSpinner").style.display = "none";
+}
+
+// Open modal and show the first swap
+function openTriangularModalWithSwaps(swaps) {
+  triangularSwaps = swaps;
+  currentSwapIndex = 0;
+  document.getElementById("triangularSwapModal").style.display = "flex";
+  renderSwap(currentSwapIndex);
+}
+
+// Navigation buttons
+document.getElementById("nextSwapBtn").addEventListener("click", () => {
+  if (currentSwapIndex < triangularSwaps.length - 1) {
+    currentSwapIndex++;
+    renderSwap(currentSwapIndex);
+  } else {
+    showModalAlert("⚠️ No more swaps!");
+  }
+});
+
+document.getElementById("prevSwapBtn").addEventListener("click", () => {
+  if (currentSwapIndex > 0) {
+    currentSwapIndex--;
+    renderSwap(currentSwapIndex);
+  } else {
+    showModalAlert("⚠️ No previous swap!");
+  }
+});
+
+// Search swaps
+document.getElementById("findTriangularSwapBtn").addEventListener("click", async () => {
+  const countyInputs = [
+    document.getElementById("countyA").value.trim().toLowerCase(),
+    document.getElementById("countyB").value.trim().toLowerCase(),
+    document.getElementById("countyC").value.trim().toLowerCase()
+  ].filter(Boolean);
+
+  if (countyInputs.length < 3) {
+    document.getElementById("triangularSwapModal").style.display = "flex";
+    document.getElementById("triangularSwapNotice").style.display = "block";
+    document.getElementById("triangularSwapNotice").innerHTML = `<p style="color:red;">Please enter all 3 counties.</p>`;
+    return;
+  }
+
+  try {
+    document.getElementById("triangularSwapModal").style.display = "flex";
+    document.getElementById("triangularSwapNotice").style.display = "block";
+    document.getElementById("triangularSwapNotice").innerHTML = `<p style="color:blue;">Searching triangular swaps...</p>`;
+
+    const snapshot = await db.collection("teacherSwaps").get();
+    const swaps = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    const normalizedInput = countyInputs.sort();
+    lockedTeacherPhones = [];
+    lockedTeacherIds = [];
+    const displayedCombos = new Set();
+    const foundSwaps = [];
+
+    swaps.forEach(a => {
+      swaps.forEach(b => {
+        swaps.forEach(c => {
+          const swapCounties = [a.county, b.county, c.county].map(x => (x || "").toLowerCase()).sort();
+
+          if (
+            JSON.stringify(swapCounties) === JSON.stringify(normalizedInput) &&
+            (a.swapCounty || "").toLowerCase() === (b.county || "").toLowerCase() &&
+            (b.swapCounty || "").toLowerCase() === (c.county || "").toLowerCase() &&
+            (c.swapCounty || "").toLowerCase() === (a.county || "").toLowerCase()
+          ) {
+            const comboKey = [a.id, b.id, c.id].sort().join("-");
+            if (displayedCombos.has(comboKey)) return;
+            displayedCombos.add(comboKey);
+
+            foundSwaps.push({ a, b, c });
+          }
+        });
+      });
+    });
+
+    if (foundSwaps.length) {
+      openTriangularModalWithSwaps(foundSwaps);
+    } else {
+      document.getElementById("triangularSwapModalContent").innerHTML = `<p style="color:orange;">No exact triangular swap found.</p>`;
+      document.getElementById("triangularSwapPaywall").style.display = "none";
+    }
+
+  } catch (err) {
+    console.error("Error:", err);
+    document.getElementById("triangularSwapModalContent").innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    document.getElementById("triangularSwapPaywall").style.display = "none";
+  }
+});
+
+function maskPhone(phone) {
+  return phone ? phone.slice(0, 2) + "XX XXX" + phone.slice(-3) : "";
+}
+
+// Unlock button uses MPESA modal
+document.getElementById("unlockTriangularContactBtn").addEventListener("click", () => {
+  if (!lockedTeacherIds.length || !lockedTeacherPhones.length) return;
+  showPaymentModalFor("unlock", 250, lockedTeacherIds[0], "Triangular Swap Contact");
+});
+
+// Hook into payment success to reveal all phones in current swap
+const originalHandlePaymentSuccess = handlePaymentSuccess;
+handlePaymentSuccess = async function (type, itemId, itemName, userId) {
+  await originalHandlePaymentSuccess(type, itemId, itemName, userId);
+
+  if (type === "unlock" && lockedTeacherIds.includes(itemId)) {
+    document.querySelectorAll("#triangularSwapModalContent p").forEach(p => {
+      lockedTeacherPhones.forEach(phone => {
+        const masked = maskPhone(phone);
+        if (p.innerHTML.includes(masked)) {
+          p.innerHTML = p.innerHTML.replace(masked, phone);
+        }
+      });
+    });
+    document.getElementById("triangularSwapPaywall").style.display = "none";
+    showModalAlert("✅ All contacts unlocked!", "#4caf50");
+  }
+};
 
 
 
@@ -11186,13 +11512,46 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
     titleText = "Pay for Verification";  // For all verification types
   }
 
+  // Remove existing modal if present
+  const existingModal = document.getElementById("universalPayModal");
+  if (existingModal) existingModal.remove();
+
+  // Determine highest z-index in the document
+  let maxZ = 1000;
+  document.querySelectorAll("body *").forEach(el => {
+    const z = parseInt(window.getComputedStyle(el).zIndex);
+    if (!isNaN(z) && z > maxZ) maxZ = z;
+  });
+  const modalZIndex = maxZ + 1; // ensure modal is on top
+
   const modalHTML = `
-    <div id="universalPayModal" class="modal" style="display:block; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999;">
-      <div class="modal-content" style="margin:10% auto; padding:20px; background:#f9f9ff; border:2px solid #4CAF50; width:80%; max-width:400px; border-radius:10px; text-align:center; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+    <div id="universalPayModal" class="modal" style="
+         display:flex;
+         justify-content:center;
+         align-items:center;
+         position:fixed;
+         top:0;
+         left:0;
+         width:100%;
+         height:100%;
+         background:rgba(0,0,0,0.6);
+         z-index:${modalZIndex};
+    ">
+      <div class="modal-content" style="
+           padding:20px;
+           background:#f9f9ff;
+           border:2px solid #4CAF50;
+           width:80%;
+           max-width:400px;
+           border-radius:10px;
+           text-align:center;
+           box-shadow:0 0 10px rgba(0,0,0,0.3);
+           position:relative;
+      ">
         <h3 style="color:#2c3e50;">${titleText}: <span style="color:#4CAF50;">${itemName}</span></h3>
         <p style="font-size:16px;">Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong></p>
         <input type="tel" id="universalPhone" placeholder="Enter your MPESA number (e.g. 0712345678)"
-               style="padding: 10px; width:100%; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;" />
+               style="padding:10px; width:100%; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;" />
         <button onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
                 style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:6px; font-weight:bold;">
           📲 Pay with MPESA
@@ -11206,16 +11565,15 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
       </div>
     </div>
   `;
+
   document.body.insertAdjacentHTML("beforeend", modalHTML);
 }
-
-
-
 
 function closeUniversalModal() {
   const modal = document.getElementById("universalPayModal");
   if (modal) modal.remove();
 }
+
 
 
 // ✅ Initiates STK Push and uses consistent accountReference
