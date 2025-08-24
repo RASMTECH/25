@@ -9360,14 +9360,12 @@ async function submitMarketHandler(e) {
       read: false
     });
 
-    // ✅ Alert All Users with WhatsApp link
-    const whatsappLink = `https://wa.me/${itemPhone}`; // Generate WhatsApp link
+    // ✅ Alert all users WITHOUT WhatsApp link
     await db.collection("alerts").add({
       title: "🆕 New Market Item",
-      message: `${posterName} just posted: ${itemName} (${itemCategory}) @ ${itemPrice}\n📞 Contact: ${itemPhone} \n💬 [Chat on WhatsApp](${whatsappLink})`, // Include WhatsApp link
+      message: `${posterName} just posted: ${itemName} (${itemCategory}) @ ${itemPrice}\n📞 Contact: ${itemPhone}`,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      targetUserId: null, // visible to all
-      whatsappLink: whatsappLink // Optionally store this in the database as well if you want it to be referenced later
+      targetUserId: null // visible to all
     });
 
   } catch (err) {
@@ -9377,6 +9375,7 @@ async function submitMarketHandler(e) {
     document.getElementById("loadingSpinner").style.display = "none";
   }
 }
+
 
 
 
