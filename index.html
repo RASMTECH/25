@@ -1,4 +1,4 @@
-
+                                                                                                     
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3202,10 +3202,11 @@ button:hover {
 ">
 </div>
 </div>
+
 <div id="resources" class="page" style="display:none;">
   <h2>
     <i class="fas fa-upload" style="color:#4CAF50; margin-right: 8px;"></i>
-    Upload Teaching Resources
+    Teaching Resources
   </h2>
 
 <!-- Filters Section with Action Box -->
@@ -3291,8 +3292,7 @@ button:hover {
   </div>
 </div>
 
-<!-- Admin only view -->
-<div id="adminUploadForm" style="display:none;">
+<!-- Admin only view --><div id="adminUploadForm" style="display:none;">
   <div class="form-container">
     <img src="https://i.imgur.com/x9v3Czl.jpeg" alt="Left Side" class="side-image" />
 
@@ -3305,14 +3305,14 @@ button:hover {
       border-radius: 12px;
       color: #fff;
     ">
-      <label for="resourceTitle">Title:</label>
-      <input type="text" id="resourceTitle" required />
+      <label for="uploadTitle">Title:</label>
+      <input type="text" id="uploadTitle" />
 
-      <label for="resourcePrice">Price (Ksh):</label>
-      <input type="number" id="resourcePrice" required />
+      <label for="uploadPrice">Price (Ksh):</label>
+      <input type="number" id="uploadPrice" />
 
-      <label for="resourceCategory">Category:</label>
-      <select id="resourceCategory" required>
+      <label for="uploadCategory">Category:</label>
+      <select id="uploadCategory">
         <option value="">Select Category</option>
         <option value="math">Math</option>
         <option value="science">Science</option>
@@ -3346,8 +3346,8 @@ button:hover {
         <option value="preTechnicalStudies">Pre Technical Studies</option>
       </select>
 
-      <label for="resourceGrade">Grade:</label>
-      <select id="resourceGrade" required>
+      <label for="uploadGrade">Grade:</label>
+      <select id="uploadGrade">
         <option value="">Select Grade</option>
         <option value="grade1">Grade 1</option>
         <option value="grade2">Grade 2</option>
@@ -3363,30 +3363,27 @@ button:hover {
         <option value="grade12">Grade 12</option>
       </select>
 
-      <label for="resourceLevel">Level:</label>
-      <select id="resourceLevel" required>
+      <label for="uploadLevel">Level:</label>
+      <select id="uploadLevel">
         <option value="">Select Level</option>
         <option value="primary">Primary School</option>
         <option value="juniorSecondary">Junior Secondary</option>
         <option value="seniorSecondary">Senior Secondary</option>
       </select>
 
-      <!-- New Term dropdown -->
-      <label for="resourceTerm">Term:</label>
-      <select id="resourceTerm" required>
+      <label for="uploadTerm">Term:</label>
+      <select id="uploadTerm">
         <option value="">Select Term</option>
         <option value="term1">Term 1</option>
         <option value="term2">Term 2</option>
         <option value="term3">Term 3</option>
       </select>
 
-      <!-- New Strand input -->
-      <label for="resourceStrand">Strand:</label>
-      <input type="text" id="resourceStrand" placeholder="Enter Strand" required />
+      <label for="uploadStrand">Strand:</label>
+      <input type="text" id="uploadStrand" placeholder="Enter Strand" />
 
-      <!-- File Upload -->
-      <label for="resourceFile">Upload File (optional):</label>
-      <input type="file" id="resourceFile" accept=".pdf,.doc,.docx,.ppt,.pptx" />
+      <label for="uploadFile">Upload File (optional):</label>
+      <input type="file" id="uploadFile" accept=".pdf,.doc,.docx,.ppt,.pptx" />
 
       <button type="submit">
         <i class="fas fa-upload"></i> Upload Resource
@@ -3396,6 +3393,7 @@ button:hover {
     <img src="https://i.imgur.com/ytrul2r.jpeg" alt="Right Side" class="side-image" />
   </div>
 </div>
+
 
 <h3>
   <i class="fas fa-book-open" style="color:#3f51b5; margin-right: 8px;"></i>
@@ -4530,20 +4528,14 @@ document.getElementById("resourceForm").addEventListener("submit", async e => {
     return;
   }
 
-  const file = document.getElementById("resourceFile").files[0]; // optional
-  const title = document.getElementById("resourceTitle").value.trim();
-  const price = document.getElementById("resourcePrice").value.trim();
-  const category = document.getElementById("resourceCategory").value;
-  const grade = document.getElementById("resourceGrade").value;
-  const level = document.getElementById("resourceLevel").value;
-  const term = document.getElementById("resourceTerm").value;
-  const strand = document.getElementById("resourceStrand").value.trim();
-
-  if (!title || !price || !category || !grade || !level || !term) {
-    showCustomAlert("All fields except file and strand are required.", "error");
-    document.getElementById("loadingSpinner").style.display = "none";
-    return;
-  }
+  const file = document.getElementById("uploadFile").files[0]; // optional
+  const title = document.getElementById("uploadTitle").value.trim();
+  const price = document.getElementById("uploadPrice").value.trim();
+  const category = document.getElementById("uploadCategory").value;
+  const grade = document.getElementById("uploadGrade").value;
+  const level = document.getElementById("uploadLevel").value;
+  const term = document.getElementById("uploadTerm").value;
+  const strand = document.getElementById("uploadStrand").value.trim();
 
   try {
     let downloadURL = null;
@@ -4556,13 +4548,13 @@ document.getElementById("resourceForm").addEventListener("submit", async e => {
     }
 
     await resourceRef.add({
-      title,
-      price,
-      category,
-      grade,
-      level,
-      term,
-      strand,
+      title: title || null,
+      price: price || null,
+      category: category || null,
+      grade: grade || null,
+      level: level || null,
+      term: term || null,
+      strand: strand || null,
       downloadURL,
       filePath,
       uploadedBy: currentUser.uid,
@@ -4580,13 +4572,15 @@ document.getElementById("resourceForm").addEventListener("submit", async e => {
   }
 });
 
-// ==================== Global Variables ====================
+// ==================== Filters (keep original filter IDs) ====================
 const categoryFilter = document.getElementById("resourceCategory");
 const gradeFilter = document.getElementById("resourceGrade");
 const levelFilter = document.getElementById("resourceLevel");
 const termFilter = document.getElementById("resourceTerm");
 const strandFilter = document.getElementById("resourceStrand");
 const searchFilter = document.getElementById("searchResources");
+
+
 
 let allResources = []; // Store all resources for filtering
 
