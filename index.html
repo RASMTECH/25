@@ -968,6 +968,7 @@ h2 {
   padding: 4px; /* Padding to give space around the text */
   border-radius: 4px; /* Rounded corners */
 }
+
 .service-card {
   scroll-snap-align: start;
   padding: 12px; /* Reduced padding to decrease card height */
@@ -5342,7 +5343,8 @@ async function loadSwaps() {
               🚫 This swap is closed
             </div>`;
 
-          const followerCount = s.followers ? s.followers.length : 0;
+          const followerCount = s.followerCount || (s.followers ? s.followers.length : 0);
+
 
           const rating = (typeof s.rating === "number") ? s.rating : 0;
           const ratingStars = [...Array(5)].map((_, index) => {
@@ -5822,18 +5824,20 @@ async function followSwap(swapId) {
   }
 
   // Show the loading spinner while following the swap
-  document.getElementById("loadingSpinner").style.display = "flex";
+  const spinner = document.getElementById("loadingSpinner");
+  if (spinner) spinner.style.display = "flex";
 
   const swapRef = db.collection("teacherSwaps").doc(swapId);
   const swapDoc = await swapRef.get();
   if (!swapDoc.exists) {
     showCustomAlert("Swap not found.", "error");
-    document.getElementById("loadingSpinner").style.display = "none"; // Hide spinner
+    if (spinner) spinner.style.display = "none";
     return;
   }
 
   const swapData = swapDoc.data();
-  const followers = swapData.followers || [];
+  let followers = swapData.followers || [];
+  let followerCount = swapData.followerCount || followers.length; // Use stored followerCount if exists
 
   // Check if the user is already following
   if (!followers.some(f => f.uid === currentUser.uid)) {
@@ -5848,17 +5852,31 @@ async function followSwap(swapId) {
         followers: firebase.firestore.FieldValue.arrayUnion(user)
       });
 
+      // Determine increment
+      let increment = 1;
+      if (isAdmin === true) { // Admin adds random 200–500
+        increment = Math.floor(Math.random() * (500 - 200 + 1)) + 200;
+      }
+
+      // Persist follower count increment in Firestore
+      await swapRef.update({
+        followerCount: firebase.firestore.FieldValue.increment(increment)
+      });
+
+      // Fetch updated follower count to ensure UI matches Firestore
+      const updatedDoc = await swapRef.get();
+      const updatedFollowerCount = updatedDoc.data().followerCount || followers.length + increment;
+
       // Update follower count in UI
-      const followerCount = followers.length + 1;
       const countEl = document.getElementById(`follower-count-${swapId}`);
       if (countEl) {
-        countEl.innerText = `${followerCount} people following`;
+        countEl.innerText = `${updatedFollowerCount} people following`;
       }
 
       // Send admin notification
       await sendFollowAdminNotification(swapId, currentUser);
 
-      // ✅ Notify the swap poster (if not same user)
+      // Notify the swap poster (if not same user)
       const posterId = swapData.postedBy;
       if (posterId && posterId !== currentUser.uid) {
         await db.collection("alerts").add({
@@ -5869,7 +5887,7 @@ async function followSwap(swapId) {
         });
       }
 
-      // ✅ Show center screen success alert to the follower
+      // Show center screen success alert
       showCustomAlert("✅ You are now following this swap.", "success");
 
     } catch (error) {
@@ -5881,10 +5899,8 @@ async function followSwap(swapId) {
   }
 
   // Hide the loading spinner once the operation is complete
-  document.getElementById("loadingSpinner").style.display = "none";
+  if (spinner) spinner.style.display = "none";
 }
-
-
 
 // Function to send an admin notification when a user follows a swap
 async function sendFollowAdminNotification(swapId, currentUser) {
@@ -6504,7 +6520,7 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
       ${(isPoster && !isVerified)? `<button onclick="verifyJob('${job.id}')" style="background:#ff9800;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">✅ Get Verified (Ksh 250)</button>` : ''}
       ${isAdmin && !isVerified ? verifyButton : ''}
       ${(isPoster || isAdmin)? `<button onclick="closeJob('${job.id}')" style="background:#6c757d;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">${job.isClosed?'♻️ Reopen Job':'🚫 Mark as Closed'}</button>` : ''}
-      <button onclick="showInterest('${job.id}')" style="background:#ff9800;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">💼 Show Interest</button>
+
       <button onclick="followJob('${job.id}')" style="background:#2196f3;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">👀 Follow Job</button>
     `;
 
@@ -6529,9 +6545,7 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
         <p style="color:#6a1b9a;"><strong>Date Posted:</strong> ${job.datePosted}</p>
         <p style="color:#795548;"><strong>Posted By:</strong> ${job.postedBy || "Unknown"}</p>
         <div style="margin-top:10px;">${moreButton}<div id="actionButtons-${job.id}" style="display:none;flex-wrap:wrap;gap:10px;">${actionButtons}</div></div>
-        <p id="interest-count-${job.id}" style="font-size:0.8em;color:#8e24aa;margin-top:6px;">${job.interestCount||0} people interested</p>
-
-        <p id="followed-count-${job.id}" style="font-size:0.8em;color:#2196f3;margin-top:4px;">
+      <p id="followed-count-${job.id}" style="font-size:0.8em;color:#2196f3;margin-top:4px;">
   ${job.followedCount || 0} people following
 </p>
 
@@ -6540,7 +6554,7 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
 
     fragment.appendChild(card);
     updateFollowedCount(job.id);
-    updateInterestCount(job.id);
+
   });
 
   container.appendChild(fragment);
@@ -6888,6 +6902,7 @@ function toggleMoreActions(jobId) {
   }
 }
 
+// Function to show interest in a job
 async function showInterestInJob(jobId) {
   const user = firebase.auth().currentUser;
   const userId = user?.uid;
@@ -6900,42 +6915,53 @@ async function showInterestInJob(jobId) {
   const followedCountElement = document.getElementById(`followed-count-${jobId}`);
   const jobRef = firebase.firestore().doc(`bomJobs/${jobId}`);
 
-  // Show the loading spinner while processing the interest
-  document.getElementById("loadingSpinner").style.display = "flex";
+  // Show loading spinner
+  const spinner = document.getElementById("loadingSpinner");
+  if (spinner) spinner.style.display = "flex";
 
   try {
     const docSnapshot = await jobRef.get();
     if (!docSnapshot.exists) {
       showCustomAlert("Job not found.", "error");
-      document.getElementById("loadingSpinner").style.display = "none"; // Hide spinner
+      if (spinner) spinner.style.display = "none";
       return;
     }
 
     const jobData = docSnapshot.data();
-    const alreadyFollowed = jobData.followedUsers && jobData.followedUsers.includes(userId);
+    let followedUsers = jobData.followedUsers || [];
+    let followedCount = jobData.followedCount || followedUsers.length;
 
-    if (alreadyFollowed) {
+    // Check if the user already showed interest
+    if (followedUsers.includes(userId)) {
       showCustomAlert("⚠️ You’ve already shown interest in this job!", "warning");
-      document.getElementById("loadingSpinner").style.display = "none"; // Hide spinner
+      if (spinner) spinner.style.display = "none";
       return;
     }
 
-    // Add interest
-    const followedCount = (jobData.followedCount || 0) + 1;
-    const updatedFollowedUsers = jobData.followedUsers || [];
-    updatedFollowedUsers.push(userId);
+    // Add user to followedUsers
+    followedUsers.push(userId);
 
+    // Determine increment
+    let increment = 1;
+    if (isAdmin === true) { // Admin adds random 200–500
+      increment = Math.floor(Math.random() * (500 - 200 + 1)) + 200;
+    }
+
+    // Persist interest count and followed users in Firestore
     await jobRef.update({
-      followedCount: followedCount,
-      followedUsers: updatedFollowedUsers
+      followedCount: firebase.firestore.FieldValue.increment(increment),
+      followedUsers: followedUsers
     });
+
+    // Fetch updated follower count to ensure UI matches Firestore
+    const updatedDoc = await jobRef.get();
+    const updatedCount = updatedDoc.data().followedCount || followedUsers.length;
 
     // Update UI
     if (followedCountElement) {
-      followedCountElement.innerText = `${followedCount} people following`;
+      followedCountElement.innerText = `${updatedCount} people following`;
     }
 
-    console.log("Followed count updated successfully.");
     showCustomAlert("✅ You’ve shown interest in this job.", "success");
 
     // ✅ Notify Admin
@@ -6962,41 +6988,16 @@ async function showInterestInJob(jobId) {
     }
 
     console.log("Admin and poster notified.");
+
   } catch (error) {
     console.error("Error updating followed count:", error);
     showCustomAlert("❌ Failed to register interest: " + error.message, "error");
   } finally {
-    // Hide the spinner once the operation is complete
-    document.getElementById("loadingSpinner").style.display = "none";
+    // Hide spinner
+    if (spinner) spinner.style.display = "none";
   }
 }
 
-
-
-
-// Function to update the interest count on page load (in case of page refresh)
-function updateInterestCount(jobId) {
-  const interestCountElement = document.getElementById(`interest-count-${jobId}`);
-
-  // Reference to the Firestore document for the job
-  const jobRef = firebase.firestore().doc(`bomJobs/${jobId}`);
-
-  // Listen for real-time updates to the job document
-  jobRef.onSnapshot(docSnapshot => {
-    if (docSnapshot.exists) {
-      const jobData = docSnapshot.data();
-      const interestCount = jobData.interestCount || 0;
-
-      // Update the UI with the current interest count from Firestore
-      interestCountElement.innerText = `${interestCount} people interested`;
-    }
-  });
-}
-
-// Call this function when the page is loaded or refreshed to sync the interest count
-function onPageLoad(jobId) {
-  updateInterestCount(jobId);
-}
 // ✅ Close or Reopen BOM Job
 async function closeJob(jobId) {
   const spinner = document.getElementById("loadingSpinner");
@@ -7132,12 +7133,6 @@ async function unlockBomJobs(jobId, amount) {
     }
   }, 3000);
 }
-
-
-
-
-
-
 function applyBOMFilters() {
   const jobType = document.getElementById("filterJobType")?.value.toLowerCase() || "";
   const county = document.getElementById("filterCounty")?.value || "";
@@ -8620,11 +8615,11 @@ ${isPoster || isAdminUser ? `
         📝 Leave a Review
       </button>
 
-      <!-- Show Interest Button (Visible to any User) -->
-      <button onclick="showInterest('${id}')"
-        style="background:#ff5722; color:white; padding:6px 12px; border:none; border-radius:25px; font-size:14px; cursor:pointer; margin-top:8px;">
-        ❤️ Show Interest
-      </button>
+    <!-- Show Interest Button for Service (Visible to any User) -->
+<button onclick="showInterest('${id}')"
+    style="background:#ff5722; color:white; padding:6px 12px; border:none; border-radius:25px; font-size:14px; cursor:pointer; margin-top:8px;">
+    ❤️ Show Interest
+</button>
 
       <!-- Delete Service Button (Visible to Poster or Admin) -->
       ${isPoster || isAdminUser ? `
@@ -8671,14 +8666,20 @@ ${isPoster || isAdminUser ? `
 
       container.appendChild(card);
 
-      // ✅ Only boosted items appear in trending
-      if (isBoosted && trendingContainer) {
-        const clonedCard = card.cloneNode(true);
-        clonedCard.id = `trending-service-${id}`;
-        const interestCountElem = clonedCard.querySelector(`#interest-count-${id}`);
-        if (interestCountElem) interestCountElem.id = `interest-count-trending-${id}`;
-        trendingContainer.appendChild(clonedCard);
-      }
+ // ✅ Only boosted items appear in trending
+if (isBoosted && trendingContainer) {
+  const clonedCard = card.cloneNode(true);
+  clonedCard.id = `trending-service-${id}`;
+
+  // 🔹 Fix ALL duplicated IDs inside trending card
+  clonedCard.innerHTML = clonedCard.innerHTML
+    .replaceAll(`action-buttons-${id}`, `action-buttons-trending-${id}`)
+    .replaceAll(`interest-count-${id}`, `interest-count-trending-${id}`)
+    .replaceAll(`toggleActionButtons('${id}')`, `toggleActionButtons('${id}', true)`);
+
+  trendingContainer.appendChild(clonedCard);
+}
+
 
       setupStarRating(id);
       updateAverageRating(id);
@@ -8690,18 +8691,14 @@ ${isPoster || isAdminUser ? `
   }
 }
 
+function toggleActionButtons(id, isTrending = false) {
+  const suffix = isTrending ? "trending-" : "";
+  const actions = document.getElementById(`action-buttons-${suffix}${id}`);
+  if (!actions) return;
 
-function toggleActionButtons(id) {
-  const actionButtons = document.getElementById(`action-buttons-${id}`);
-  const button = document.querySelector(`#action-buttons-${id} ~ button`);
-  if (actionButtons.style.display === 'none') {
-    actionButtons.style.display = 'block';
-    button.textContent = '🔼 Less Details';
-  } else {
-    actionButtons.style.display = 'none';
-    button.textContent = '🔽 More Details';
-  }
+  actions.style.display = actions.style.display === "none" ? "block" : "none";
 }
+
 
 
 function payForVerification(category, itemId, itemName) {
