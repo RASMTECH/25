@@ -2690,10 +2690,11 @@ button:hover {
       </form>
     </div>
     <div id="swaps" class="page" style="display:none;">
- <h2>
+ <h2 style="background-color: red; color: white; padding: 10px; border-radius: 5px;">
   <i class="fas fa-exchange-alt" style="color:#ff9800; margin-right: 8px;"></i>
- 🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!
+  🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!
 </h2>
+
 
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
@@ -3948,19 +3949,17 @@ Register To Connect With  Available Soulmates
 <!-- Services Cards Container -->
 <div id="servicesContainer" style="
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Flexible column layout */
-  gap: 20px; /* Increased gap between cards */
-  width: 100%; /* Ensure container uses full available width */
-  max-width: 1200px; /* Optionally limit maximum container width for better layout */
-  padding: 20px; /* Adds spacing inside the container */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;            /* Fill full width like job container */
+  padding: 10px 20px;     /* Same horizontal padding as job container */
   margin-top: 20px;
-  overflow-y: auto; /* Vertical scrolling */
-  max-height: 600px; /* Limiting the height */
-  scroll-snap-type: y mandatory; /* Ensures smooth snapping on scroll */
+  overflow-y: auto;
+  max-height: 600px;      /* Same max-height */
+  scroll-snap-type: y mandatory;
   box-sizing: border-box;
-  scrollbar-width: thin; /* Firefox custom scrollbar */
-  scrollbar-color: #4caf50 #f0f8ff; /* Customize scrollbar colors for a sleek design */
 ">
+
   <!-- Service cards will be dynamically added here -->
   <!-- Example cards for testing -->
   <div style="
