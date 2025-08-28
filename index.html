@@ -2291,16 +2291,7 @@ button:hover {
 ">
   ✅ You have been logged out successfully see you again .
 </div>
-<!-- Modal Structure -->
-<div id="followersModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
-  <div style="background-color: #f7f7f7; padding:20px; width:30%; max-width:400px; max-height:80%; overflow:auto; border-radius:8px; text-align:center; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
-    <h2 style="color: #333; font-size: 1.5em; margin-bottom: 15px;">Followers</h2>
-    <ul id="followersList" style="list-style-type:none; padding:0; margin:0; height:200px; overflow-y:auto; text-align:left; color: #555;">
-      <!-- Followers will be listed here -->
-    </ul>
-    <button onclick="closeFollowersModal()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">Close</button>
-  </div>
-</div>
+
 <!-- 🔹 Market Chat Modal -->
 <div id="marketChatModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
   <div style="background:white; width:90%; max-width:500px; border-radius:8px; padding:15px; display:flex; flex-direction:column; height:80%;">
@@ -2569,28 +2560,42 @@ button:hover {
     <h2 style="text-align:center; color:#1976d2;">
       <i class="fas fa-envelope-open-text" style="color:#1976d2; margin-right:8px;"></i> Contact Us
     </h2>
+    
     <p style="font-size:16px;">
       <i class="fas fa-envelope" style="color:#f57c00; margin-right:6px;"></i>
       <strong>Email:</strong> support@Nyotakenya.com
+    </p>
 
     <p style="font-size:16px;">
       <i class="fas fa-phone" style="color:#009688; margin-right:6px;"></i>
       <strong>Phone 2:</strong> +254 792 755 676
     </p>
+
+    <p style="font-size:16px;">
+      <i class="fab fa-whatsapp" style="color:#25D366; margin-right:6px;"></i>
+      <strong>WhatsApp:</strong> 
+      <a href="https://wa.me/254792755676" target="_blank" style="color:#25D366; text-decoration:none;">
+        Chat on WhatsApp
+      </a>
+    </p>
+
     <p style="font-size:16px;">
       <i class="fab fa-facebook" style="color:#1877f2; margin-right:6px;"></i>
       <strong>Facebook:</strong> <a href="#" style="color:#1877f2;">Visit Page</a>
     </p>
+
     <p style="font-size:16px;">
       <i class="fab fa-youtube" style="color:#ff0000; margin-right:6px;"></i>
       <strong>YouTube:</strong> <a href="#" style="color:#ff0000;">Visit Channel</a>
     </p>
+
     <p style="font-size:16px;">
       <i class="fab fa-telegram" style="color:#0088cc; margin-right:6px;"></i>
       <strong>Telegram:</strong> <a href="#" style="color:#0088cc;">Join Group</a>
     </p>
   </div>
 </div>
+
 <section id="trendingSection" style="display: none; padding: 16px;">
   <h2 style="color: #ff5722; margin-bottom: 16px; text-align: center;">🔥 Trending Now</h2>
   <div id="trendingContainer" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center; width: 100%;">
@@ -2690,11 +2695,10 @@ button:hover {
       </form>
     </div>
     <div id="swaps" class="page" style="display:none;">
- <h2 style="background-color: red; color: white; padding: 10px; border-radius: 5px;">
+ <h2>
   <i class="fas fa-exchange-alt" style="color:#ff9800; margin-right: 8px;"></i>
-  🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!
+ 🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!
 </h2>
-
 
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
@@ -3949,17 +3953,19 @@ Register To Connect With  Available Soulmates
 <!-- Services Cards Container -->
 <div id="servicesContainer" style="
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  width: 100%;            /* Fill full width like job container */
-  padding: 10px 20px;     /* Same horizontal padding as job container */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Flexible column layout */
+  gap: 20px; /* Increased gap between cards */
+  width: 100%; /* Ensure container uses full available width */
+  max-width: 1200px; /* Optionally limit maximum container width for better layout */
+  padding: 20px; /* Adds spacing inside the container */
   margin-top: 20px;
-  overflow-y: auto;
-  max-height: 600px;      /* Same max-height */
-  scroll-snap-type: y mandatory;
+  overflow-y: auto; /* Vertical scrolling */
+  max-height: 600px; /* Limiting the height */
+  scroll-snap-type: y mandatory; /* Ensures smooth snapping on scroll */
   box-sizing: border-box;
+  scrollbar-width: thin; /* Firefox custom scrollbar */
+  scrollbar-color: #4caf50 #f0f8ff; /* Customize scrollbar colors for a sleek design */
 ">
-
   <!-- Service cards will be dynamically added here -->
   <!-- Example cards for testing -->
   <div style="
@@ -4780,53 +4786,251 @@ document.addEventListener("DOMContentLoaded", () => {
 const vipHotCounties = ["Nairobi", "Kisumu", "Mombasa", "Kisii", "Nakuru"];
 // ✅ Counties and Sub-counties Map
 const countySubCountyMap = {
-"Mombasa": ["Changamwe", "Jomvu", "Kisauni", "Likoni", "Mvita", "Nyali"],
-  "Kwale": ["Msambweni", "Lunga Lunga", "Matuga", "Kinango"],
-  "Kilifi": ["Kilifi North", "Kilifi South", "Kaloleni", "Rabai", "Ganze", "Malindi", "Magarini"],
- "Tana River": ["Galole", "Garsen", "Bura", "Galedyertu", "Bangal"],
-  "Lamu": ["Lamu East", "Lamu West"],
-  "Taita–Taveta": ["Mwatate", "Voi", "Taveta", "Wundanyi"],
-  "Garissa": ["Balambala", "Dadaab", "Fafi", "Garissa Township", "Hulugho", "Ijara", "Lagdera"],
-  "Wajir": ["Eldas", "Tarbaj", "Wajir North", "Wajir East", "Wajir West", "Wajir South", "Buna"],
-  "Mandera": ["Banisa", "Mandera West", "Mandera North", "Mandera South", "Mandera East", "Lafey"],
-  "Marsabit": ["Moyale", "North Horr", "Saku", "Laisamis"],
-  "Isiolo": ["Isiolo Central", "Merti", "Garbatulla"],
-  "Meru": ["Imenti North", "Imenti South", "Imenti Central", "Tigania East", "Tigania West", "Buuri", "North Imenti"],
-  "Tharaka-Nithi": ["Chuka/Igambang'ombe", "Maara", "Tharaka South", "Tharaka North"],
-  "Embu": ["Manyatta", "Runyenjes", "Mbeere North", "Mbeere South"],
-  "Kitui": ["Kitui Central", "Mwingi North", "Mwingi West", "Mwingi Central", "Kitui Rural", "Kitui South", "Kitui East", "Migwani"],
-  "Machakos": ["Masinga", "Yatta", "Kangundo", "Matungulu", "Kathiani", "Mavoko", "Machakos Town", "Mwaki"],
-  "Makueni": ["Mbooni", "Kaiti", "Kilome", "Mukaa", "Makueni", "Kibwezi East", "Kibwezi West"],
-  "Nyandarua": ["Ol Joro Orok", "Kinangop", "Kipipiri", "Ndaragwa", "Ol Kalou"],
-  "Nyeri": ["Tetu", "Nyeri Town", "Mathira", "Othaya", "Kieni", "Mukurweini"],
-  "Kirinyaga": ["Kirinyaga Central", "Kirinyaga West", "Mwea", "Gichugu"],
-  "Murang'a": ["Gatanga", "Kiharu", "Kigumo", "Kangema", "Mathioya", "Murang'a South"],
-  "Kiambu": [ "Githunguri","Kiambu","Kabete","Kiambaa","Ruiru","Limuru", "Lari", "Juja","Thika Town","Gatundu North","Gatundu South","Kikuyu"],
-  "Turkana": ["Turkana North", "Turkana West", "Turkana Central", "Loima", "Turkana South", "Turkana East"],
-  "West Pokot": ["West Pokot", "North Pokot", "Central Pokot", "Pokot South", "Kipkomo", "Kacheliba"],
-  "Samburu": ["Samburu East", "Samburu North", "Samburu West"],
-  "Trans Nzoia": ["Kwanza", "Endebess", "Saboti", "Kiminini", "Cherangany"],
-  "Uasin Gishu": ["Ainabkoi", "Kapseret", "Kesses", "Moiben", "Soy", "Turbo"],
-  "Elgeyo-Marakwet": ["Keiyo North", "Keiyo South", "Marakwet East", "Marakwet West"],
-  "Nandi": ["Aldai", "Chesumei", "Emgwen", "Mosop", "Nandi Hills", "Tinderet"],
-  "Baringo": ["Baringo Central", "Baringo North", "Baringo South", "Eldama Ravine", "Mogotio", "Tiaty"],
-  "Laikipia": ["Laikipia East", "Laikipia North", "Laikipia West"],
-  "Nakuru": ["Bahati", "Gilgil", "Kuresoi North", "Kuresoi South", "Molo", "Naivasha", "Nakuru Town East", "Nakuru Town West", "Rongai", "Subukia"],
-  "Narok": ["Narok East", "Narok North", "Narok South", "Narok West", "Trans Mara East", "Trans Mara West"],
-  "Kajiado": ["Isinya", "Kajiado Central", "Kajiado East", "Kajiado North", "Kajiado South"],
-  "Kericho": ["Ainamoi", "Belgut", "Bureti", "Kipkelion East", "Kipkelion West", "Soin/Sigowet"],
-  "Bomet": ["Bomet Central", "Bomet East", "Chepalungu", "Konoin", "Sotik"],
-  "Kakamega": ["Butere", "Ikolomani", "Khwisero", "Lugari", "Lurambi", "Malava", "Matungu", "Mumias East", "Mumias West", "Navakholo", "Shinyalu"],
-  "Vihiga": ["Emuhaya", "Hamisi", "Luanda", "Sabatia", "Vihiga"],
-  "Bungoma": ["Bumula", "Kabuchai", "Kanduyi", "Kimilili", "Mt. Elgon", "Sirisia", "Tongaren", "Webuye East", "Webuye West"],
-  "Busia": ["Budalangi", "Butula", "Funyula", "Matayos", "Nambale", "Teso North", "Teso South"],
-  "Siaya": ["Alego Usonga", "Bondo", "Gem", "Rarieda", "Ugenya", "Ugunja"],
-  "Kisumu": ["Kisumu East", "Kisumu West", "Kisumu Central", "Muhoroni", "Nyakach", "Nyando", "Seme"],
-  "Homa Bay": ["Homa Bay Town", "Kabondo Kasipul", "Kabondo East", "Mbita", "Ndhiwa", "Rachuonyo East", "Rachuonyo North", "Rachuonyo South", "Rangwe", "Suba North", "Suba South"],
-  "Migori": ["Awendo", "Kuria East", "Kuria West", "Nyatike", "Rongo", "Suna East", "Suna West", "Uriri"],
-  "Kisii": ["Bobasi", "Bomachoge Borabu", "Bomachoge Chache", "Bonchari", "Kitutu Chache North", "Kitutu Chache South", "Nyaribari Chache", "Nyaribari Masaba", "South Mugirango"],
-  "Nyamira": ["Borabu", "Manga", "Masaba North", "Nyamira North", "Nyamira South"],
-  "Nairobi City": ["Dagoretti North", "Dagoretti South", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Kamukunji", "Kasarani", "Lang'ata", "Makadara", "Mathare", "Roysambu", "Ruaraka", "Starehe", "Westlands"]
+"Mombasa": [ "Changamwe", "Miritini", "Chaani", "Port Reitz", "Kipevu",  "Jomvu", "Mikindani", "Jomvu Kuu", "Miritini","Kisauni","Bamburi", "Mshomoroni", "Mtopanga", "Shanzu", "Frere Town","Likoni", "Shika Adabu", "Bofu", "Mtongwe","Mvita", "Old Town", "Tudor", "Tononoka", "Ganjoni", "Majengo","Nyali", "Kongowea", "Kadzandani", "Ziwa la Ng’ombe"],
+ "Kwale": ["Msambweni", "Ukunda", "Diani", "Shimoni", "Vanga",  "Lunga Lunga", "Majoreni", "Pongwe", "Mkongani", "Matuga", "Tiwi", "Kubo South", "Mwaluphamba", "Kinango", "Samburu",  "Mazeras", "Kwale Town", "Ndavaya", "Kaseeni", "Mackinnon Road"
+],
+
+  "Kilifi": [ "Kilifi North", "Kilifi South", "Kaloleni", "Rabai", "Ganze", 
+  "Malindi", "Magarini", "Chonyi", "Mtwapa", "Watamu", 
+  "Sokoke", "Vipingo", "Mariakani", "Mtondia", "Kikambala"
+], 
+
+"Tana River": [
+  "Galole", "Garsen", "Bura", "Galedyertu", "Bangal", 
+  "Hola", "Kipini", "Tarasaa", "Idzowe", "Madogo", 
+  "Wenje", "Ngao", "Oda", "Chara", "Kailo"
+],
+
+"Lamu": [
+  "Lamu East", "Lamu West", "Amu", "Mokowe", "Hindi", 
+  "Kiunga", "Mpeketoni", "Kizingitini", "Faza", "Pate", 
+  "Shela", "Matondoni", "Mkunumbi", "Mapenya", "Kiongwe"
+],
+
+"Taita–Taveta": [
+  "Mwatate", "Voi", "Taveta", "Wundanyi", "Bura", 
+  "Maktau", "Mghalu", "Rong’e", "Challa", "Mwanda", 
+  "Kimorigo", "Ngolia", "Kasigau", "Kasarani", "Mbuyuni"
+],
+
+"Garissa": [
+  "Balambala", "Dadaab", "Fafi", "Garissa Township", "Hulugho", 
+  "Ijara", "Lagdera", "Modika", "Sankuri", "Bura East", 
+  "Masalani", "Abakaile", "Jarajara", "Saka", "Bodhai"
+],
+
+"Wajir": [
+  "Eldas", "Tarbaj", "Wajir North", "Wajir East", "Wajir West", 
+  "Wajir South", "Buna", "Habaswein", "Griftu", "Khorof Harar", 
+  "Bute", "Diff", "Leheley", "Gurar", "Adan Awale"
+],
+
+"Mandera": [
+  "Banisa", "Mandera West", "Mandera North", "Mandera South", "Mandera East", 
+  "Lafey", "Rhamu", "Takaba", "Elwak", "Shimbir Fatuma", 
+  "Qurqan", "Kutulo", "Ashabito", "Warankara", "Bulla Mpya"
+],
+
+"Marsabit": [
+  "Moyale", "North Horr", "Saku", "Laisamis", "Sololo", 
+  "Uran", "Dirib Gombo", "Kargi", "Korr", "Logologo", 
+  "Koya", "Illeret", "Shurr", "Maikona", "Badasa"
+],
+
+"Isiolo": [
+  "Isiolo Central", "Merti", "Garbatulla", "Kinna", "Ngaremara", 
+  "Oldonyiro", "Burat", "Chumvi Yere", "Bula Pesa", "Kulamawe", 
+  "Sericho", "Modogashe", "Gotu", "Korbesa", "Delessa"
+],
+  "Meru": [
+  "Imenti North", "Imenti South", "Imenti Central", "Tigania East", "Tigania West", 
+  "Buuri", "North Imenti", "Maua", "Nkubu", "Timau", 
+  "Gatimbi", "Kianjai", "Laare", "Kibirichia", "Kithirune"
+],
+
+"Tharaka-Nithi": [
+  "Chuka/Igambang'ombe", "Maara", "Tharaka South", "Tharaka North", "Kathwana", 
+  "Marimanti", "Nkondi", "Gatunga", "Muthambi", "Karingani", 
+  "Magumoni", "Kaanwa", "Gitugini", "Chogoria", "Ciampiu"
+],
+
+"Embu": [
+  "Manyatta", "Runyenjes", "Mbeere North", "Mbeere South", "Kiritiri", 
+  "Siakago", "Ishiara", "Kangaru", "Blue Valley", "Dallas", 
+  "Kavutiri", "Kanja", "Gategi", "Karurumo", "Kathanjuri"
+],
+
+"Kitui": [
+  "Kitui Central", "Mwingi North", "Mwingi West", "Mwingi Central", "Kitui Rural", 
+  "Kitui South", "Kitui East", "Migwani", "Mutomo", "Ikutha", 
+  "Nzambani", "Kanyangi", "Zombe", "Mutito", "Kisasi"
+],
+
+"Machakos": [
+  "Masinga", "Yatta", "Kangundo", "Matungulu", "Kathiani", 
+  "Mavoko", "Machakos Town", "Mwaki", "Mwala", "Kola", 
+  "Mbiuni", "Kangundo Town", "Katangi", "Kalama", "Mutituni"
+],
+
+"Makueni": [
+  "Mbooni", "Kaiti", "Kilome", "Mukaa", "Makueni", 
+  "Kibwezi East", "Kibwezi West", "Wote", "Sultan Hamud", "Makindu", 
+  "Mtito Andei", "Kathonzweni", "Mulala", "Emali", "Kasikeu"
+],
+
+"Nyandarua": [
+  "Ol Joro Orok", "Kinangop", "Kipipiri", "Ndaragwa", "Ol Kalou", 
+  "Engineer", "Shamata", "Njabini", "Kaimbaga", "Geta", 
+  "Wanjohi", "Karau", "Rurii", "Leshau", "Tumaini"
+],
+
+"Nyeri": [
+  "Tetu", "Nyeri Town", "Mathira", "Othaya", "Kieni", 
+  "Mukurweini", "Karatina", "Chaka", "Mweiga", "Endarasha", 
+  "Giakanja", "Kamakwa", "Ihururu", "Kangaita", "Wamagana"
+],
+
+"Kirinyaga": [
+  "Kirinyaga Central", "Kirinyaga West", "Mwea", "Gichugu", "Kerugoya", 
+  "Kutus", "Kagio", "Kiamutugu", "Kabare", "Mutithi", 
+  "Njegas", "Ngurubani", "Rukanga", "Baricho", "Kiamwangi"
+],
+
+"Murang'a": [
+  "Gatanga", "Kiharu", "Kigumo", "Kangema", "Mathioya", 
+  "Murang'a South", "Kenol", "Sabasaba", "Kahuro", "Maragua", 
+  "Kangari", "Ichichi", "Muthithi", "Mugumoini", "Kiriani"
+],
+
+"Kiambu": [
+  "Githunguri", "Kiambu", "Kabete", "Kiambaa", "Ruiru", 
+  "Limuru", "Lari", "Juja", "Thika Town", "Gatundu North", 
+  "Gatundu South", "Kikuyu", "Tigoni", "Kamwangi", "Ndeiya"
+],
+ "Turkana": [
+  "Turkana North", "Turkana West", "Turkana Central", "Loima", "Turkana South", 
+  "Turkana East", "Lodwar", "Kakuma", "Lokichoggio", "Lokitaung", 
+  "Lorugum", "Lokori", "Napeikar", "Kainuk", "Nakwamekwi"
+],
+
+"West Pokot": [
+  "West Pokot", "North Pokot", "Central Pokot", "Pokot South", "Kipkomo", 
+  "Kacheliba", "Kapenguria", "Chepareria", "Ortum", "Sigor", 
+  "Makutano", "Sebit", "Mnagei", "Batei", "Sook"
+],
+
+"Samburu": [
+  "Samburu East", "Samburu North", "Samburu West", "Maralal", "Baragoi", 
+  "Archers Post", "Wamba", "South Horr", "Suguta Marmar", "Waso", 
+  "Ndoto", "Marti", "Kisima", "Lesirkan", "Baawa"
+],
+
+"Trans Nzoia": [
+  "Kwanza", "Endebess", "Saboti", "Kiminini", "Cherangany", 
+  "Kitale", "Maili Saba", "Matisi", "Waitaluk", "Namanjalala", 
+  "Kesogon", "Matisi Junction", "Kapkoi", "Birunda", "Muroki"
+],
+
+"Uasin Gishu": [
+  "Ainabkoi", "Kapseret", "Kesses", "Moiben", "Soy", 
+  "Turbo", "Eldoret", "Cheptiret", "Burnt Forest", "Ziwa", 
+  "Maili Nne", "Kaptagat", "Moiben Centre", "Matunda", "Racecourse"
+],
+
+"Elgeyo-Marakwet": [
+  "Keiyo North", "Keiyo South", "Marakwet East", "Marakwet West", "Iten", 
+  "Kamariny", "Kaptarakwa", "Chepkorio", "Chebara", "Kapcherop", 
+  "Tot", "Sambirir", "Kapyego", "Kamogo", "Chebororwa"
+],
+
+"Nandi": [
+  "Aldai", "Chesumei", "Emgwen", "Mosop", "Nandi Hills", 
+  "Tinderet", "Kapsabet", "Kabiyet", "Cheptarit", "Kobujoi", 
+  "Serem", "Maraba", "Kipkaren", "Kaiboi", "Kabiyet Centre"
+],
+
+"Baringo": [
+  "Baringo Central", "Baringo North", "Baringo South", "Eldama Ravine", "Mogotio", 
+  "Tiaty", "Kabarnet", "Marigat", "Ravine Town", "Kimalel", 
+  "Tangulbei", "Mochongoi", "Loruk", "Perkerra", "Torongo"
+],
+"Laikipia": [ "Laikipia East", "Nanyuki", "Timau", "Ngobit", "Tigithi", "Laikipia North", "Doldol", "Mugogodo", "Mukogodo West", "Kimanjo",  "Laikipia West", "Rumuruti", "Kinamba", "Ol Moran", "Sipili", "Wiyumiririe", "Nyahururu"],
+  "Nakuru": [
+  "Bahati", "Gilgil", "Kuresoi North", "Kuresoi South", "Molo", 
+  "Naivasha", "Nakuru Town East", "Nakuru Town West", "Rongai", "Subukia", 
+  "Elementaita", "Lanet", "Menengai", "Njoro", "Mai Mahiu"
+],
+
+"Narok": [
+  "Narok East", "Narok North", "Narok South", "Narok West", "Trans Mara East", 
+  "Trans Mara West", "Kilgoris", "Ololulung'a", "Ntulele", "Olokurto", 
+  "Mara North", "Ololaimutia", "Mulot", "Olpusimoru", "Lolgorian"
+],
+
+"Kajiado": [  "Isinya", "Kajiado Central", "Kajiado East", "Kajiado North", "Kajiado South", 
+  "Ngong", "Ongata Rongai", "Kitengela", "Magadi", "Namanga", 
+  "Loitokitok", "Mashuuru", "Ilbisil", "Enkorika", "Ewaso"
+],
+"Kericho": [  "Ainamoi", "Belgut", "Bureti", "Kipkelion East", "Kipkelion West", 
+  "Soin/Sigowet", "Kericho Town", "Kapsoit", "Litein", "Chepseon", 
+  "Kabianga", "Kapkugerwet", "Kapkatet", "Kapsuser", "Kipreres"
+],
+
+"Bomet": [  "Bomet Central", "Bomet East", "Chepalungu", "Konoin", "Sotik", 
+  "Bomet Town", "Longisa", "Kapkoros", "Sigor", "Mulot", 
+  "Ndanai", "Kapkesosio", "Silibwet", "Chebunyo", "Kipreres"
+],
+
+"Kakamega": ["Butere", "Ikolomani", "Khwisero", "Lugari", "Lurambi", 
+  "Malava", "Matungu", "Mumias East", "Mumias West", "Navakholo", 
+  "Shinyalu", "Kakamega Town", "Bukura", "Shirere", "Khayega"
+],
+
+"Vihiga": ["Emuhaya", "Hamisi", "Luanda", "Sabatia", "Vihiga", 
+  "Gisambai", "Chavakali", "Mbale", "Kaimosi", "Bugina", 
+  "Kaptech", "Shiru", "Muhudu", "Tambua", "Lusengeli"
+],
+
+"Bungoma": [  "Bumula", "Kabuchai", "Kanduyi", "Kimilili", "Mt. Elgon", 
+  "Sirisia", "Tongaren", "Webuye East", "Webuye West", "Bungoma Town", 
+  "Misikhu", "Chwele", "Naitiri", "Kamukuywa", "Lwakhakha"
+],
+
+"Busia": [  "Budalangi", "Butula", "Funyula", "Matayos", "Nambale", 
+  "Teso North", "Teso South", "Busia Town", "Mundika", "Malaba", 
+  "Adungosi", "Changara", "Kocholia", "Burumba", "Alupe"
+],
+
+"Siaya": [ "Alego Usonga", "Bondo", "Gem", "Rarieda", "Ugenya", 
+  "Ugunja", "Siaya Town", "Yala", "Usenge", "Madiany", 
+  "Rang'ala", "Sidindi", "Got Agulu", "Nyamonye", "Ligega"
+],
+
+"Kisumu": [  "Kisumu East", "Kisumu West", "Kisumu Central", "Muhoroni", "Nyakach", 
+  "Nyando", "Seme", "Ahero", "Maseno", "Kombewa", 
+  "Koru", "Otonglo", "Ojola", "Chiga", "Miwani"
+],
+
+"Homa Bay": [  "Homa Bay Town", "Kabondo Kasipul", "Kabondo East", "Mbita", "Ndhiwa", 
+  "Rachuonyo East", "Rachuonyo North", "Rachuonyo South", "Rangwe", "Suba North", 
+  "Suba South", "Oyugis", "Kendu Bay", "Sindo", "Magunga"
+],
+
+"Migori": ["Awendo", "Kuria East", "Kuria West", "Nyatike", "Rongo", 
+  "Suna East", "Suna West", "Uriri", "Migori Town", "Isebania", 
+  "Masara", "Macalder", "Karungu", "Kegonga", "Sirare"
+],
+
+"Kisii": ["Bobasi", "Bomachoge Borabu", "Bomachoge Chache", "Bonchari", "Kitutu Chache North", 
+  "Kitutu Chache South", "Nyaribari Chache", "Nyaribari Masaba", "South Mugirango", "Kisii Town", 
+  "Suneka", "Ogembo", "Tabaka", "Keroka", "Nyamarambe"
+],
+
+"Nyamira": [ "Borabu", "Manga", "Masaba North", "Nyamira North", "Nyamira South", 
+  "Nyamira Town", "Ekerenyo", "Keroka", "Gesima", "Nyansiongo", 
+  "Kijauri", "Bonyamatuta", "Kemera", "Sironga", "Nyamaiya"
+],
+ "Nairobi City": ["Dagoretti North", "Dagoretti South", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Kamukunji", "Kasarani", "Lang'ata", "Makadara", "Mathare", "Roysambu", "Ruaraka", "Starehe", "Westlands", "Kibra"]
 };
 
 // ✅ Populate Counties
@@ -10394,15 +10598,6 @@ async function loadAlerts() {
   let previousUnreadCount = 0;
 
   try {
-    // Check if we already have alerts in localStorage
-    let alerts = JSON.parse(localStorage.getItem('alerts')) || [];
-
-    // If alerts are available in localStorage, use them
-    if (alerts.length > 0) {
-      displayAlerts(alerts);
-      return;
-    }
-
     const snapshot = await db.collection("alerts")
       .orderBy("timestamp", "desc")
       .limit(50)
@@ -10411,13 +10606,13 @@ async function loadAlerts() {
     spinner.style.display = "none";
 
     if (snapshot.empty) {
-      list.innerHTML = "<p style='color:#777;'>🌝No alerts yet.</p>";
+      list.innerHTML = "<p style='color:#777;'>No alerts yet.</p>";
       if (badge) badge.style.display = "none";
       previousUnreadCount = 0;
       return;
     }
 
-    alerts = [];
+    const alerts = [];
     snapshot.forEach(doc => {
       const data = doc.data();
       if (
@@ -10437,19 +10632,6 @@ async function loadAlerts() {
       return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
     });
 
-    // Cache alerts in localStorage for faster subsequent loads
-    localStorage.setItem('alerts', JSON.stringify(alerts));
-
-    displayAlerts(alerts);
-
-  } catch (err) {
-    console.error("❌ Error loading alerts:", err);
-    spinner.style.display = "none";
-    list.innerHTML = "<p style='color:#777;'>Failed to load alerts. Please try again.</p>";
-  }
-
-  // Function to display alerts
-  function displayAlerts(alerts) {
     const unreadAlerts = alerts.filter(a => !a.readBy?.includes(currentUserId));
 
     // 🔹 Update badge
@@ -10470,13 +10652,12 @@ async function loadAlerts() {
 
     let alertsHTML = `
       <div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
-        ${unreadAlerts.length > 0 && currentUserId ? `        
+        ${unreadAlerts.length > 0 && currentUserId ? `
           <button onclick="confirmMarkAllAlertsAsRead(${unreadAlerts.length})"
             style="background:#4caf50;color:white;border:none;padding:6px 12px;
             border-radius:6px;cursor:pointer;">
             ✅ Mark All as Read (${unreadAlerts.length})
           </button>` : ""}
-
         <button onclick="confirmDeleteAllAlerts()"
           style="background:#f44336;color:white;border:none;padding:6px 12px;
           border-radius:6px;cursor:pointer;">
@@ -10503,13 +10684,13 @@ async function loadAlerts() {
             ${isRead ? '✅ Read' : '🆕 Unread'}
            </span>`;
 
-      // Delete button for each alert
       const deleteButton = (data.userId === currentUserId || isAdmin)
         ? `<button onclick="confirmDeleteAlert('${alertId}')"
             style="background:#f44336;color:white;border:none;padding:4px 8px;
             border-radius:4px;font-size:12px;cursor:pointer;">
             🗑️ Delete
-           </button>` : "";
+           </button>`
+        : "";
 
       alertsHTML += `
         <div class="alert-card" style="
@@ -10525,7 +10706,7 @@ async function loadAlerts() {
             <small>${timestamp}</small><br>
             <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
               ${readButton}
-              ${deleteButton}  <!-- Each alert now has its own delete button -->
+              ${deleteButton}
             </div>
           </div>
         </div>
@@ -10533,6 +10714,11 @@ async function loadAlerts() {
     });
 
     list.innerHTML = alertsHTML;
+
+  } catch (err) {
+    console.error("❌ Error loading alerts:", err);
+    spinner.style.display = "none";
+    list.innerHTML = "<p style='color:#777;'>Failed to load alerts. Please try again.</p>";
   }
 }
 
