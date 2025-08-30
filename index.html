@@ -5123,10 +5123,14 @@ async function showPage(pageId) {
     return;
   }
 
-
-
   if (pageId === "alerts" && !isLoggedIn) {
     showCustomAlert("You must be logged in to view alerts.", "error");
+    showPage("login");
+    return;
+  }
+
+  if (pageId === "market" && !isLoggedIn) {
+    showCustomAlert("Please login to view or post market items.", "error");
     showPage("login");
     return;
   }
@@ -5148,24 +5152,21 @@ async function showPage(pageId) {
   if (pageId === "soulmates") loadSoulmates();
   if (pageId === "seekingServices") loadServices();
 
-  // Load the trending page if logged in
   if (pageId === "trending" && isLoggedIn) {
-    loadTrendingItems(); // Load the trending items if the user is logged in
+    loadTrendingItems();
   }
 
-  // Load the alerts page if logged in
   if (pageId === "alerts" && isLoggedIn) {
-    loadAlerts(); // Load the alerts if the user is logged in
+    loadAlerts();
   }
 
-  // ✅ If admin is viewing notifications, load them
   if (pageId === "notifications" && isAdmin) {
     loadAdminNotifications();
     updateAdminNotifBadge();
   }
 
-  if (pageId === "market") {
-    populateCounties("itemCounty", "itemSubcounty"); // ✅ exact match for element ID
+  if (pageId === "market" && isLoggedIn) {
+    populateCounties("itemCounty", "itemSubcounty");
     loadMarketItems();
   }
 }
@@ -5275,6 +5276,12 @@ function logoutUser() {
   auth.signOut().then(() => {
     localStorage.removeItem("loggedInUser");
 
+    // ✅ Stop background listeners (so no Firestore query runs when logged out)
+    if (typeof unsubscribeSwaps === "function") {
+      unsubscribeSwaps(); 
+      unsubscribeSwaps = null;
+    }
+
     // Show the toast message
     const toast = document.getElementById("logoutToast");
     toast.style.display = "block";
@@ -5300,11 +5307,24 @@ function logoutUser() {
   });
 }
 
-
+// ✅ Track Firestore listener globally
+let unsubscribeSwaps = null;
 
 // ✅ Display user on page load (if logged in)
 window.onload = function () {
-  displayLoggedInUser();
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      displayLoggedInUser();
+
+      // ✅ Only load swaps if logged in
+      if (!unsubscribeSwaps) {
+        unsubscribeSwaps = loadSwaps(user.uid); 
+      }
+    } else {
+      // ✅ Clear UI if logged out
+      displayLoggedOutUI();
+    }
+  });
 };
 
 
@@ -5396,6 +5416,12 @@ async function saveSwap(swap) {
 let swapUnsubscribe; // keep a reference to detach old listener
 
 async function loadSwaps() {
+  // ✅ Block if user is not logged in
+  if (!auth.currentUser) {
+    console.warn("Skipping loadSwaps: user is not logged in.");
+    return;
+  }
+
   const container = document.querySelector("#swapCardContainer");
   container.innerHTML = "";
   trendingBoostedSwaps = [];
@@ -5409,7 +5435,7 @@ async function loadSwaps() {
       if (spinner && spinner.style.display !== "none") {
         spinner.style.display = "none";
       }
-    }, 8000); // 8 seconds fallback
+    }, 8000);
   }
 
   try {
@@ -5423,7 +5449,16 @@ async function loadSwaps() {
     // Realtime listener with error callback
     swapUnsubscribe = swapRef.onSnapshot(
       snapshot => {
-        container.innerHTML = ""; // clear old rendered swaps each time
+        // ✅ If user logged out while listener was active → stop
+        if (!auth.currentUser) {
+          console.warn("User logged out during swaps snapshot, detaching listener.");
+          if (swapUnsubscribe) swapUnsubscribe();
+          swapUnsubscribe = null;
+          if (spinner) spinner.style.display = "none";
+          return;
+        }
+
+        container.innerHTML = "";
         trendingBoostedSwaps = [];
 
         if (snapshot.empty) {
@@ -5660,7 +5695,7 @@ async function loadSwaps() {
           });
         });
 
-        try {
+       try {
           renderTrendingSectionFromSwapsOnly();
         } catch (e) {
           console.error("Error rendering trending swaps:", e);
@@ -5669,14 +5704,24 @@ async function loadSwaps() {
       },
       error => {
         console.error("Firestore listener error:", error);
+
+        // ✅ Only show error if still logged in
+        if (auth.currentUser) {
+          showCustomAlert("Error loading swaps: " + error.message, "error");
+        }
+
         if (spinner) spinner.style.display = "none";
-        showCustomAlert("Error loading swaps: " + error.message, "error");
       }
     );
 
   } catch (err) {
     console.error("Error loading swaps:", err);
-    showCustomAlert("Error loading swaps: " + err.message, "error");
+
+    // ✅ Only show error if still logged in
+    if (auth.currentUser) {
+      showCustomAlert("Error loading swaps: " + err.message, "error");
+    }
+
     if (spinner) spinner.style.display = "none";
   }
 }
@@ -10731,66 +10776,21 @@ function escapeHTML(str) {
     ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[tag] || tag)
   ) : "";
 }
-
-async function markAlertAsRead(alertId) {
-  const userId = auth.currentUser?.uid;
-  if (!userId) return showCustomAlert("Login required", "error");
-
-  try {
-    const alertRef = db.collection("alerts").doc(alertId);
-
-    await alertRef.update({
-      readBy: firebase.firestore.FieldValue.arrayUnion(userId)
-    });
-
-    showCustomAlert("✅ Marked as read", "success");
-    loadAlerts(); // refresh
-  } catch (err) {
-    showCustomAlert("❌ Failed to mark as read: " + err.message, "error");
-  }
-}
-
-
-// ✅ Confirm mark all
-function confirmMarkAllAlertsAsRead(unreadCount) {
-  showToastConfirm(`Mark all ${unreadCount} alerts as read?`, markAllAlertsAsRead);
-}
-
 // ✅ Mark Single Alert as Read
 async function markAlertAsRead(alertId) {
   const currentUserId = auth.currentUser?.uid;
-  if (!currentUserId) {
-    showCustomAlert("❌ You must be logged in", "error");
-    return;
-  }
+  if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
 
   const spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "flex";
 
   try {
-    const docRef = db.collection("alerts").doc(alertId);
-    const docSnap = await docRef.get();
-
-    if (!docSnap.exists) {
-      showCustomAlert("ℹ️ Alert not found", "info");
-      return;
-    }
-
-    const data = docSnap.data();
-    const isAdminUser = ["mashabiki@teacherswapskenya.com","sironga1@teacherswapskenya.com","admin1@teacherswapskenya.com"].includes(auth.currentUser.email);
-    const isOwner = data.targetUserId === currentUserId;
-
-    if (!isAdminUser && !isOwner) {
-      showCustomAlert("❌ You do not have permission to mark this alert as read", "error");
-      return;
-    }
-
-    await docRef.update({
+    const alertRef = db.collection("alerts").doc(alertId);
+    await alertRef.update({
       readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
     });
 
     showCustomAlert("✅ Alert marked as read", "success");
-
   } catch (error) {
     showCustomAlert("❌ Failed to mark as read: " + error.message, "error");
   } finally {
@@ -10806,28 +10806,19 @@ function confirmMarkAllAlertsAsRead(unreadCount) {
 // ✅ Mark All Alerts as Read
 async function markAllAlertsAsRead() {
   const currentUserId = auth.currentUser?.uid;
-  if (!currentUserId) {
-    showCustomAlert("❌ You must be logged in", "error");
-    return;
-  }
+  if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
 
   const spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "flex";
 
   try {
     const snapshot = await db.collection("alerts").get();
-    if (snapshot.empty) {
-      showCustomAlert("ℹ️ No alerts to mark as read", "info");
-      return;
-    }
+    if (snapshot.empty) return showCustomAlert("ℹ️ No alerts to mark as read", "info");
 
     const batch = db.batch();
     snapshot.forEach(doc => {
       const data = doc.data();
-      const isAdminUser = ["mashabiki@teacherswapskenya.com","sironga1@teacherswapskenya.com","admin1@teacherswapskenya.com"].includes(auth.currentUser.email);
-      const isOwner = data.targetUserId === currentUserId;
-
-      if (isAdminUser || isOwner) {
+      if (data.targetUserId === currentUserId || isAdminEmail(auth.currentUser.email)) {
         batch.update(doc.ref, {
           readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
         });
@@ -10836,115 +10827,83 @@ async function markAllAlertsAsRead() {
 
     await batch.commit();
     showCustomAlert("✅ All alerts marked as read", "success");
-
   } catch (error) {
-    showCustomAlert("❌ Error marking all as read: " + error.message, "error");
+    showCustomAlert("❌ Error marking alerts: " + error.message, "error");
   } finally {
     if (spinner) spinner.style.display = "none";
   }
 }
 
-
-
-// ✅ Confirm delete single
+// ✅ Confirm Delete Single Alert
 function confirmDeleteAlert(alertId) {
   showToastConfirm("🗑️ Delete this alert?", () => deleteAlert(alertId));
 }
 
-// ✅ Delete Single Alert (respects permissions)
+// ✅ Delete Single Alert
 async function deleteAlert(alertId) {
-  const spinner = document.getElementById("loadingSpinner");
-  spinner.style.display = "flex";
-
   const currentUserId = auth.currentUser?.uid;
-  if (!currentUserId) {
-    showCustomAlert("❌ You must be logged in", "error");
-    spinner.style.display = "none";
-    return;
-  }
+  if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
+
+  const spinner = document.getElementById("loadingSpinner");
+  if (spinner) spinner.style.display = "flex";
 
   try {
-    const docRef = db.collection("alerts").doc(alertId);
-    const docSnap = await docRef.get();
+    await db.collection("alerts").doc(alertId).delete();
 
-    if (!docSnap.exists) {
-      showCustomAlert("ℹ️ Alert not found", "info");
-      return;
-    }
-
-    const data = docSnap.data();
-    const isAdminUser = currentUserId && ["mashabiki@teacherswapskenya.com", "sironga1@teacherswapskenya.com", "admin1@teacherswapskenya.com"].includes(auth.currentUser.email);
-    const isOwner = data.targetUserId === currentUserId;
-
-    if (!isAdminUser && !isOwner) {
-      showCustomAlert("❌ You do not have permission to delete this alert", "error");
-      return;
-    }
-
-    await docRef.delete();
-
-    // Clear from localStorage after successful delete
+    // Remove from localStorage
     let alerts = JSON.parse(localStorage.getItem('alerts')) || [];
     alerts = alerts.filter(alert => alert.id !== alertId);
     localStorage.setItem('alerts', JSON.stringify(alerts));
 
     showCustomAlert("🗑️ Alert deleted", "success");
-
   } catch (error) {
     showCustomAlert("❌ Error deleting alert: " + error.message, "error");
   } finally {
-    spinner.style.display = "none";
+    if (spinner) spinner.style.display = "none";
   }
 }
 
-// ✅ Confirm delete all alerts
+// ✅ Confirm Delete All Alerts
 function confirmDeleteAllAlerts() {
   showToastConfirm("🌝 Delete ALL alerts?", deleteAllAlerts);
 }
 
-// ✅ Delete All Alerts (respects permissions)
+// ✅ Delete All Alerts
 async function deleteAllAlerts() {
-  const spinner = document.getElementById("loadingSpinner");
-  spinner.style.display = "flex";
-
   const currentUserId = auth.currentUser?.uid;
-  if (!currentUserId) {
-    showCustomAlert("❌ You must be logged in", "error");
-    spinner.style.display = "none";
-    return;
-  }
+  if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
+
+  const spinner = document.getElementById("loadingSpinner");
+  if (spinner) spinner.style.display = "flex";
 
   try {
     const snapshot = await db.collection("alerts").get();
-    if (snapshot.empty) {
-      showCustomAlert("ℹ️ No alerts to delete", "info");
-      return;
-    }
+    if (snapshot.empty) return showCustomAlert("ℹ️ No alerts to delete", "info");
 
     const batch = db.batch();
     snapshot.forEach(doc => {
       const data = doc.data();
-      const isAdminUser = currentUserId && ["mashabiki@teacherswapskenya.com", "sironga1@teacherswapskenya.com", "admin1@teacherswapskenya.com"].includes(auth.currentUser.email);
-      const isOwner = data.targetUserId === currentUserId;
-      if (isAdminUser || isOwner) {
+      if (data.targetUserId === currentUserId || isAdminEmail(auth.currentUser.email)) {
         batch.delete(doc.ref);
       }
     });
 
     await batch.commit();
-
-    // Clear all alerts from localStorage after successful delete
-    localStorage.removeItem('alerts');
+    localStorage.removeItem('alerts'); // clear cache
 
     showCustomAlert("🗑️ Alerts deleted successfully", "success");
-
   } catch (error) {
     showCustomAlert("❌ Error deleting alerts: " + error.message, "error");
   } finally {
-    spinner.style.display = "none";
+    if (spinner) spinner.style.display = "none";
   }
 }
 
+// 🔑 Helper: Admin email check
+function isAdminEmail(email) {
+  const adminEmails = ["mashabiki@teacherswapskenya.com","sironga1@teacherswapskenya.com","admin1@teacherswapskenya.com"];
+  return adminEmails.includes(email);
+}
 
 
 
