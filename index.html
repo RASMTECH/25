@@ -2091,12 +2091,18 @@ button:hover {
     <!-- Display logged-in user and logout button inside the header -->
     <div id="loggedInUser" style="text-align:center; margin-top:10px; color: white;"></div>
 
-    <!-- Advertisement inside the header -->
-    <p style="font-size: 14px; color: white; margin-top: 10px;">
-      📢 Advertise your service here! 
-      <a href="https://wa.me/254792755676" target="_blank" style="color: #007bff; font-weight: bold;">Call 0792755676</a>
-    </p>
-  </div>
+  <!-- Advertisement inside the header -->
+<div style="margin-top:10px; padding:12px; background: #ffecb3; border-radius:8px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+  <p style="font-size: 14px; color: #5d4037; margin:0;">
+    📢 <strong>Advertise With Us!</strong> Reach thousands of  people 
+  </p>
+  <p style="margin:6px 0 0 0; font-size:14px;">
+    <a href="https://wa.me/254792755676" target="_blank" style="color: #d32f2f; font-weight:bold; text-decoration:none;">
+      Call / WhatsApp 0792755676
+    </a>
+  </p>
+</div>
+
 
   <!-- Right Image -->
   <img src="https://i.imgur.com/ZubSv7f.jpeg" alt="Right Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
@@ -2467,7 +2473,75 @@ button:hover {
   </div>
 </div>
 
+<!-- Fancy Disclaimer Modal -->
+<div id="disclaimerModal" style="
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <div style="
+    background: #fff8e1;
+    padding: 25px 30px;
+    border-radius: 12px;
+    max-width: 480px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-family: Arial, sans-serif;
+    position: relative;
+  ">
+    <h2 style="color: #d32f2f; margin-bottom: 12px;">⚠️ Important Disclaimer</h2>
+    <p style="color: #333; font-size: 15px; margin-bottom: 18px;">
+ All information on Nyota Mtaani is provided as-is. We disclaim responsibility for any false or misleading content. Users should independently verify any information before acting on it.
+    </p>
+    
+    <div style="margin-bottom: 15px;">
+      <input type="checkbox" id="dontShowAgain" style="margin-right:6px;">
+      <label for="dontShowAgain" style="font-size: 13px; color: #555;">Do not show again this session</label>
+    </div>
+    
+    <button onclick="closeDisclaimerFancy()" style="
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    ">I Understand</button>
+    
+    <span onclick="closeDisclaimerFancy()" style="
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #d32f2f;
+    ">&times;</span>
+  </div>
+</div>
 
+<!-- Thank You Alert -->
+<div id="thankYouAlert" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  display: none;
+  z-index: 9999;
+">
+  ✅ Thank you for agreeing!
+</div>
 
 
 <!-- ✅ How to Use the System Section -->
@@ -2705,7 +2779,7 @@ button:hover {
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
   </div>
 </div>
- <form id="swapForm" style="
+<form id="swapForm" style="
   max-width: 500px;
   margin: 40px auto;
   padding: 25px;
@@ -2733,8 +2807,20 @@ button:hover {
     <option value="">Select Sub-county</option>
   </select>
 
-  <label for="swapCounty" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Swap County To:</label>
-  <select id="swapCounty" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;"></select>
+ <label for="swapCounty" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">
+  Swap County To (Optional, select up to 3):
+</label>
+
+<!-- Container for tags -->
+<div id="swapCountyTags" style="margin-top:6px; min-height:28px;"></div>
+
+<select id="swapCounty" multiple size="5" style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;">
+  <option value="">Select County</option>
+</select>
+
+<small style="color:#555; display:block; margin-top:4px; font-style:italic;">
+  Hold Ctrl (Cmd on Mac) to select multiple counties.
+</small>
 
   <label for="category" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Category:</label>
   <select id="category" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;">
@@ -2766,6 +2852,7 @@ button:hover {
     <i class="fas fa-plus-circle" style="margin-right:6px; color:#ffffff;"></i> Add Swap
   </button>
 </form>
+
 
 
 
@@ -4780,264 +4867,78 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
-
 // ✅ Hot counties for VIP swap prioritization
 const vipHotCounties = ["Nairobi", "Kisumu", "Mombasa", "Kisii", "Nakuru"];
+
 // ✅ Counties and Sub-counties Map
 const countySubCountyMap = {
-"Mombasa": [ "Changamwe", "Miritini", "Chaani", "Port Reitz", "Kipevu",  "Jomvu", "Mikindani", "Jomvu Kuu", "Miritini","Kisauni","Bamburi", "Mshomoroni", "Mtopanga", "Shanzu", "Frere Town","Likoni", "Shika Adabu", "Bofu", "Mtongwe","Mvita", "Old Town", "Tudor", "Tononoka", "Ganjoni", "Majengo","Nyali", "Kongowea", "Kadzandani", "Ziwa la Ng’ombe"],
- "Kwale": ["Msambweni", "Ukunda", "Diani", "Shimoni", "Vanga",  "Lunga Lunga", "Majoreni", "Pongwe", "Mkongani", "Matuga", "Tiwi", "Kubo South", "Mwaluphamba", "Kinango", "Samburu",  "Mazeras", "Kwale Town", "Ndavaya", "Kaseeni", "Mackinnon Road"
-],
-
-  "Kilifi": [ "Kilifi North", "Kilifi South", "Kaloleni", "Rabai", "Ganze", 
-  "Malindi", "Magarini", "Chonyi", "Mtwapa", "Watamu", 
-  "Sokoke", "Vipingo", "Mariakani", "Mtondia", "Kikambala"
-], 
-
-"Tana River": [
-  "Galole", "Garsen", "Bura", "Galedyertu", "Bangal", 
-  "Hola", "Kipini", "Tarasaa", "Idzowe", "Madogo", 
-  "Wenje", "Ngao", "Oda", "Chara", "Kailo"
-],
-
-"Lamu": [
-  "Lamu East", "Lamu West", "Amu", "Mokowe", "Hindi", 
-  "Kiunga", "Mpeketoni", "Kizingitini", "Faza", "Pate", 
-  "Shela", "Matondoni", "Mkunumbi", "Mapenya", "Kiongwe"
-],
-
-"Taita–Taveta": [
-  "Mwatate", "Voi", "Taveta", "Wundanyi", "Bura", 
-  "Maktau", "Mghalu", "Rong’e", "Challa", "Mwanda", 
-  "Kimorigo", "Ngolia", "Kasigau", "Kasarani", "Mbuyuni"
-],
-
-"Garissa": [
-  "Balambala", "Dadaab", "Fafi", "Garissa Township", "Hulugho", 
-  "Ijara", "Lagdera", "Modika", "Sankuri", "Bura East", 
-  "Masalani", "Abakaile", "Jarajara", "Saka", "Bodhai"
-],
-
-"Wajir": [
-  "Eldas", "Tarbaj", "Wajir North", "Wajir East", "Wajir West", 
-  "Wajir South", "Buna", "Habaswein", "Griftu", "Khorof Harar", 
-  "Bute", "Diff", "Leheley", "Gurar", "Adan Awale"
-],
-
-"Mandera": [
-  "Banisa", "Mandera West", "Mandera North", "Mandera South", "Mandera East", 
-  "Lafey", "Rhamu", "Takaba", "Elwak", "Shimbir Fatuma", 
-  "Qurqan", "Kutulo", "Ashabito", "Warankara", "Bulla Mpya"
-],
-
-"Marsabit": [
-  "Moyale", "North Horr", "Saku", "Laisamis", "Sololo", 
-  "Uran", "Dirib Gombo", "Kargi", "Korr", "Logologo", 
-  "Koya", "Illeret", "Shurr", "Maikona", "Badasa"
-],
-
-"Isiolo": [
-  "Isiolo Central", "Merti", "Garbatulla", "Kinna", "Ngaremara", 
-  "Oldonyiro", "Burat", "Chumvi Yere", "Bula Pesa", "Kulamawe", 
-  "Sericho", "Modogashe", "Gotu", "Korbesa", "Delessa"
-],
-  "Meru": [
-  "Imenti North", "Imenti South", "Imenti Central", "Tigania East", "Tigania West", 
-  "Buuri", "North Imenti", "Maua", "Nkubu", "Timau", 
-  "Gatimbi", "Kianjai", "Laare", "Kibirichia", "Kithirune"
-],
-
-"Tharaka-Nithi": [
-  "Chuka/Igambang'ombe", "Maara", "Tharaka South", "Tharaka North", "Kathwana", 
-  "Marimanti", "Nkondi", "Gatunga", "Muthambi", "Karingani", 
-  "Magumoni", "Kaanwa", "Gitugini", "Chogoria", "Ciampiu"
-],
-
-"Embu": [
-  "Manyatta", "Runyenjes", "Mbeere North", "Mbeere South", "Kiritiri", 
-  "Siakago", "Ishiara", "Kangaru", "Blue Valley", "Dallas", 
-  "Kavutiri", "Kanja", "Gategi", "Karurumo", "Kathanjuri"
-],
-
-"Kitui": [
-  "Kitui Central", "Mwingi North", "Mwingi West", "Mwingi Central", "Kitui Rural", 
-  "Kitui South", "Kitui East", "Migwani", "Mutomo", "Ikutha", 
-  "Nzambani", "Kanyangi", "Zombe", "Mutito", "Kisasi"
-],
-
-"Machakos": [
-  "Masinga", "Yatta", "Kangundo", "Matungulu", "Kathiani", 
-  "Mavoko", "Machakos Town", "Mwaki", "Mwala", "Kola", 
-  "Mbiuni", "Kangundo Town", "Katangi", "Kalama", "Mutituni"
-],
-
-"Makueni": [
-  "Mbooni", "Kaiti", "Kilome", "Mukaa", "Makueni", 
-  "Kibwezi East", "Kibwezi West", "Wote", "Sultan Hamud", "Makindu", 
-  "Mtito Andei", "Kathonzweni", "Mulala", "Emali", "Kasikeu"
-],
-
-"Nyandarua": [
-  "Ol Joro Orok", "Kinangop", "Kipipiri", "Ndaragwa", "Ol Kalou", 
-  "Engineer", "Shamata", "Njabini", "Kaimbaga", "Geta", 
-  "Wanjohi", "Karau", "Rurii", "Leshau", "Tumaini"
-],
-
-"Nyeri": [
-  "Tetu", "Nyeri Town", "Mathira", "Othaya", "Kieni", 
-  "Mukurweini", "Karatina", "Chaka", "Mweiga", "Endarasha", 
-  "Giakanja", "Kamakwa", "Ihururu", "Kangaita", "Wamagana"
-],
-
-"Kirinyaga": [
-  "Kirinyaga Central", "Kirinyaga West", "Mwea", "Gichugu", "Kerugoya", 
-  "Kutus", "Kagio", "Kiamutugu", "Kabare", "Mutithi", 
-  "Njegas", "Ngurubani", "Rukanga", "Baricho", "Kiamwangi"
-],
-
-"Murang'a": [
-  "Gatanga", "Kiharu", "Kigumo", "Kangema", "Mathioya", 
-  "Murang'a South", "Kenol", "Sabasaba", "Kahuro", "Maragua", 
-  "Kangari", "Ichichi", "Muthithi", "Mugumoini", "Kiriani"
-],
-
-"Kiambu": [
-  "Githunguri", "Kiambu", "Kabete", "Kiambaa", "Ruiru", 
-  "Limuru", "Lari", "Juja", "Thika Town", "Gatundu North", 
-  "Gatundu South", "Kikuyu", "Tigoni", "Kamwangi", "Ndeiya"
-],
- "Turkana": [
-  "Turkana North", "Turkana West", "Turkana Central", "Loima", "Turkana South", 
-  "Turkana East", "Lodwar", "Kakuma", "Lokichoggio", "Lokitaung", 
-  "Lorugum", "Lokori", "Napeikar", "Kainuk", "Nakwamekwi"
-],
-
-"West Pokot": [
-  "West Pokot", "North Pokot", "Central Pokot", "Pokot South", "Kipkomo", 
-  "Kacheliba", "Kapenguria", "Chepareria", "Ortum", "Sigor", 
-  "Makutano", "Sebit", "Mnagei", "Batei", "Sook"
-],
-
-"Samburu": [
-  "Samburu East", "Samburu North", "Samburu West", "Maralal", "Baragoi", 
-  "Archers Post", "Wamba", "South Horr", "Suguta Marmar", "Waso", 
-  "Ndoto", "Marti", "Kisima", "Lesirkan", "Baawa"
-],
-
-"Trans Nzoia": [
-  "Kwanza", "Endebess", "Saboti", "Kiminini", "Cherangany", 
-  "Kitale", "Maili Saba", "Matisi", "Waitaluk", "Namanjalala", 
-  "Kesogon", "Matisi Junction", "Kapkoi", "Birunda", "Muroki"
-],
-
-"Uasin Gishu": [
-  "Ainabkoi", "Kapseret", "Kesses", "Moiben", "Soy", 
-  "Turbo", "Eldoret", "Cheptiret", "Burnt Forest", "Ziwa", 
-  "Maili Nne", "Kaptagat", "Moiben Centre", "Matunda", "Racecourse"
-],
-
-"Elgeyo-Marakwet": [
-  "Keiyo North", "Keiyo South", "Marakwet East", "Marakwet West", "Iten", 
-  "Kamariny", "Kaptarakwa", "Chepkorio", "Chebara", "Kapcherop", 
-  "Tot", "Sambirir", "Kapyego", "Kamogo", "Chebororwa"
-],
-
-"Nandi": [
-  "Aldai", "Chesumei", "Emgwen", "Mosop", "Nandi Hills", 
-  "Tinderet", "Kapsabet", "Kabiyet", "Cheptarit", "Kobujoi", 
-  "Serem", "Maraba", "Kipkaren", "Kaiboi", "Kabiyet Centre"
-],
-
-"Baringo": [
-  "Baringo Central", "Baringo North", "Baringo South", "Eldama Ravine", "Mogotio", 
-  "Tiaty", "Kabarnet", "Marigat", "Ravine Town", "Kimalel", 
-  "Tangulbei", "Mochongoi", "Loruk", "Perkerra", "Torongo"
-],
-"Laikipia": [ "Laikipia East", "Nanyuki", "Timau", "Ngobit", "Tigithi", "Laikipia North", "Doldol", "Mugogodo", "Mukogodo West", "Kimanjo",  "Laikipia West", "Rumuruti", "Kinamba", "Ol Moran", "Sipili", "Wiyumiririe", "Nyahururu"],
-  "Nakuru": [
-  "Bahati", "Gilgil", "Kuresoi North", "Kuresoi South", "Molo", 
-  "Naivasha", "Nakuru Town East", "Nakuru Town West", "Rongai", "Subukia", 
-  "Elementaita", "Lanet", "Menengai", "Njoro", "Mai Mahiu"
-],
-
-"Narok": [
-  "Narok East", "Narok North", "Narok South", "Narok West", "Trans Mara East", 
-  "Trans Mara West", "Kilgoris", "Ololulung'a", "Ntulele", "Olokurto", 
-  "Mara North", "Ololaimutia", "Mulot", "Olpusimoru", "Lolgorian"
-],
-
-"Kajiado": [  "Isinya", "Kajiado Central", "Kajiado East", "Kajiado North", "Kajiado South", 
-  "Ngong", "Ongata Rongai", "Kitengela", "Magadi", "Namanga", 
-  "Loitokitok", "Mashuuru", "Ilbisil", "Enkorika", "Ewaso"
-],
-"Kericho": [  "Ainamoi", "Belgut", "Bureti", "Kipkelion East", "Kipkelion West", 
-  "Soin/Sigowet", "Kericho Town", "Kapsoit", "Litein", "Chepseon", 
-  "Kabianga", "Kapkugerwet", "Kapkatet", "Kapsuser", "Kipreres"
-],
-
-"Bomet": [  "Bomet Central", "Bomet East", "Chepalungu", "Konoin", "Sotik", 
-  "Bomet Town", "Longisa", "Kapkoros", "Sigor", "Mulot", 
-  "Ndanai", "Kapkesosio", "Silibwet", "Chebunyo", "Kipreres"
-],
-
-"Kakamega": ["Butere", "Ikolomani", "Khwisero", "Lugari", "Lurambi", 
-  "Malava", "Matungu", "Mumias East", "Mumias West", "Navakholo", 
-  "Shinyalu", "Kakamega Town", "Bukura", "Shirere", "Khayega"
-],
-
-"Vihiga": ["Emuhaya", "Hamisi", "Luanda", "Sabatia", "Vihiga", 
-  "Gisambai", "Chavakali", "Mbale", "Kaimosi", "Bugina", 
-  "Kaptech", "Shiru", "Muhudu", "Tambua", "Lusengeli"
-],
-
-"Bungoma": [  "Bumula", "Kabuchai", "Kanduyi", "Kimilili", "Mt. Elgon", 
-  "Sirisia", "Tongaren", "Webuye East", "Webuye West", "Bungoma Town", 
-  "Misikhu", "Chwele", "Naitiri", "Kamukuywa", "Lwakhakha"
-],
-
-"Busia": [  "Budalangi", "Butula", "Funyula", "Matayos", "Nambale", 
-  "Teso North", "Teso South", "Busia Town", "Mundika", "Malaba", 
-  "Adungosi", "Changara", "Kocholia", "Burumba", "Alupe"
-],
-
-"Siaya": [ "Alego Usonga", "Bondo", "Gem", "Rarieda", "Ugenya", 
-  "Ugunja", "Siaya Town", "Yala", "Usenge", "Madiany", 
-  "Rang'ala", "Sidindi", "Got Agulu", "Nyamonye", "Ligega"
-],
-
-"Kisumu": [  "Kisumu East", "Kisumu West", "Kisumu Central", "Muhoroni", "Nyakach", 
-  "Nyando", "Seme", "Ahero", "Maseno", "Kombewa", 
-  "Koru", "Otonglo", "Ojola", "Chiga", "Miwani"
-],
-
-"Homa Bay": [  "Homa Bay Town", "Kabondo Kasipul", "Kabondo East", "Mbita", "Ndhiwa", 
-  "Rachuonyo East", "Rachuonyo North", "Rachuonyo South", "Rangwe", "Suba North", 
-  "Suba South", "Oyugis", "Kendu Bay", "Sindo", "Magunga"
-],
-
-"Migori": ["Awendo", "Kuria East", "Kuria West", "Nyatike", "Rongo", 
-  "Suna East", "Suna West", "Uriri", "Migori Town", "Isebania", 
-  "Masara", "Macalder", "Karungu", "Kegonga", "Sirare"
-],
-
-"Kisii": ["Bobasi", "Bomachoge Borabu", "Bomachoge Chache", "Bonchari", "Kitutu Chache North", 
-  "Kitutu Chache South", "Nyaribari Chache", "Nyaribari Masaba", "South Mugirango", "Kisii Town", 
-  "Suneka", "Ogembo", "Tabaka", "Keroka", "Nyamarambe"
-],
-
-"Nyamira": [ "Borabu", "Manga", "Masaba North", "Nyamira North", "Nyamira South", 
-  "Nyamira Town", "Ekerenyo", "Keroka", "Gesima", "Nyansiongo", 
-  "Kijauri", "Bonyamatuta", "Kemera", "Sironga", "Nyamaiya"
-],
- "Nairobi City": ["Dagoretti North", "Dagoretti South", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Kamukunji", "Kasarani", "Lang'ata", "Makadara", "Mathare", "Roysambu", "Ruaraka", "Starehe", "Westlands", "Kibra"]
+  "Mombasa": ["Changamwe", "Miritini", "Chaani", "Port Reitz", "Kipevu", "Jomvu", "Mikindani", "Jomvu Kuu", "Miritini","Kisauni","Bamburi","Mshomoroni","Mtopanga","Shanzu","Frere Town","Likoni","Shika Adabu","Bofu","Mtongwe","Mvita","Old Town","Tudor","Tononoka","Ganjoni","Majengo","Nyali","Kongowea","Kadzandani","Ziwa la Ng’ombe"],
+  "Kwale": ["Msambweni","Ukunda","Diani","Shimoni","Vanga","Lunga Lunga","Majoreni","Pongwe","Mkongani","Matuga","Tiwi","Kubo South","Mwaluphamba","Kinango","Samburu","Mazeras","Kwale Town","Ndavaya","Kaseeni","Mackinnon Road"],
+  "Kilifi": ["Kilifi North","Kilifi South","Kaloleni","Rabai","Ganze","Malindi","Magarini","Chonyi","Mtwapa","Watamu","Sokoke","Vipingo","Mariakani","Mtondia","Kikambala"],
+  "Tana River": ["Galole","Garsen","Bura","Galedyertu","Bangal","Hola","Kipini","Tarasaa","Idzowe","Madogo","Wenje","Ngao","Oda","Chara","Kailo"],
+  "Lamu": ["Lamu East","Lamu West","Amu","Mokowe","Hindi","Kiunga","Mpeketoni","Kizingitini","Faza","Pate","Shela","Matondoni","Mkunumbi","Mapenya","Kiongwe"],
+  "Taita–Taveta": ["Mwatate","Voi","Taveta","Wundanyi","Bura","Maktau","Mghalu","Rong’e","Challa","Mwanda","Kimorigo","Ngolia","Kasigau","Kasarani","Mbuyuni"],
+  "Garissa": ["Balambala","Dadaab","Fafi","Garissa Township","Hulugho","Ijara","Lagdera","Modika","Sankuri","Bura East","Masalani","Abakaile","Jarajara","Saka","Bodhai"],
+  "Wajir": ["Eldas","Tarbaj","Wajir North","Wajir East","Wajir West","Wajir South","Buna","Habaswein","Griftu","Khorof Harar","Bute","Diff","Leheley","Gurar","Adan Awale"],
+  "Mandera": ["Banisa","Mandera West","Mandera North","Mandera South","Mandera East","Lafey","Rhamu","Takaba","Elwak","Shimbir Fatuma","Qurqan","Kutulo","Ashabito","Warankara","Bulla Mpya"],
+  "Marsabit": ["Moyale","North Horr","Saku","Laisamis","Sololo","Uran","Dirib Gombo","Kargi","Korr","Logologo","Koya","Illeret","Shurr","Maikona","Badasa"],
+  "Isiolo": ["Isiolo Central","Merti","Garbatulla","Kinna","Ngaremara","Oldonyiro","Burat","Chumvi Yere","Bula Pesa","Kulamawe","Sericho","Modogashe","Gotu","Korbesa","Delessa"],
+  "Meru": ["Imenti North","Imenti South","Imenti Central","Tigania East","Tigania West","Buuri","North Imenti","Maua","Nkubu","Timau","Gatimbi","Kianjai","Laare","Kibirichia","Kithirune"],
+  "Tharaka-Nithi": ["Chuka/Igambang'ombe","Maara","Tharaka South","Tharaka North","Kathwana","Marimanti","Nkondi","Gatunga","Muthambi","Karingani","Magumoni","Kaanwa","Gitugini","Chogoria","Ciampiu"],
+  "Embu": ["Manyatta","Runyenjes","Mbeere North","Mbeere South","Kiritiri","Siakago","Ishiara","Kangaru","Blue Valley","Dallas","Kavutiri","Kanja","Gategi","Karurumo","Kathanjuri"],
+  "Kitui": ["Kitui Central","Mwingi North","Mwingi West","Mwingi Central","Kitui Rural","Kitui South","Kitui East","Migwani","Mutomo","Ikutha","Nzambani","Kanyangi","Zombe","Mutito","Kisasi"],
+  "Machakos": ["Masinga","Yatta","Kangundo","Matungulu","Kathiani","Mavoko","Machakos Town","Mwaki","Mwala","Kola","Mbiuni","Kangundo Town","Katangi","Kalama","Mutituni"],
+  "Makueni": ["Mbooni","Kaiti","Kilome","Mukaa","Makueni","Kibwezi East","Kibwezi West","Wote","Sultan Hamud","Makindu","Mtito Andei","Kathonzweni","Mulala","Emali","Kasikeu"],
+  "Nyandarua": ["Ol Joro Orok","Kinangop","Kipipiri","Ndaragwa","Ol Kalou","Engineer","Shamata","Njabini","Kaimbaga","Geta","Wanjohi","Karau","Rurii","Leshau","Tumaini"],
+  "Nyeri": ["Tetu","Nyeri Town","Mathira","Othaya","Kieni","Mukurweini","Karatina","Chaka","Mweiga","Endarasha","Giakanja","Kamakwa","Ihururu","Kangaita","Wamagana"],
+  "Kirinyaga": ["Kirinyaga Central","Kirinyaga West","Mwea","Gichugu","Kerugoya","Kutus","Kagio","Kiamutugu","Kabare","Mutithi","Njegas","Ngurubani","Rukanga","Baricho","Kiamwangi"],
+  "Murang'a": ["Gatanga","Kiharu","Kigumo","Kangema","Mathioya","Murang'a South","Kenol","Sabasaba","Kahuro","Maragua","Kangari","Ichichi","Muthithi","Mugumoini","Kiriani"],
+  "Kiambu": ["Githunguri","Kiambu","Kabete","Kiambaa","Ruiru","Limuru","Lari","Juja","Thika Town","Gatundu North","Gatundu South","Kikuyu","Tigoni","Kamwangi","Ndeiya"],
+  "Turkana": ["Turkana North","Turkana West","Turkana Central","Loima","Turkana South","Turkana East","Lodwar","Kakuma","Lokichoggio","Lokitaung","Lorugum","Lokori","Napeikar","Kainuk","Nakwamekwi"],
+  "West Pokot": ["West Pokot","North Pokot","Central Pokot","Pokot South","Kipkomo","Kacheliba","Kapenguria","Chepareria","Ortum","Sigor","Makutano","Sebit","Mnagei","Batei","Sook"],
+  "Samburu": ["Samburu East","Samburu North","Samburu West","Maralal","Baragoi","Archers Post","Wamba","South Horr","Suguta Marmar","Waso","Ndoto","Marti","Kisima","Lesirkan","Baawa"],
+  "Trans Nzoia": ["Kwanza","Endebess","Saboti","Kiminini","Cherangany","Kitale","Maili Saba","Matisi","Waitaluk","Namanjalala","Kesogon","Matisi Junction","Kapkoi","Birunda","Muroki"],
+  "Uasin Gishu": ["Ainabkoi","Kapseret","Kesses","Moiben","Soy","Turbo","Eldoret","Cheptiret","Burnt Forest","Ziwa","Maili Nne","Kaptagat","Moiben Centre","Matunda","Racecourse"],
+  "Elgeyo-Marakwet": ["Keiyo North","Keiyo South","Marakwet East","Marakwet West","Iten","Kamariny","Kaptarakwa","Chepkorio","Chebara","Kapcherop","Tot","Sambirir","Kapyego","Kamogo","Chebororwa"],
+  "Nandi": ["Aldai","Chesumei","Emgwen","Mosop","Nandi Hills","Tinderet","Kapsabet","Kabiyet","Cheptarit","Kobujoi","Serem","Maraba","Kipkaren","Kaiboi","Kabiyet Centre"],
+  "Baringo": ["Baringo Central","Baringo North","Baringo South","Eldama Ravine","Mogotio","Tiaty","Kabarnet","Marigat","Ravine Town","Kimalel","Tangulbei","Mochongoi","Loruk","Perkerra","Torongo"],
+  "Laikipia": ["Laikipia East","Nanyuki","Timau","Ngobit","Tigithi","Laikipia North","Doldol","Mugogodo","Mukogodo West","Kimanjo","Laikipia West","Rumuruti","Kinamba","Ol Moran","Sipili","Wiyumiririe","Nyahururu"],
+  "Nakuru": ["Bahati","Gilgil","Kuresoi North","Kuresoi South","Molo","Naivasha","Nakuru Town East","Nakuru Town West","Rongai","Subukia","Elementaita","Lanet","Menengai","Njoro","Mai Mahiu"],
+  "Narok": ["Narok East","Narok North","Narok South","Narok West","Trans Mara East","Trans Mara West","Kilgoris","Ololulung'a","Ntulele","Olokurto","Mara North","Ololaimutia","Mulot","Olpusimoru","Lolgorian"],
+  "Kajiado": ["Isinya","Kajiado Central","Kajiado East","Kajiado North","Kajiado South","Ngong","Ongata Rongai","Kitengela","Magadi","Namanga","Loitokitok","Mashuuru","Ilbisil","Enkorika","Ewaso"],
+  "Kericho": ["Ainamoi","Belgut","Bureti","Kipkelion East","Kipkelion West","Soin/Sigowet","Kericho Town","Kapsoit","Litein","Chepseon","Kabianga","Kapkugerwet","Kapkatet","Kapsuser","Kipreres"],
+  "Bomet": ["Bomet Central","Bomet East","Chepalungu","Konoin","Sotik","Bomet Town","Longisa","Kapkoros","Sigor","Mulot","Ndanai","Kapkesosio","Silibwet","Chebunyo","Kipreres"],
+  "Kakamega": ["Butere","Ikolomani","Khwisero","Lugari","Lurambi","Malava","Matungu","Mumias East","Mumias West","Navakholo","Shinyalu","Kakamega Town","Bukura","Shirere","Khayega"],
+  "Vihiga": ["Emuhaya","Hamisi","Luanda","Sabatia","Vihiga","Gisambai","Chavakali","Mbale","Kaimosi","Bugina","Kaptech","Shiru","Muhudu","Tambua","Lusengeli"],
+  "Bungoma": ["Bumula","Kabuchai","Kanduyi","Kimilili","Mt. Elgon","Sirisia","Tongaren","Webuye East","Webuye West","Bungoma Town","Misikhu","Chwele","Naitiri","Kamukuywa","Lwakhakha"],
+  "Busia": ["Budalangi","Butula","Funyula","Matayos","Nambale","Teso North","Teso South","Busia Town","Mundika","Malaba","Adungosi","Changara","Kocholia","Burumba","Alupe"],
+  "Siaya": ["Alego Usonga","Bondo","Gem","Rarieda","Ugenya","Ugunja","Siaya Town","Yala","Usenge","Madiany","Rang'ala","Sidindi","Got Agulu","Nyamonye","Ligega"],
+  "Kisumu": ["Kisumu East","Kisumu West","Kisumu Central","Muhoroni","Nyakach","Nyando","Seme","Ahero","Maseno","Kombewa","Koru","Otonglo","Ojola","Chiga","Miwani"],
+  "Homa Bay": ["Homa Bay Town","Kabondo Kasipul","Kabondo East","Mbita","Ndhiwa","Rachuonyo East","Rachuonyo North","Rachuonyo South","Rangwe","Suba North","Suba South","Oyugis","Kendu Bay","Sindo","Magunga"],
+  "Migori": ["Awendo","Kuria East","Kuria West","Nyatike","Rongo","Suna East","Suna West","Uriri","Migori Town","Isebania","Masara","Macalder","Karungu","Kegonga","Sirare"],
+  "Kisii": ["Bobasi","Bomachoge Borabu","Bomachoge Chache","Bonchari","Kitutu Chache North","Kitutu Chache South","Nyaribari Chache","Nyaribari Masaba","South Mugirango","Kisii Town","Suneka","Ogembo","Tabaka","Keroka","Nyamarambe"],
+  "Nyamira": ["Borabu","Manga","Masaba North","Nyamira North","Nyamira South","Nyamira Town","Ekerenyo","Keroka","Gesima","Nyansiongo","Kijauri","Bonyamatuta","Kemera","Sironga","Nyamaiya"],
+  "Nairobi City": ["Dagoretti North","Dagoretti South","Embakasi Central","Embakasi East","Embakasi North","Embakasi South","Embakasi West","Kamukunji","Kasarani","Lang'ata","Makadara","Mathare","Roysambu","Ruaraka","Starehe","Westlands","Kibra"]
 };
 
-// ✅ Populate Counties
+
+// ---------------------------
+// ✅ Multi-select counties helper
+// ---------------------------
 function populateCounties(id, subCountyId = null) {
   const el = document.getElementById(id);
-  el.innerHTML = `<option value="">Select County</option>`;
   
+  // Make swapCounty multi-select
+  if (id === "swapCounty") {
+    el.setAttribute("multiple", "multiple");
+    el.size = 5; // Show 5 options by default
+  } else {
+    el.removeAttribute("multiple");
+    el.size = 1;
+  }
+
+  el.innerHTML = `<option value="">Select County</option>`;
+
   // Populate county options
   Object.keys(countySubCountyMap).forEach(county => {
     const option = document.createElement("option");
@@ -5046,11 +4947,14 @@ function populateCounties(id, subCountyId = null) {
     el.appendChild(option);
   });
 
-  // If sub-county dropdown is provided, handle its population
+  // Handle sub-county population
   if (subCountyId) {
     const subCountyEl = document.getElementById(subCountyId);
     el.addEventListener("change", () => {
-      const selectedCounty = el.value;
+      const selectedCounty = el.multiple 
+        ? Array.from(el.selectedOptions).map(o => o.value)[0] // first for subcounty dropdown
+        : el.value;
+
       subCountyEl.innerHTML = `<option value="">Select Sub-county</option>`;
       if (countySubCountyMap[selectedCounty]) {
         countySubCountyMap[selectedCounty].forEach(subCounty => {
@@ -5064,7 +4968,7 @@ function populateCounties(id, subCountyId = null) {
   }
 }
 
-// ✅ Apply to county-subcounty pairs only (with event binding)
+// Initialize all county-subcounty dropdowns
 const countySubCountyPairs = [
   { county: "county", subCounty: "subCounty" },
   { county: "swapCounty", subCounty: "swapSubCounty" },
@@ -5078,11 +4982,6 @@ const countySubCountyPairs = [
   { county: "smCounty", subCounty: "smSubCounty" }
 ];
 countySubCountyPairs.forEach(pair => populateCounties(pair.county, pair.subCounty));
-
-
-// ✅ Initialize all county-subcounty dropdowns
-countySubCountyPairs.forEach(pair => populateCounties(pair.county, pair.subCounty));
-
 
 
 async function showPage(pageId) {
@@ -5327,9 +5226,8 @@ window.onload = function () {
   });
 };
 
-
 // ✅ Swap Form Submit Handler
-document.getElementById("swapForm").addEventListener("submit", e => {
+document.getElementById("swapForm").addEventListener("submit", async e => {
   e.preventDefault();
 
   if (!isLoggedIn || !currentUser) {
@@ -5337,52 +5235,60 @@ document.getElementById("swapForm").addEventListener("submit", e => {
     return alert("You must be logged in.");
   }
 
+  const swapCountyEl = document.getElementById("swapCounty");
+  // Get selected counties as an array
+  const selectedSwapCounties = Array.from(swapCountyEl.selectedOptions)
+                                    .map(opt => opt.value)
+                                    .filter(v => v);
+
   const data = {
     teacherName: document.getElementById("teacherName").value.trim(),
     phone: document.getElementById("phone").value.trim(),
     subjectCombination: document.getElementById("subjectCombination").value.trim(),
     county: document.getElementById("county").value,
     subCounty: document.getElementById("subCounty").value,
-    swapCounty: document.getElementById("swapCounty").value,
+    swapCounty: selectedSwapCounties, // array of 0–3 counties
     swapSubCounty: document.getElementById("swapSubCounty")?.value || "", // Optional
     category: document.getElementById("category").value,
     hardship: document.getElementById("hardship").value
   };
 
-  // Validate only required fields
-  const requiredFields = ['teacherName', 'phone', 'subjectCombination', 'county', 'subCounty', 'swapCounty', 'category', 'hardship'];
+  // Validate required fields except swapCounty (optional)
+  const requiredFields = ['teacherName', 'phone', 'subjectCombination', 'county', 'subCounty', 'category', 'hardship'];
   const missing = requiredFields.some(key => !data[key]);
 
   if (missing) {
     return alert("Please fill all required fields.");
   }
 
-  saveSwap(data);
+  // Validate max 3 counties for swapCounty
+  if (data.swapCounty.length > 3) {
+    return alert("You can select a maximum of 3 counties for swap.");
+  }
+
+  await saveSwap(data);
 });
 
 // ✅ Save Swap and Notify (Dynamic Hot Swap)
 async function saveSwap(swap) {
-  // Show the loading spinner while the swap is being saved
-  document.getElementById("loadingSpinner").style.display = "flex";
+  const spinner = document.getElementById("loadingSpinner");
+  if (spinner) spinner.style.display = "flex";
 
   try {
-    // Dynamically check if the swap is HOT (counties or hardship)
-    const countyName = (swap.county || "").trim().toLowerCase();
-    const hardshipStatus = (swap.hardship || "").trim().toLowerCase(); // <-- use hardship, not category
-
+    // Dynamically check if the swap is HOT (any selected county or hardship)
+    const hardshipStatus = (swap.hardship || "").trim().toLowerCase();
     const hotCounties = ["nairobi", "nairobi city", "kiambu county", "kisumu", "nakuru", "mombasa"];
-    // HOT only if hardship is explicitly "with hardship" OR county is one of the hot counties
-    const isHot = (hardshipStatus === "with hardship") || hotCounties.includes(countyName);
+    const selectedCountiesLower = swap.swapCounty.map(c => c.trim().toLowerCase());
+    const isHot = (hardshipStatus === "with hardship") || selectedCountiesLower.some(c => hotCounties.includes(c));
 
-    // Save the swap to the 'teacherSwaps' collection
+    // Save the swap to Firestore
     const swapDoc = await db.collection("teacherSwaps").add({
       ...swap,
-      hot: isHot, // dynamically add hot flag
+      hot: isHot,
       userId: currentUser.uid,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    // Show confirmation alert for user
     showCustomAlert("Swap added successfully!", "success");
 
     // 🔔 Admin notification
@@ -5399,7 +5305,7 @@ async function saveSwap(swap) {
       title: "🔁 New Swap Posted",
       message: `${swap.teacherName} just posted a swap for ${swap.subjectCombination}${isHot ? " (HOT)" : ""}.`,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      targetUserId: null // public
+      targetUserId: null
     });
 
     // Reset form and reload swaps
@@ -5407,12 +5313,14 @@ async function saveSwap(swap) {
     loadSwaps();
 
   } catch (err) {
+    console.error("Error saving swap:", err);
     showCustomAlert("Error saving swap: " + err.message, "error");
   } finally {
-    // Hide the spinner once the process is done (success or error)
-    document.getElementById("loadingSpinner").style.display = "none";
+    if (spinner) spinner.style.display = "none";
   }
 }
+
+
 let swapUnsubscribe; // keep a reference to detach old listener
 
 async function loadSwaps() {
@@ -5652,27 +5560,42 @@ async function loadSwaps() {
               </div>
             </div>`;
 
-          card.innerHTML = `
-            <h3 style="margin:0; color:#1a237e;">${s.teacherName} ${hotBadge} ${showVerifiedBadge} ${verifyBtnHTML} ${closedStatusBadge}</h3>
-            <div style="margin:4px 0;">${showVIPBadge} ${showBoostedBadge}</div>
-            <p style="margin:4px 0;color:#3f51b5;"><strong>From:</strong> ${s.county} / ${s.subCounty || "-"}</p>
-            <p style="margin:4px 0;color:#ef6c00;"><strong>Wants:</strong> ${s.swapCounty} / ${s.swapSubCounty || "-"}</p>
-            <p style="margin:4px 0;color:#6a1b9a;"><strong>Subjects:</strong> ${s.subjectCombination || '-'}</p>
-            <p style="margin:4px 0;color:#3e2723;"><strong>Category:</strong> ${s.category || '-'}</p>
-            <p style="margin:4px 0;color:#d81b60;"><strong>Hardship:</strong> ${s.hardship || '-'}</p>
-            <div style="margin-top:6px;">
-              ${s.isClosed && !isPoster && !isAdminUser ? closedContactHTML : (blur ? blurredContactHTML : contactHTML)}
-            </div>
-            <div style="margin-top:6px;">
-              <strong>Rating: </strong>
-              <span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span>
-              <span style="color:red; font-weight:bold; margin-left:4px;">(${rating}/5)</span>
-            </div>
-            <p id="follower-count-${s.id}" style="font-size: 0.9em; color: #ff4081;" onclick="showFollowers('${s.id}')">
-              ${followerCount} people following
-            </p>
-            ${actionButtonHTML}
-          `;
+ // Prepare swap counties for display
+let swapCountiesDisplay = "-";
+if (s.swapCounty) {
+  // If stored as array (for multiple selection), join them with commas
+  if (Array.isArray(s.swapCounty)) {
+    swapCountiesDisplay = s.swapCounty.join(", ");
+  } else if (typeof s.swapCounty === "string") {
+    swapCountiesDisplay = s.swapCounty;
+  }
+}
+
+// Update the card innerHTML section
+card.innerHTML = `
+  <h3 style="margin:0; color:#1a237e;">
+    ${s.teacherName} ${hotBadge} ${showVerifiedBadge} ${verifyBtnHTML} ${closedStatusBadge}
+  </h3>
+  <div style="margin:4px 0;">${showVIPBadge} ${showBoostedBadge}</div>
+  <p style="margin:4px 0;color:#3f51b5;"><strong>From:</strong> ${s.county} / ${s.subCounty || "-"}</p>
+  <p style="margin:4px 0;color:#ef6c00;"><strong>Wants:</strong> ${swapCountiesDisplay} / ${s.swapSubCounty || "-"}</p>
+  <p style="margin:4px 0;color:#6a1b9a;"><strong>Subjects:</strong> ${s.subjectCombination || '-'}</p>
+  <p style="margin:4px 0;color:#3e2723;"><strong>Category:</strong> ${s.category || '-'}</p>
+  <p style="margin:4px 0;color:#d81b60;"><strong>Hardship:</strong> ${s.hardship || '-'}</p>
+  <div style="margin-top:6px;">
+    ${s.isClosed && !isPoster && !isAdminUser ? closedContactHTML : (blur ? blurredContactHTML : contactHTML)}
+  </div>
+  <div style="margin-top:6px;">
+    <strong>Rating: </strong>
+    <span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span>
+    <span style="color:red; font-weight:bold; margin-left:4px;">(${rating}/5)</span>
+  </div>
+  <p id="follower-count-${s.id}" style="font-size: 0.9em; color: #ff4081;" onclick="showFollowers('${s.id}')">
+    ${followerCount} people following
+  </p>
+  ${actionButtonHTML}
+`;
+
 
           container.appendChild(card);
 
@@ -10786,6 +10709,20 @@ async function markAlertAsRead(alertId) {
 
   try {
     const alertRef = db.collection("alerts").doc(alertId);
+    const alertDoc = await alertRef.get();
+
+    if (!alertDoc.exists) {
+      return showCustomAlert("⚠️ Alert not found", "error");
+    }
+
+    const alertData = alertDoc.data();
+    const isAdmin = isAdminEmail(auth.currentUser.email);
+
+    // ✅ Normal users can only mark their own alerts
+    if (alertData.targetUserId !== currentUserId && !isAdmin) {
+      return showCustomAlert("⛔ You cannot mark this alert", "error");
+    }
+
     await alertRef.update({
       readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
     });
@@ -10808,6 +10745,8 @@ async function markAllAlertsAsRead() {
   const currentUserId = auth.currentUser?.uid;
   if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
 
+  const isAdmin = isAdminEmail(auth.currentUser.email);
+
   const spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "flex";
 
@@ -10818,7 +10757,15 @@ async function markAllAlertsAsRead() {
     const batch = db.batch();
     snapshot.forEach(doc => {
       const data = doc.data();
-      if (data.targetUserId === currentUserId || isAdminEmail(auth.currentUser.email)) {
+
+      // ✅ Admins can mark everything
+      if (isAdmin) {
+        batch.update(doc.ref, {
+          readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
+        });
+      }
+      // ✅ Normal users can only mark their own alerts
+      else if (data.targetUserId === currentUserId) {
         batch.update(doc.ref, {
           readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
         });
@@ -10826,7 +10773,7 @@ async function markAllAlertsAsRead() {
     });
 
     await batch.commit();
-    showCustomAlert("✅ All alerts marked as read", "success");
+    showCustomAlert("✅ Alerts marked as read", "success");
   } catch (error) {
     showCustomAlert("❌ Error marking alerts: " + error.message, "error");
   } finally {
@@ -10848,12 +10795,17 @@ async function deleteAlert(alertId) {
   if (spinner) spinner.style.display = "flex";
 
   try {
+    // Delete from Firestore
     await db.collection("alerts").doc(alertId).delete();
 
-    // Remove from localStorage
-    let alerts = JSON.parse(localStorage.getItem('alerts')) || [];
+    // 🔄 Update localStorage
+    let alerts = JSON.parse(localStorage.getItem("alerts")) || [];
     alerts = alerts.filter(alert => alert.id !== alertId);
-    localStorage.setItem('alerts', JSON.stringify(alerts));
+    localStorage.setItem("alerts", JSON.stringify(alerts));
+
+    // 🔄 Remove from UI
+    const alertElement = document.getElementById(`alert-${alertId}`);
+    if (alertElement) alertElement.remove();
 
     showCustomAlert("🗑️ Alert deleted", "success");
   } catch (error) {
@@ -10881,17 +10833,25 @@ async function deleteAllAlerts() {
     if (snapshot.empty) return showCustomAlert("ℹ️ No alerts to delete", "info");
 
     const batch = db.batch();
+
     snapshot.forEach(doc => {
       const data = doc.data();
+      // Only delete alerts belonging to the current user or admin
       if (data.targetUserId === currentUserId || isAdminEmail(auth.currentUser.email)) {
         batch.delete(doc.ref);
       }
     });
 
     await batch.commit();
-    localStorage.removeItem('alerts'); // clear cache
 
-    showCustomAlert("🗑️ Alerts deleted successfully", "success");
+    // 🔄 Clear localStorage
+    localStorage.removeItem("alerts");
+
+    // 🔄 Clear UI
+    const alertsList = document.getElementById("alertsList");
+    if (alertsList) alertsList.innerHTML = "";
+
+    showCustomAlert("🗑️ All alerts deleted successfully", "success");
   } catch (error) {
     showCustomAlert("❌ Error deleting alerts: " + error.message, "error");
   } finally {
@@ -10901,10 +10861,13 @@ async function deleteAllAlerts() {
 
 // 🔑 Helper: Admin email check
 function isAdminEmail(email) {
-  const adminEmails = ["mashabiki@teacherswapskenya.com","sironga1@teacherswapskenya.com","admin1@teacherswapskenya.com"];
+  const adminEmails = [
+    "mashabiki@teacherswapskenya.com",
+    "sironga1@teacherswapskenya.com",
+    "admin1@teacherswapskenya.com"
+  ];
   return adminEmails.includes(email);
 }
-
 
 
 async function loadInterestCount(itemId) {
@@ -13082,6 +13045,47 @@ function closeMyChats() {
   document.getElementById("myChatsSection").style.display = "none";
 }
 
+   // Close fancy disclaimer
+  function closeDisclaimerFancy() {
+    const modal = document.getElementById('disclaimerModal');
+    const dontShow = document.getElementById('dontShowAgain').checked;
+    if (dontShow) {
+      sessionStorage.setItem('disclaimerShown', 'yes');
+    }
+    modal.style.display = 'none';
+  }
+
+  // Show on page load if not previously dismissed
+  window.addEventListener('load', () => {
+    if (!sessionStorage.getItem('disclaimerShown')) {
+      document.getElementById('disclaimerModal').style.display = 'flex';
+    } else {
+      document.getElementById('disclaimerModal').style.display = 'none';
+    }
+  });
+  // Function to show the thank-you alert
+  function showThankYouAlert() {
+    const alertBox = document.getElementById('thankYouAlert');
+    alertBox.style.display = 'block';
+
+    // Automatically hide after 4 seconds
+    setTimeout(() => {
+      alertBox.style.display = 'none';
+    }, 4000);
+  }
+
+  // Example: show alert when user clicks "I Understand" on disclaimer
+  function closeDisclaimerFancy() {
+    const modal = document.getElementById('disclaimerModal');
+    const dontShow = document.getElementById('dontShowAgain').checked;
+    if (dontShow) {
+      sessionStorage.setItem('disclaimerShown', 'yes');
+    }
+    modal.style.display = 'none';
+    
+    // Show thank-you alert
+    showThankYouAlert();
+  }
 
 </script>
 
