@@ -2094,7 +2094,7 @@ button:hover {
   <!-- Advertisement inside the header -->
 <div style="margin-top:10px; padding:12px; background: #ffecb3; border-radius:8px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
   <p style="font-size: 14px; color: #5d4037; margin:0;">
-    📢 <strong>Advertise With Us!</strong> Reach thousands of  people 
+ "🚀 Boost Your Business! Advertise with Nyota Mtaani and reach thousands instantly!"
   </p>
   <p style="margin:6px 0 0 0; font-size:14px;">
     <a href="https://wa.me/254792755676" target="_blank" style="color: #d32f2f; font-weight:bold; text-decoration:none;">
@@ -2163,6 +2163,22 @@ button:hover {
     <img src="https://i.imgur.com/P1MIsGM.jpeg" alt="Market">
     <span>Market</span></a>
   </li>
+<!-- ✅ Price Scanner Button (hidden by default) -->
+<button id="scanPricesBtn" 
+        style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;
+               background:#007bff; color:white; border:none; padding:10px 15px; 
+               border-radius:6px; cursor:pointer; font-size:14px;">
+  Scan Prices
+</button>
+
+<!-- 🔘 Button to load payments (Admins Only) -->
+<li id="viewPaymentsBtn" style="display:none;">
+  <a class="menu-box" href="#" onclick="showPage('payments')">
+    <img src="https://i.imgur.com/t0TUHfP.png" alt="Payments">
+    <span>💳 View Payments</span>
+  </a>
+</li>
+
 
   <li><a class="menu-box" href="#" onclick="showPage('soulmates')">
     <img src="https://i.imgur.com/JulT2Na.png" alt="Soulmate">
@@ -2185,7 +2201,7 @@ button:hover {
 <li>
   <a class="menu-box" href="#" onclick="openMyChats()" style="position:relative;">
     <img src="https://i.imgur.com/9OvoTnl.jpeg" alt="My Chats">
-    <span>💬 My Chats</span>
+    <span>My Chats</span>
     <span id="myChatsUnreadBadge" style="
       display:none;
       background:#f44336;
@@ -2206,7 +2222,7 @@ button:hover {
 
   <li>
     <a class="menu-box" href="#" onclick="loadAlerts()" style="position: relative;">
-      <img src="https://i.imgur.com/IvZc6We.jpeg" alt="Alerts">
+      <img src="https://i.imgur.com/JfWHw6A.jpeg" alt="Alerts">
       <span>Alerts</span>
       <span id="alertsBadge" style="
         display:none;
@@ -2228,7 +2244,7 @@ button:hover {
   <!-- Trending & Chat -->
   <li><a class="menu-box" href="#" onclick="showPage('trendingSection'); loadTrendingItems();">
     <img src="https://i.imgur.com/SjtDlJi.jpeg" alt="Trending">
-    <span>🔥 Trending</span></a>
+    <span>Trending</span></a>
   </li>
 
 
@@ -2495,7 +2511,9 @@ button:hover {
   ">
     <h2 style="color: #d32f2f; margin-bottom: 12px;">⚠️ Important Disclaimer</h2>
     <p style="color: #333; font-size: 15px; margin-bottom: 18px;">
- All information on Nyota Mtaani is provided as-is. We disclaim responsibility for any false or misleading content. Users should independently verify any information before acting on it.
+We’re committed to keeping our community informed! Please note that while we share information as it is received, we cannot guarantee 100% accuracy. We encourage you to double-check details before making any decisions.
+
+Your trust means everything to us
     </p>
     
     <div style="margin-bottom: 15px;">
@@ -2541,6 +2559,61 @@ button:hover {
   z-index: 9999;
 ">
   ✅ Thank you for agreeing!
+</div>
+<!-- ✅ Hidden Popup -->
+<div id="pricePopup" 
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.6); z-index:10000; justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:20px; border-radius:10px; width:80%; max-width:700px; 
+              max-height:80%; overflow-y:auto; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+    <h2 style="margin-top:0; font-size:18px; color:#333;">💰 Extracted Monetization Prices</h2>
+    <div id="priceResults" style="white-space:pre-wrap; font-size:14px; color:#111;"></div>
+    <button id="closePopup" 
+            style="margin-top:10px; padding:6px 12px; background:#dc3545; color:white; border:none; 
+                   border-radius:5px; cursor:pointer;">Close</button>
+  </div>
+</div>
+<!-- 📊 Admin Payments Dashboard -->
+<div id="paymentsDashboard" style="display:none; padding:20px; border:1px solid #ccc; border-radius:8px; background:#fafafa;">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>💳 Payment Records</h2>
+    <div>
+ <!-- 🔄 Refresh Button with emoji icon -->
+<button id="refreshPaymentsBtn" style="
+  background-color:#00796b;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  margin-right:8px;
+  display:flex;
+  align-items:center;
+  gap:6px;">
+  🔄 Refresh
+</button>
+
+
+      <!-- ✖ Close Button -->
+      <button id="closePaymentsBtn" style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:5px; cursor:pointer;">
+        ✖ Close
+      </button>
+    </div>
+  </div>
+
+  
+  <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse; margin-top:10px;">
+    <thead style="background:#f4f4f4;">
+      <tr>
+        <th>User ID</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Reference</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="paymentsTable"></tbody>
+  </table>
 </div>
 
 
@@ -13086,6 +13159,181 @@ function closeMyChats() {
     // Show thank-you alert
     showThankYouAlert();
   }
+(function() {
+  const priceRegex = /Ksh\.?\s*([0-9]+)/gi;
+
+  // Keywords to map into sections
+  const sectionMap = {
+    "market": "Market",
+    "swap": "Swaps",
+    "soulmate": "Soulmate",
+    "service": "Services",
+    "job": "Jobs",
+    "resource": "Resources"
+  };
+
+  function detectSection(context) {
+    const ctx = context.toLowerCase();
+    for (let key in sectionMap) {
+      if (ctx.includes(key)) return sectionMap[key];
+    }
+    return "Other";
+  }
+
+  function scanPrices() {
+    const results = [];
+
+    // 1. Walk all text nodes
+    function walk(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent;
+        let match;
+        while ((match = priceRegex.exec(text)) !== null) {
+          const amount = match[1];
+          const context = text.trim().slice(0, 120);
+          results.push({ amount, context });
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        node.childNodes.forEach(walk);
+      }
+    }
+    walk(document.body);
+
+    // 2. Scan inline <script> blocks
+    document.querySelectorAll("script").forEach(script => {
+      if (script.innerText) {
+        let match;
+        while ((match = priceRegex.exec(script.innerText)) !== null) {
+          const amount = match[1];
+          const snippet = script.innerText.substr(match.index, 100).replace(/\n/g, " ");
+          results.push({ amount, context: snippet });
+        }
+      }
+    });
+
+    // 3. Deduplicate
+    const seen = new Set();
+    const unique = results.filter(r => {
+      const key = r.amount + "|" + r.context;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // 4. Group by section
+    const grouped = {};
+    unique.forEach(r => {
+      const section = detectSection(r.context);
+      if (!grouped[section]) grouped[section] = [];
+      grouped[section].push(r);
+    });
+
+    // 5. Build output
+    let output = "";
+    for (let section of Object.keys(grouped)) {
+      output += `\n=== ${section} ===\n`;
+      grouped[section]
+        .sort((a, b) => parseInt(a.amount) - parseInt(b.amount))
+        .forEach(r => {
+          output += `Ksh ${r.amount} | ${r.context}\n`;
+        });
+    }
+
+    document.getElementById("priceResults").textContent = output || "No prices found!";
+    document.getElementById("pricePopup").style.display = "flex";
+  }
+
+  // Attach listeners
+  document.getElementById("scanPricesBtn").addEventListener("click", scanPrices);
+  document.getElementById("closePopup").addEventListener("click", () => {
+    document.getElementById("pricePopup").style.display = "none";
+  });
+
+  // ✅ Hook into your auth state
+  auth.onAuthStateChanged(async user => {
+    if (user) {
+      const adminEmails = [
+        "mashabiki@teacherswapskenya.com",
+        "sironga@teacherswapskenya.com",
+        "sironga1@teacherswapskenya.com",
+        "admin@teacherswapskenya.com"
+      ];
+      const isAdmin = adminEmails.includes(user.email);
+
+      if (isAdmin) {
+        document.getElementById("scanPricesBtn").style.display = "block";
+      } else {
+        document.getElementById("scanPricesBtn").style.display = "none";
+      }
+    } else {
+      document.getElementById("scanPricesBtn").style.display = "none";
+    }
+  });
+})();
+
+// Function: Load all payments
+async function loadPayments() {
+  try {
+    const snapshot = await db.collection("payments").orderBy("timestamp", "desc").get();
+    const tableBody = document.getElementById("paymentsTable");
+    tableBody.innerHTML = ""; // Clear old data
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const row = `
+        <tr>
+          <td>${data.userId}</td>
+          <td>KES ${data.amount}</td>
+          <td>${data.method}</td>
+          <td>${data.reference}</td>
+          <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A"}</td>
+        </tr>
+      `;
+      tableBody.innerHTML += row;
+    });
+  } catch (err) {
+    console.error("Error loading payments:", err);
+    alert("❌ Failed to load payments.");
+  }
+}
+
+// Auth check → Show button only for admins
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    const adminEmails = [
+      "mashabiki@teacherswapskenya.com",
+      "sironga@teacherswapskenya.com",
+      "sironga1@teacherswapskenya.com",
+      "admin@teacherswapskenya.com"
+    ];
+    const isAdmin = adminEmails.includes(user.email);
+
+    if (isAdmin) {
+      document.getElementById("viewPaymentsBtn").style.display = "inline-block";
+
+      // When admin clicks button → show dashboard + load payments
+      document.getElementById("viewPaymentsBtn").addEventListener("click", () => {
+        document.getElementById("paymentsDashboard").style.display = "block";
+        loadPayments();
+      });
+    }
+  }
+});
+// Show payments
+document.getElementById("viewPaymentsBtn").addEventListener("click", () => {
+  document.getElementById("paymentsDashboard").style.display = "block";
+  loadPayments();
+});
+
+// Close button
+document.getElementById("closePaymentsBtn").addEventListener("click", () => {
+  document.getElementById("paymentsDashboard").style.display = "none";
+});
+
+// Refresh button
+document.getElementById("refreshPaymentsBtn").addEventListener("click", () => {
+  loadPayments();
+});
 
 </script>
 
