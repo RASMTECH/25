@@ -5852,17 +5852,17 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
         swaps.forEach(c => {
           const swapCounties = [a.county, b.county, c.county].map(x => (x || "").toLowerCase()).sort();
 
-          if (
-            JSON.stringify(swapCounties) === JSON.stringify(normalizedInput) &&
-            (a.swapCounty || "").toLowerCase() === (b.county || "").toLowerCase() &&
-            (b.swapCounty || "").toLowerCase() === (c.county || "").toLowerCase() &&
-            (c.swapCounty || "").toLowerCase() === (a.county || "").toLowerCase()
-          ) {
-            const comboKey = [a.id, b.id, c.id].sort().join("-");
-            if (displayedCombos.has(comboKey)) return;
-            displayedCombos.add(comboKey);
-
-            foundSwaps.push({ a, b, c });
+    if (
+  JSON.stringify(swapCounties) === JSON.stringify(normalizedInput) &&
+  normalizeCounty(a.swapCounty) === (b.county || "").toLowerCase() &&
+  normalizeCounty(b.swapCounty) === (c.county || "").toLowerCase() &&
+  normalizeCounty(c.swapCounty) === (a.county || "").toLowerCase()
+) {
+  const comboKey = [a.id, b.id, c.id].sort().join("-");
+  if (!displayedCombos.has(comboKey)) {
+    displayedCombos.add(comboKey);
+    foundSwaps.push({ a, b, c });
+ }
           }
         });
       });
@@ -5889,7 +5889,7 @@ function maskPhone(phone) {
 // Unlock button uses MPESA modal
 document.getElementById("unlockTriangularContactBtn").addEventListener("click", () => {
   if (!lockedTeacherIds.length || !lockedTeacherPhones.length) return;
-  showPaymentModalFor("unlock", 250, lockedTeacherIds[0], "Triangular Swap Contact");
+  showPaymentModalFor("unlock", 500, lockedTeacherIds[0], "Triangular Swap Contact");
 });
 
 // Hook into payment success to reveal all phones in current swap
@@ -5911,13 +5911,15 @@ handlePaymentSuccess = async function (type, itemId, itemName, userId) {
   }
 };
 
-
-
-
-
 function toggleActionButtons(swapId) {
   const actionButtons = document.getElementById(`action-buttons-${swapId}`);
   actionButtons.style.display = actionButtons.style.display === "none" ? "block" : "none";
+}
+function normalizeCounty(val) {
+  if (Array.isArray(val)) {
+    return val[0] ? val[0].toLowerCase() : "";
+  }
+  return (val || "").toLowerCase();
 }
 
 
@@ -13180,6 +13182,17 @@ function closeMyChats() {
     return "Other";
   }
 
+  // 🧹 Clean context snippet (remove HTML, JS, symbols, collapse spaces)
+  function cleanContext(text) {
+    return text
+      .replace(/<[^>]*>/g, "") // remove HTML tags
+      .replace(/[{}`]/g, "") // remove braces, backticks
+      .replace(/\b(const|let|var|function|return|if|else|await|firebase|authDomain|apiKey)\b.*$/gi, "") // cut JS noise
+      .replace(/\s+/g, " ") // collapse spaces
+      .trim()
+      .slice(0, 80); // limit snippet length
+  }
+
   function scanPrices() {
     const results = [];
 
@@ -13190,7 +13203,7 @@ function closeMyChats() {
         let match;
         while ((match = priceRegex.exec(text)) !== null) {
           const amount = match[1];
-          const context = text.trim().slice(0, 120);
+          const context = cleanContext(text);
           results.push({ amount, context });
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -13205,7 +13218,7 @@ function closeMyChats() {
         let match;
         while ((match = priceRegex.exec(script.innerText)) !== null) {
           const amount = match[1];
-          const snippet = script.innerText.substr(match.index, 100).replace(/\n/g, " ");
+          const snippet = cleanContext(script.innerText.substr(match.index, 100));
           results.push({ amount, context: snippet });
         }
       }
@@ -13228,18 +13241,19 @@ function closeMyChats() {
       grouped[section].push(r);
     });
 
-    // 5. Build output
+    // 5. Build clean output
     let output = "";
     for (let section of Object.keys(grouped)) {
-      output += `\n=== ${section} ===\n`;
+      output += `\n📌 ${section}\n`;
       grouped[section]
         .sort((a, b) => parseInt(a.amount) - parseInt(b.amount))
         .forEach(r => {
-          output += `Ksh ${r.amount} | ${r.context}\n`;
+          output += `   • Ksh ${r.amount} → ${r.context}\n`;
         });
+      output += "\n";
     }
 
-    document.getElementById("priceResults").textContent = output || "No prices found!";
+    document.getElementById("priceResults").textContent = output || "✅ No prices found!";
     document.getElementById("pricePopup").style.display = "flex";
   }
 
