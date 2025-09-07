@@ -2073,6 +2073,65 @@ button:hover {
   font-size: 24px;
   cursor: pointer;
 }
+/* ✅ Modal (centered popup) */
+.modal {
+  display: none; /* hidden until triggered */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6); /* slightly darker backdrop */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+/* ✅ Close button (X) */
+.close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* ✅ Spinner always above modals */
+#loadingSpinner {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; /* higher than modal */
+}
+
+/* ✅ Alerts always on top */
+.custom-alert {
+  position: fixed;
+  top: 20px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000; /* highest */
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  background: #333;
+  color: white;
+  display: none;
+}
+
+
 </style>
 </head>
 <body>
@@ -2127,16 +2186,21 @@ button:hover {
   <li><a class="menu-box" href="#" onclick="showPage('home')">
     <img src="https://i.imgur.com/lek58ah.jpeg" alt="Home">
     <span>Home</span></a>
-  </li>
-  <li><a class="menu-box" href="#" onclick="showPage('register')">
-    <img src="https://i.imgur.com/jKZaOkH.jpeg" alt="Register">
-    <span>Register</span></a>
-  </li>
 
-  <li><a class="menu-box" href="#" onclick="showPage('login')">
+<li>
+  <a class="menu-box" href="#" onclick="openModal('registerModal')">
+    <img src="https://i.imgur.com/jKZaOkH.jpeg" alt="Register">
+    <span>Register</span>
+  </a>
+</li>
+
+<li>
+  <a class="menu-box" href="#" onclick="openModal('loginModal')">
     <img src="https://i.imgur.com/TsXskJc.jpeg" alt="Login">
-    <span>Login</span></a>
-  </li>
+    <span>Login</span>
+  </a>
+</li>
+
 
   <li><a class="menu-box" href="#" onclick="showPage('usageHelp')">
     <img src="https://i.imgur.com/tHuRu3z.jpeg" alt="How to Use">
@@ -2148,11 +2212,23 @@ button:hover {
     <img src="https://i.imgur.com/8KM6Rib.jpeg" alt="Jobs">
     <span>My Jobs</span></a>
   </li>
-
-  <li><a class="menu-box" href="#" onclick="showPage('swaps')">
+<li>
+  <a class="menu-box" href="#" onclick="showPage('swaps'); resetSwapBadge();">
     <img src="https://i.imgur.com/iqBwsWm.png" alt="Swaps">
-    <span>View Swaps</span></a>
-  </li>
+    <span>View Swaps</span>
+    <span id="swapBadge" style="
+      display:none;
+      background:red;
+      color:white;
+      font-size:12px;
+      font-weight:bold;
+      padding:2px 6px;
+      border-radius:12px;
+      margin-left:6px;
+      vertical-align:top;
+    ">0</span>
+  </a>
+</li>
 
   <li><a class="menu-box" href="#" onclick="showPage('seekingServices')">
     <img src="https://i.imgur.com/P1tHi7L.jpeg" alt="Services">
@@ -2180,10 +2256,28 @@ button:hover {
 </li>
 
 
-  <li><a class="menu-box" href="#" onclick="showPage('soulmates')">
+  <li style="position: relative;">
+  <a class="menu-box" href="#" onclick="showPage('soulmates'); resetSoulmateBadge();">
     <img src="https://i.imgur.com/JulT2Na.png" alt="Soulmate">
-    <span>Soulmate</span></a>
-  </li>
+    <span>Soulmate</span>
+    <!-- Badge for new profiles -->
+    <span id="soulmateBadge" style="
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: red;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 12px;
+      transform: translate(50%, -50%);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    ">0</span>
+  </a>
+</li>
+
 
   <li><a class="menu-box" href="#" onclick="showPage('resources')">
     <img src="https://i.imgur.com/GavIBlL.jpeg" alt="Resources">
@@ -2493,7 +2587,7 @@ button:hover {
 <div id="disclaimerModal" style="
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.35); /* lighter overlay */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2501,41 +2595,43 @@ button:hover {
 ">
   <div style="
     background: #fff8e1;
-    padding: 25px 30px;
-    border-radius: 12px;
-    max-width: 480px;
+    padding: 18px 20px;
+    border-radius: 10px;
+    max-width: 340px;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     font-family: Arial, sans-serif;
     position: relative;
   ">
-    <h2 style="color: #d32f2f; margin-bottom: 12px;">⚠️ Important Disclaimer</h2>
-    <p style="color: #333; font-size: 15px; margin-bottom: 18px;">
-We’re committed to keeping our community informed! Please note that while we share information as it is received, we cannot guarantee 100% accuracy. We encourage you to double-check details before making any decisions.
-
-Your trust means everything to us
+    <h2 style="color: #d32f2f; margin-bottom: 10px; font-size: 18px;">
+      ⚠️ Disclaimer
+    </h2>
+    <p style="color: #333; font-size: 13px; margin-bottom: 15px; line-height: 1.4;">
+      We share information as received, but we cannot guarantee 100% accuracy.  
+      Please double-check details before making decisions.  
+      <br><br>Your trust means everything to us.
     </p>
     
-    <div style="margin-bottom: 15px;">
+    <div style="margin-bottom: 12px; font-size: 12px;">
       <input type="checkbox" id="dontShowAgain" style="margin-right:6px;">
-      <label for="dontShowAgain" style="font-size: 13px; color: #555;">Do not show again this session</label>
+      <label for="dontShowAgain" style="color: #555;">Do not show this again</label>
     </div>
     
     <button onclick="closeDisclaimerFancy()" style="
       background: #1976d2;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
       cursor: pointer;
     ">I Understand</button>
     
     <span onclick="closeDisclaimerFancy()" style="
       position: absolute;
-      top: 10px;
-      right: 12px;
-      font-size: 18px;
+      top: 8px;
+      right: 10px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       color: #d32f2f;
@@ -2550,13 +2646,13 @@ Your trust means everything to us
   right: 20px;
   background: #4caf50;
   color: white;
-  padding: 14px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 10px 14px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   display: none;
-  z-index: 9999;
+  z-index: 10000;
 ">
   ✅ Thank you for agreeing!
 </div>
@@ -2763,84 +2859,73 @@ Your trust means everything to us
 </div>
 
    </div>
-    <div id="register" class="page" style="display:none;">
-   <h2>
-  <i class="fas fa-user-shield" style="color:#f44336; margin-right: 8px;"></i>
-  Register
-</h2>
-
-      <form id="registerForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required />
-        <label for="email">Email:</label>
-        <input type="email" id="email" required />
-        <label for="password">Password:</label>
-        <input type="password" id="password" required />
- <button type="submit">
-  <i class="fas fa-user-plus" style="margin-right: 6px; color: #ffffff;"></i> Register
-</button>
-
-      </form>
-    </div>
-    <div id="login" class="page" style="display:none;">
-    <h2>
-  <i class="fas fa-sign-in-alt" style="color:#2196f3; margin-right: 8px;"></i>
-  Login
-</h2>
-<div class="scrolling-banner">
-  <div class="scrolling-banner-content">
-    🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
+<!-- Register Modal (HIDDEN by default) -->
+<div id="registerModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('registerModal')">&times;</span>
+    <h2><i class="fas fa-user-shield" style="color:#f44336; margin-right: 8px;"></i> Register</h2>
+    <form id="registerForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required />
+      <label for="email">Email:</label>
+      <input type="email" id="email" required />
+      <label for="password">Password:</label>
+      <input type="password" id="password" required />
+      <button type="submit"><i class="fas fa-user-plus"></i> Register</button>
+    </form>
   </div>
 </div>
-   <!-- Login Form -->
-<form id="loginForm" onsubmit="loginUser(event)">
-    <label for="loginEmail">Email:</label>
-    <input type="email" id="loginEmail" required />
-    <label for="loginPassword">Password:</label>
-    <input type="password" id="loginPassword" required />
-    <button type="submit">
-        <i class="fas fa-sign-in-alt" style="margin-right: 6px; color: #ffffff;"></i> Login
-    </button>
 
-<!-- Forgot Password Link with Icon -->
-<div style="text-align: center; margin-top: 10px;">
-    <a href="#" onclick="showPasswordReset()" style="text-decoration: none; color: #2196F3; font-size: 16px; font-weight: bold; display: flex; align-items: center; justify-content: center;">
-        <i class="fas fa-key" style="margin-right: 8px; color: #2196F3;"></i> Forgot Password?
-    </a>
-</div>
+<!-- Login Modal (HIDDEN by default) -->
+<div id="loginModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('loginModal')">&times;</span>
+    <h2><i class="fas fa-sign-in-alt" style="color:#2196f3; margin-right: 8px;"></i> Login</h2>
 
-</form>
+    <!-- Login Form -->
+    <form id="loginForm">
+      <label for="loginEmail">Email:</label>
+      <input type="email" id="loginEmail" required />
+      <label for="loginPassword">Password:</label>
+      <input type="password" id="loginPassword" required />
+      <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
 
-<!-- Password Reset Request Form (Shown when 'Forgot Password?' is clicked) -->
-<div id="resetRequestForm" style="display: none;">
-    <h2>Forgot Password?</h2>
-    <form onsubmit="sendResetLink(event)">
-        <label for="email">Enter your email address:</label>
+      <!-- Forgot Password -->
+      <div style="text-align: center; margin-top: 10px;">
+        <a href="#" onclick="showPasswordReset()" style="color:#2196F3;">
+          <i class="fas fa-key"></i> Forgot Password?
+        </a>
+      </div>
+    </form>
+
+    <!-- Reset Request (hidden initially) -->
+    <div id="resetRequestForm" style="display:none;">
+      <h3>Forgot Password?</h3>
+      <form onsubmit="handlePasswordReset(event, 'request')">
+        <label for="resetEmail">Enter your email:</label>
         <input type="email" id="resetEmail" required />
         <button type="submit">Send Reset Link</button>
-    </form>
-    <p style="text-align: center; margin-top: 10px;">
-        <a href="#" onclick="hidePasswordReset()">Back to Login</a>
-    </p>
-</div>
+      </form>
+      <p><a href="#" onclick="hidePasswordReset()">Back to Login</a></p>
+    </div>
 
-<!-- Password Reset Form (Shown after user clicks the reset link in their email) -->
-<div id="resetPasswordForm" style="display: none;">
-    <h2>Reset Your Password</h2>
-    <form onsubmit="resetPassword(event)">
+    <!-- Reset Password (hidden initially) -->
+    <div id="resetPasswordForm" style="display:none;">
+      <h3>Reset Password</h3>
+      <form onsubmit="handlePasswordReset(event, 'confirm')">
         <label for="newPassword">New Password:</label>
         <input type="password" id="newPassword" required />
         <label for="confirmPassword">Confirm Password:</label>
         <input type="password" id="confirmPassword" required />
         <button type="submit">Reset Password</button>
-    </form>
-    <p style="text-align: center; margin-top: 10px;">
-        <a href="#" onclick="hidePasswordReset()">Back to Login</a>
-    </p>
+      </form>
+      <p><a href="#" onclick="hidePasswordReset()">Back to Login</a></p>
+    </div>
+  </div>
 </div>
 
-      </form>
-    </div>
+ 
+
     <div id="swaps" class="page" style="display:none;">
  <h2>
   <i class="fas fa-exchange-alt" style="color:#ff9800; margin-right: 8px;"></i>
@@ -5143,17 +5228,19 @@ async function showPage(pageId) {
   }
 }
 
-
-
-
+// ✅ Helper: Spinner control
+function showLoadingSpinner() {
+  document.getElementById("loadingSpinner").style.display = "flex";
+}
+function hideLoadingSpinner() {
+  document.getElementById("loadingSpinner").style.display = "none";
+}
 
 // ✅ Register
 document.getElementById("registerForm").addEventListener("submit", async e => {
   e.preventDefault();
-  
-  // Show the loading spinner
-  document.getElementById("loadingSpinner").style.display = "block";
-  
+  showLoadingSpinner();
+
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
@@ -5163,41 +5250,41 @@ document.getElementById("registerForm").addEventListener("submit", async e => {
     currentUser = userCred.user;
     await currentUser.updateProfile({ displayName: name });
 
-    // Send admin notification on new user registration
     await sendRegistrationAdminNotification(currentUser);
 
-    // Hide the loading spinner after successful registration
-    document.getElementById("loadingSpinner").style.display = "none";
+    hideLoadingSpinner();
 
+    // ✅ Show alert above everything
     showCustomAlert("Registration successful! Please login.", "success");
-    showPage("login");
+
+    // ✅ Close register modal and immediately open login modal
+    closeModal("registerModal");
+    openModal("loginModal");
+
     e.target.reset();
   } catch (err) {
-    // Hide the loading spinner if an error occurs
-    document.getElementById("loadingSpinner").style.display = "none";
-
+    hideLoadingSpinner();
     showCustomAlert("Error: " + err.message, "error");
   }
 });
 
-// Function to send admin notification on user registration
+// ✅ Admin notification
 async function sendRegistrationAdminNotification(user) {
-  const notifRef = db.collection("adminNotifications").doc();
-
-  await notifRef.set({
+  await db.collection("adminNotifications").doc().set({
     type: "New User Registration",
     userId: user.uid,
     userEmail: user.email,
     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     message: `🔔 New user ${user.email} has registered successfully.`
   });
-
   console.log("Admin notification sent for new user registration.");
 }
 
-// ✅ Login with Firebase
+// ✅ Login
 document.getElementById("loginForm").addEventListener("submit", async e => {
   e.preventDefault();
+  showLoadingSpinner();
+
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
@@ -5206,24 +5293,21 @@ document.getElementById("loginForm").addEventListener("submit", async e => {
     currentUser = userCred.user;
     isLoggedIn = true;
 
-    // Save to localStorage
     localStorage.setItem("loggedInUser", currentUser.displayName || currentUser.email);
 
     const welcome = `Welcome ${currentUser.displayName || currentUser.email}!`;
     showCustomAlert(isAdmin ? `Admin Access: ${welcome}` : welcome, "success");
 
-    // Show swap page
+    closeModal("loginModal");
     showPage("swaps");
-
-    // Update displayed logged-in user
     displayLoggedInUser();
-
     e.target.reset();
   } catch (err) {
     showCustomAlert("Login failed: " + err.message, "error");
+  } finally {
+    hideLoadingSpinner();
   }
 });
-
 
 // ✅ Display logged-in user
 function displayLoggedInUser() {
@@ -5241,42 +5325,103 @@ function displayLoggedInUser() {
   }
 }
 
+// ✅ Logout
 function logoutUser() {
-  // Show the loading spinner when logging out
-  document.getElementById("loadingSpinner").style.display = "flex";
+  showLoadingSpinner();
 
   auth.signOut().then(() => {
     localStorage.removeItem("loggedInUser");
 
-    // ✅ Stop background listeners (so no Firestore query runs when logged out)
     if (typeof unsubscribeSwaps === "function") {
-      unsubscribeSwaps(); 
+      unsubscribeSwaps();
       unsubscribeSwaps = null;
     }
 
-    // Show the toast message
     const toast = document.getElementById("logoutToast");
     toast.style.display = "block";
     toast.textContent = "You have logged out successfully!";
 
-    // Hide the spinner and toast after 2.5 seconds, then reload the page
     setTimeout(() => {
-      document.getElementById("loadingSpinner").style.display = "none";
+      hideLoadingSpinner();
       toast.style.display = "none";
       location.reload();
     }, 2500);
   }).catch((error) => {
-    // In case of an error, hide the spinner and show an error toast
-    document.getElementById("loadingSpinner").style.display = "none";
+    hideLoadingSpinner();
     const errorToast = document.getElementById("logoutToast");
     errorToast.textContent = "Error logging out: " + error.message;
-    errorToast.style.backgroundColor = "red"; // To highlight the error
+    errorToast.style.backgroundColor = "red";
     errorToast.style.display = "block";
 
-    setTimeout(() => {
-      errorToast.style.display = "none";
-    }, 2500);
+    setTimeout(() => errorToast.style.display = "none", 2500);
   });
+}
+
+// ✅ Password reset (centralized)
+function handlePasswordReset(event, mode) {
+  event.preventDefault();
+
+  if (mode === "request") {
+    const email = document.getElementById("resetEmail").value;
+    showLoadingSpinner();
+
+    firebase.auth().sendPasswordResetEmail(email).then(() => {
+      hideLoadingSpinner();
+      showCustomAlert("Password reset link sent to your email.", "success");
+      hidePasswordReset();
+    }).catch((error) => {
+      hideLoadingSpinner();
+      showCustomAlert(error.message, "error");
+    });
+
+  } else if (mode === "confirm") {
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (newPassword !== confirmPassword) {
+      showCustomAlert("Passwords do not match!", "error");
+      return;
+    }
+
+    const oobCode = new URLSearchParams(window.location.search).get("oobCode");
+    if (!oobCode) {
+      showCustomAlert("Invalid or expired reset link.", "error");
+      return;
+    }
+
+    showLoadingSpinner();
+    firebase.auth().confirmPasswordReset(oobCode, newPassword).then(() => {
+      hideLoadingSpinner();
+      showCustomAlert("Your password has been reset successfully!", "success");
+      window.location.href = "/login";
+    }).catch((error) => {
+      hideLoadingSpinner();
+      showCustomAlert(error.message, "error");
+    });
+  }
+}
+
+// ✅ Show/hide password reset forms
+function showPasswordReset() {
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("resetRequestForm").style.display = "block";
+}
+function hidePasswordReset() {
+  document.getElementById("resetRequestForm").style.display = "none";
+  document.getElementById("resetPasswordForm").style.display = "none";
+  document.getElementById("loginForm").style.display = "block";
+}
+
+// ✅ Event listeners for reset forms
+document.getElementById("resetRequestForm")?.addEventListener("submit", e => handlePasswordReset(e, "request"));
+document.getElementById("resetPasswordForm")?.addEventListener("submit", e => handlePasswordReset(e, "confirm"));
+
+// ✅ Modal helpers
+function openModal(id) {
+  document.getElementById(id).style.display = "flex";
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
 }
 
 // ✅ Track Firestore listener globally
@@ -5394,10 +5539,15 @@ async function saveSwap(swap) {
 }
 
 
-let swapUnsubscribe; // keep a reference to detach old listener
+
+let swapUnsubscribe;
+
+// Load last seen timestamp from localStorage
+let lastSeenSwapTimestamp = localStorage.getItem("lastSeenSwapTimestamp")
+  ? new Date(localStorage.getItem("lastSeenSwapTimestamp"))
+  : null;
 
 async function loadSwaps() {
-  // ✅ Block if user is not logged in
   if (!auth.currentUser) {
     console.warn("Skipping loadSwaps: user is not logged in.");
     return;
@@ -5407,32 +5557,25 @@ async function loadSwaps() {
   container.innerHTML = "";
   trendingBoostedSwaps = [];
 
-  // Show the loading spinner
   const spinner = document.getElementById("loadingSpinner");
   if (spinner) {
     spinner.style.display = "flex";
-    // fallback timeout in case Firestore never returns
     setTimeout(() => {
-      if (spinner && spinner.style.display !== "none") {
-        spinner.style.display = "none";
-      }
+      if (spinner && spinner.style.display !== "none") spinner.style.display = "none";
     }, 8000);
   }
+
+  const swapBadge = document.getElementById("swapBadge");
+  let newSwapCount = 0;
 
   try {
     const swapRef = db.collection("teacherSwaps").orderBy("timestamp", "desc");
 
-    // Detach old listener if exists to avoid duplicates
-    if (swapUnsubscribe) {
-      swapUnsubscribe();
-    }
+    if (swapUnsubscribe) swapUnsubscribe();
 
-    // Realtime listener with error callback
     swapUnsubscribe = swapRef.onSnapshot(
       snapshot => {
-        // ✅ If user logged out while listener was active → stop
         if (!auth.currentUser) {
-          console.warn("User logged out during swaps snapshot, detaching listener.");
           if (swapUnsubscribe) swapUnsubscribe();
           swapUnsubscribe = null;
           if (spinner) spinner.style.display = "none";
@@ -5441,13 +5584,13 @@ async function loadSwaps() {
 
         container.innerHTML = "";
         trendingBoostedSwaps = [];
+        newSwapCount = 0;
 
         if (snapshot.empty) {
-          container.innerHTML = `
-            <div style="text-align:center; padding:20px; color:#d32f2f; font-weight:bold;">
-              💔 No swap requests found
-            </div>`;
+          container.innerHTML = `<div style="text-align:center; padding:20px; color:#d32f2f; font-weight:bold;">💔 No swap requests found</div>`;
           if (spinner) spinner.style.display = "none";
+          if (swapBadge) swapBadge.style.display = "none";
+          lastSeenSwapTimestamp = null;
           return;
         }
 
@@ -5462,7 +5605,6 @@ async function loadSwaps() {
           const boostExpiry = s.boostExpiry?.toDate?.();
           const isBoosted = s.boosted && boostExpiry && boostExpiry > now;
 
-          // Reset expired boosts
           if (s.boosted && (!boostExpiry || boostExpiry <= now)) {
             db.collection("teacherSwaps").doc(id).update({ boosted: false, boostExpiry: null });
           }
@@ -5478,6 +5620,10 @@ async function loadSwaps() {
               type: "swap"
             });
           }
+
+          if (!lastSeenSwapTimestamp || s.timestamp?.toDate() > lastSeenSwapTimestamp) {
+            newSwapCount++;
+          }
         });
 
         const orderedSwaps = [...boostedSwaps, ...normalSwaps];
@@ -5486,7 +5632,6 @@ async function loadSwaps() {
           const isPoster = currentUser && s.userId === currentUser.uid;
           const isAdminUser = isAdmin === true;
 
-          // HOT condition: hardship or listed counties
           const hardshipLower = (s.hardship || "").trim().toLowerCase();
           const isHotSwap = (
             hardshipLower === "with hardship" ||
@@ -5495,75 +5640,39 @@ async function loadSwaps() {
           );
 
           const hasPaidForHot = localStorage.getItem("paidForHotSwaps") === "yes";
-          const blur = isHotSwap 
-            ? (!hasPaidForHot && !isPoster && !isAdminUser) 
-            : (!hasPaid && !isPoster && !isAdminUser);
+          const blur = isHotSwap ? (!hasPaidForHot && !isPoster && !isAdminUser) : (!hasPaid && !isPoster && !isAdminUser);
 
-          const closedStatusBadge = s.isClosed
-            ? `<span style="color:red; font-weight:bold; margin-left:6px;">(Closed)</span>`
-            : "";
+          const closedStatusBadge = s.isClosed ? `<span style="color:red; font-weight:bold; margin-left:6px;">(Closed)</span>` : "";
 
           const vipBtn = isAdminUser && (vipHotCounties.includes(s.county) || vipHotCounties.includes(s.swapCounty)) && !s.isVIP
             ? `<button onclick="markAsVIPSwap('${s.id}')" style="background:#6a1b9a;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">🔥 Sell VIP</button>`
             : s.isVIP ? `<span style="color:crimson;font-weight:bold;font-size:13px;">🔥 VIP</span>` : "-";
 
-          const showVerifiedBadge = s.verified
-            ? `<span class="verified-badge"><i class="fas fa-check-circle"></i></span>`
-            : "";
+          const showVerifiedBadge = s.verified ? `<span class="verified-badge"><i class="fas fa-check-circle"></i></span>` : "";
 
           let verifyBtnHTML = "";
           if (!s.verified) {
             if (isPoster && !isAdminUser) {
-              verifyBtnHTML = ` 
-                <button onclick="showPaymentModalFor('swapVerification', 250, '${s.id}', '${s.teacherName || ''}')"
-                    style="margin-left:6px;background:#4CAF50;color:white;padding:4px 8px;border:none;border-radius:6px;font-size:12px;cursor:pointer;">
-                ✅ Get Verified – Ksh 250
-                </button>
-              `;
+              verifyBtnHTML = `<button onclick="showPaymentModalFor('swapVerification', 250, '${s.id}', '${s.teacherName || ''}')" style="margin-left:6px;background:#4CAF50;color:white;padding:4px 8px;border:none;border-radius:6px;font-size:12px;cursor:pointer;">✅ Get Verified – Ksh 250</button>`;
             } else if (isAdminUser) {
-              verifyBtnHTML = ` 
-                <button onclick="adminVerifyItem('swap', '${s.id}')"
-                  style="margin-left:6px;background:#2196F3;color:white;padding:4px 8px;border:none;border-radius:6px;font-size:12px;cursor:pointer;">
-                  🛡️ Verify Now (Admin)
-                </button>
-              `;
+              verifyBtnHTML = `<button onclick="adminVerifyItem('swap', '${s.id}')" style="margin-left:6px;background:#2196F3;color:white;padding:4px 8px;border:none;border-radius:6px;font-size:12px;cursor:pointer;">🛡️ Verify Now (Admin)</button>`;
             }
           }
 
           const showVIPBadge = s.isVIP ? `<span class="vip-badge">🔥 VIP</span>` : "";
-
           const showBoostedBadge = s.isBoosted && s.boostExpiry
-            ? `<span class="boosted-badge" style="color: red; font-weight: bold; font-size: 14px; background-color: yellow; padding: 4px; border-radius: 6px;">🔥 Boosted (${Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24))} day${Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''} left)</span>`
-            : "";
+            ? `<span class="boosted-badge" style="color: red; font-weight: bold; font-size: 14px; background-color: yellow; padding: 4px; border-radius: 6px;">🔥 Boosted (${Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24))} day${Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''} left)</span>` : "";
 
-          const hotBadge = isHotSwap 
-            ? `<span class="hot-badge" style="color:white;background:red;padding:4px;border-radius:4px;font-size:12px;margin-left:6px;">HOT</span>` 
-            : "";
+          // === Integrated Section Starts Here ===
+          const hotBadge = isHotSwap ? `<span class="hot-badge" style="color:white;background:red;padding:4px;border-radius:4px;font-size:12px;margin-left:6px;">HOT</span>` : "";
 
-          const contactHTML = ` 
-            <div style="margin:4px 0;">
-              📞 <a href="tel:${s.phone}" style="color:green;">${s.phone}</a><br>
-              💬 <a href="https://wa.me/254${s.phone.replace(/^0/, '')}" target="_blank" style="color:#25D366;">WhatsApp</a>
-            </div>`;
+          const contactHTML = `<div style="margin:4px 0;">📞 <a href="tel:${s.phone}" style="color:green;">${s.phone}</a><br>💬 <a href="https://wa.me/254${s.phone.replace(/^0/, '')}" target="_blank" style="color:#25D366;">WhatsApp</a></div>`;
 
-          const blurredContactHTML = ` 
-            <div style="margin:6px 0; text-align:left;">
-              <span style="color:crimson; font-size:13px; font-weight:bold;">
-                🔒 Contacts locked. Pay Ksh ${isHotSwap ? 500 : 250} to unlock
-              </span><br>
-              <button onclick="showPaymentModalFor('swap', ${isHotSwap ? 500 : 250}, '${s.id}', 'Unlock Contacts ')"
-                      style="margin-top:4px;background:crimson;color:white;border:none;padding:5px 10px;border-radius:4px;">
-                💳 Pay Now
-              </button>
-            </div>`;
+          const blurredContactHTML = `<div style="margin:6px 0; text-align:left;"><span style="color:crimson; font-size:13px; font-weight:bold;">🔒 Contacts locked. Pay Ksh ${isHotSwap ? 500 : 250} to unlock</span><br><button onclick="showPaymentModalFor('swap', ${isHotSwap ? 500 : 250}, '${s.id}', 'Unlock Contacts ')" style="margin-top:4px;background:crimson;color:white;border:none;padding:5px 10px;border-radius:4px;">💳 Pay Now</button></div>`;
 
-          const closedContactHTML = ` 
-            <div style="margin:6px 0; text-align:left; color:red; font-weight:bold;">
-              🚫 This swap is closed
-            </div>`;
+          const closedContactHTML = `<div style="margin:6px 0; text-align:left; color:red; font-weight:bold;">🚫 This swap is closed</div>`;
 
           const followerCount = s.followerCount || (s.followers ? s.followers.length : 0);
-
 
           const rating = (typeof s.rating === "number") ? s.rating : 0;
           const ratingStars = [...Array(5)].map((_, index) => {
@@ -5574,17 +5683,7 @@ async function loadSwaps() {
 
           const card = document.createElement("div");
           card.className = "swap-card";
-          card.style = `
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            margin: 8px;
-            width: 280px;
-            display: inline-block;
-            vertical-align: top;
-            position: relative;
-          `;
+          card.style = `background:#f9f9f9;border-radius:8px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,0.1);margin:8px;width:280px;display:inline-block;vertical-align:top;position:relative;`;
           card.setAttribute("data-category", s.category || "-");
           card.setAttribute("data-swapcounty", s.swapCounty || "-");
           card.setAttribute("data-swapsubcounty", s.swapSubCounty || "-");
@@ -5596,83 +5695,39 @@ async function loadSwaps() {
               <button onclick="toggleActionButtons('${s.id}')" class="action-button">Actions</button>
               <div class="action-buttons" id="action-buttons-${s.id}" style="display:none;">
                 ${isPoster || isAdminUser ? `
-                  <button onclick="deleteSwap('${s.id}')"
-                    style="background:#f44336;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    🗑️ Delete
-                  </button>
-                  <button onclick="sendSwapInterest('${s.id}', '${s.teacherName}')"
-                    style="background:#2196f3;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    💌 Show Interest
-                  </button>
-                  <button onclick="followSwap('${s.id}')"
-                    style="background:#e91e63;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    🧑🤝🧑 Follow Swap
-                  </button>
-                  <button onclick="toggleSwapStatus('${s.id}')"
-                    style="background:#9e9e9e;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    ${s.isClosed ? "♻️ Reopen Swap" : "🚫 Mark as Closed"}
-                  </button>
-                  <button onclick="boostSwap('${s.id}')"
-                    style="background:#ff9800;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    🚀 Boost Swap ${isAdminUser ? "(Free)" : "(Ksh 250)"}
-                  </button>` : ""}
-                ${isAdminUser ? `
-                  <button onclick="adminVerifyItem('swap', '${s.id}')"
-                    style="background:#4caf50;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    🛡️ Verify Now (Admin)
-                  </button>` : ""}
+                  <button onclick="deleteSwap('${s.id}')" style="background:#f44336;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">🗑️ Delete</button>
+                  <button onclick="sendSwapInterest('${s.id}', '${s.teacherName}')" style="background:#2196f3;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">💌 Show Interest</button>
+                  <button onclick="followSwap('${s.id}')" style="background:#e91e63;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">🧑🤝🧑 Follow Swap</button>
+                  <button onclick="toggleSwapStatus('${s.id}')" style="background:#9e9e9e;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">${s.isClosed ? "♻️ Reopen Swap" : "🚫 Mark as Closed"}</button>
+                  <button onclick="boostSwap('${s.id}')" style="background:#ff9800;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">🚀 Boost Swap ${isAdminUser ? "(Free)" : "(Ksh 250)"}</button>` : ""}
+                ${isAdminUser ? `<button onclick="adminVerifyItem('swap', '${s.id}')" style="background:#4caf50;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">🛡️ Verify Now (Admin)</button>` : ""}
                 ${(!isPoster && !isAdminUser) ? `
-                  <button onclick="sendSwapInterest('${s.id}', '${s.teacherName}')"
-                    style="background:#2196f3;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    💌 Show Interest
-                  </button>
-                  <button onclick="followSwap('${s.id}')"
-                    style="background:#e91e63;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">
-                    🧑🤝🧑 Follow Swap
-                  </button>` : ""}
+                  <button onclick="sendSwapInterest('${s.id}', '${s.teacherName}')" style="background:#2196f3;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">💌 Show Interest</button>
+                  <button onclick="followSwap('${s.id}')" style="background:#e91e63;color:white;padding:6px 12px;font-size:13px;border:none;border-radius:6px;cursor:pointer;">🧑🤝🧑 Follow Swap</button>` : ""}
               </div>
             </div>`;
 
- // Prepare swap counties for display
-let swapCountiesDisplay = "-";
-if (s.swapCounty) {
-  // If stored as array (for multiple selection), join them with commas
-  if (Array.isArray(s.swapCounty)) {
-    swapCountiesDisplay = s.swapCounty.join(", ");
-  } else if (typeof s.swapCounty === "string") {
-    swapCountiesDisplay = s.swapCounty;
-  }
-}
+          let swapCountiesDisplay = "-";
+          if (s.swapCounty) {
+            if (Array.isArray(s.swapCounty)) swapCountiesDisplay = s.swapCounty.join(", ");
+            else if (typeof s.swapCounty === "string") swapCountiesDisplay = s.swapCounty;
+          }
 
-// Update the card innerHTML section
-card.innerHTML = `
-  <h3 style="margin:0; color:#1a237e;">
-    ${s.teacherName} ${hotBadge} ${showVerifiedBadge} ${verifyBtnHTML} ${closedStatusBadge}
-  </h3>
-  <div style="margin:4px 0;">${showVIPBadge} ${showBoostedBadge}</div>
-  <p style="margin:4px 0;color:#3f51b5;"><strong>From:</strong> ${s.county} / ${s.subCounty || "-"}</p>
-  <p style="margin:4px 0;color:#ef6c00;"><strong>Wants:</strong> ${swapCountiesDisplay} / ${s.swapSubCounty || "-"}</p>
-  <p style="margin:4px 0;color:#6a1b9a;"><strong>Subjects:</strong> ${s.subjectCombination || '-'}</p>
-  <p style="margin:4px 0;color:#3e2723;"><strong>Category:</strong> ${s.category || '-'}</p>
-  <p style="margin:4px 0;color:#d81b60;"><strong>Hardship:</strong> ${s.hardship || '-'}</p>
-  <div style="margin-top:6px;">
-    ${s.isClosed && !isPoster && !isAdminUser ? closedContactHTML : (blur ? blurredContactHTML : contactHTML)}
-  </div>
-  <div style="margin-top:6px;">
-    <strong>Rating: </strong>
-    <span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span>
-    <span style="color:red; font-weight:bold; margin-left:4px;">(${rating}/5)</span>
-  </div>
-  <p id="follower-count-${s.id}" style="font-size: 0.9em; color: #ff4081;" onclick="showFollowers('${s.id}')">
-    ${followerCount} people following
-  </p>
-  ${actionButtonHTML}
-`;
-
+          card.innerHTML = `
+            <h3 style="margin:0; color:#1a237e;">${s.teacherName} ${hotBadge} ${showVerifiedBadge} ${verifyBtnHTML} ${closedStatusBadge}</h3>
+            <div style="margin:4px 0;">${showVIPBadge} ${showBoostedBadge}</div>
+            <p style="margin:4px 0;color:#3f51b5;"><strong>From:</strong> ${s.county} / ${s.subCounty || "-"}</p>
+            <p style="margin:4px 0;color:#ef6c00;"><strong>Wants:</strong> ${swapCountiesDisplay} / ${s.swapSubCounty || "-"}</p>
+            <p style="margin:4px 0;color:#6a1b9a;"><strong>Subjects:</strong> ${s.subjectCombination || '-'}</p>
+            <p style="margin:4px 0;color:#3e2723;"><strong>Category:</strong> ${s.category || '-'}</p>
+            <p style="margin:4px 0;color:#d81b60;"><strong>Hardship:</strong> ${s.hardship || '-'}</p>
+            <div style="margin-top:6px;">${s.isClosed && !isPoster && !isAdminUser ? closedContactHTML : (blur ? blurredContactHTML : contactHTML)}</div>
+            <div style="margin-top:6px;"><strong>Rating: </strong><span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span><span style="color:red; font-weight:bold; margin-left:4px;">(${rating}/5)</span></div>
+            <p id="follower-count-${s.id}" style="font-size:0.9em; color:#ff4081;" onclick="showFollowers('${s.id}')">${followerCount} people following</p>
+            ${actionButtonHTML}`;
 
           container.appendChild(card);
 
-          // Rating star click handler
           const stars = document.querySelectorAll(`#rating-stars-${s.id} .fa-star`);
           stars.forEach(star => {
             star.addEventListener("click", async function () {
@@ -5680,47 +5735,59 @@ card.innerHTML = `
               try {
                 await db.collection("teacherSwaps").doc(s.id).update({ rating: newRating });
                 const allStars = document.querySelectorAll(`#rating-stars-${s.id} .fa-star`);
-                allStars.forEach((st, idx) => {
-                  st.style.color = idx < newRating ? "#FFD700" : "#ccc";
-                });
+                allStars.forEach((st, idx) => st.style.color = idx < newRating ? "#FFD700" : "#ccc");
                 document.querySelector(`#rating-stars-${s.id}`).nextElementSibling.textContent = `(${newRating}/5)`;
-              } catch (err) {
-                console.error("Error updating rating:", err);
-              }
+              } catch (err) { console.error("Error updating rating:", err); }
             });
           });
+
         });
 
-       try {
-          renderTrendingSectionFromSwapsOnly();
-        } catch (e) {
-          console.error("Error rendering trending swaps:", e);
+        try { renderTrendingSectionFromSwapsOnly(); } catch(e){ console.error(e); }
+
+       // Update badge
+        if (swapBadge) {
+          if (newSwapCount > 0) {
+            swapBadge.textContent = newSwapCount;
+            swapBadge.style.display = "inline-block";
+          } else swapBadge.style.display = "none";
         }
+
+        // persist last seen timestamp
+        const latestSwap = snapshot.docs[0]?.data()?.timestamp?.toDate();
+        if (latestSwap) {
+          lastSeenSwapTimestamp = latestSwap;
+          localStorage.setItem("lastSeenSwapTimestamp", lastSeenSwapTimestamp.toISOString());
+        }
+
         if (spinner) spinner.style.display = "none";
       },
       error => {
         console.error("Firestore listener error:", error);
-
-        // ✅ Only show error if still logged in
-        if (auth.currentUser) {
-          showCustomAlert("Error loading swaps: " + error.message, "error");
-        }
-
+        if (auth.currentUser) showCustomAlert("Error loading swaps: " + error.message, "error");
         if (spinner) spinner.style.display = "none";
       }
     );
 
   } catch (err) {
     console.error("Error loading swaps:", err);
-
-    // ✅ Only show error if still logged in
-    if (auth.currentUser) {
-      showCustomAlert("Error loading swaps: " + err.message, "error");
-    }
-
+    if (auth.currentUser) showCustomAlert("Error loading swaps: " + err.message, "error");
     if (spinner) spinner.style.display = "none";
   }
 }
+
+// ✅ Reset swap badge
+function resetSwapBadge() {
+  const swapBadge = document.getElementById("swapBadge");
+  if (swapBadge) {
+    swapBadge.style.display = "none";
+    swapBadge.textContent = "0";
+  }
+  lastSeenSwapTimestamp = new Date();
+  localStorage.setItem("lastSeenSwapTimestamp", lastSeenSwapTimestamp.toISOString());
+}
+
+
 
 
 // Open and close modal helpers
@@ -7743,14 +7810,21 @@ function toggleAdminButtons(id) {
     adminButtons.style.display = "none";
   }
 }
-let soulmateBatch = [];
+let soulmateBatch = []; 
 let soulmateBatchSize = 10; 
 let soulmateBatchIndex = 0;
 let isLoadingSoulmates = false;
+let soulmateUnsubscribe;
+let lastSeenSoulmateTimestamp = localStorage.getItem("lastSeenSoulmateTimestamp") 
+    ? new Date(localStorage.getItem("lastSeenSoulmateTimestamp")) 
+    : null;
+let soulmateBadgeCount = 0;
 
+// 🔹 Load soulmate profiles with real-time updates
 async function loadSoulmates(reset = true) {
   const container = document.querySelector("#soulmateContainer");
   const trendingContainer = document.querySelector("#trendingContainer");
+  const soulmateBadge = document.getElementById("soulmateBadge");
 
   if (reset) {
     container.innerHTML = "";
@@ -7759,58 +7833,70 @@ async function loadSoulmates(reset = true) {
     soulmateBatchIndex = 0;
   }
 
-  if (isLoadingSoulmates) return;
-  isLoadingSoulmates = true;
+  if (!auth.currentUser) return;
 
-  const minAge = parseInt(document.getElementById("filterMinAge")?.value || 0);
-  const maxAge = parseInt(document.getElementById("filterMaxAge")?.value || 100);
-  const tribeFilter = document.getElementById("filterTribe")?.value.toLowerCase().trim() || "";
-  const sexFilter = document.getElementById("filterSex")?.value || "";
-  const verifiedFilter = document.getElementById("filterVerified")?.value || "";
-  const hasPaid = localStorage.getItem("paidForSoulmates") === "yes";
-  const now = new Date();
+  if (soulmateUnsubscribe) soulmateUnsubscribe(); // detach old listener
 
-  if (reset || soulmateBatch.length === 0) {
-    const snapshot = await soulmateRef.get({ source: 'cache' }).catch(()=>soulmateRef.get()); // Use cache first for instant load
-    if (snapshot.empty) {
-      container.innerHTML = `<div style="text-align:center;padding:20px;color:#999;">💔 No soulmate profiles found</div>`;
-      isLoadingSoulmates = false;
-      return;
-    }
+  soulmateUnsubscribe = soulmateRef.orderBy("timestamp", "desc").onSnapshot(snapshot => {
+    if (!auth.currentUser) return;
+
+    const now = new Date();
+
+    const minAge = parseInt(document.getElementById("filterMinAge")?.value || 0);
+    const maxAge = parseInt(document.getElementById("filterMaxAge")?.value || 100);
+    const tribeFilter = document.getElementById("filterTribe")?.value.toLowerCase().trim() || "";
+    const sexFilter = document.getElementById("filterSex")?.value || "";
+    const verifiedFilter = document.getElementById("filterVerified")?.value || "";
+    const hasPaid = localStorage.getItem("paidForSoulmates") === "yes";
 
     let boosted = [], normal = [];
 
-    // Process all docs in parallel for max speed
-    await Promise.all(snapshot.docs.map(async (doc) => {
-      const d = doc.data();
-      const id = doc.id;
-      const age = parseInt(d.age) || 0;
+    snapshot.docChanges().forEach(change => {
+      if (change.type === "added") {
+        const d = change.doc.data();
+        const id = change.doc.id;
+        const ts = d.timestamp?.toDate();
 
-      if (age < minAge || age > maxAge) return;
-      if (tribeFilter && (!d.tribe || !d.tribe.toLowerCase().includes(tribeFilter))) return;
-      if (sexFilter && d.sex !== sexFilter) return;
+        // ✅ Immediately treat as new if timestamp > last seen
+        if (!lastSeenSoulmateTimestamp || (ts && ts > lastSeenSoulmateTimestamp)) {
+          prependNewSoulmate({ id, ...d }); // show card instantly
 
-      const boostExpiry = d.boostExpiry?.toDate?.();
-      const isBoosted = d.boosted && boostExpiry && boostExpiry > now;
-      if (d.boosted && (!boostExpiry || boostExpiry <= now)) {
-        // Fire and forget - no need to await each update sequentially
-        soulmateRef.doc(id).update({ boosted: false, boostExpiry: null }).catch(console.warn);
+          // 🔥 Update badge LIVE
+          soulmateBadgeCount++;
+          if (soulmateBadge) {
+            soulmateBadge.style.display = "inline-block";
+            soulmateBadge.textContent = soulmateBadgeCount;
+          }
+
+          lastSeenSoulmateTimestamp = ts;
+          localStorage.setItem("lastSeenSoulmateTimestamp", lastSeenSoulmateTimestamp.toISOString());
+        }
+
+        // Filtering
+        const age = parseInt(d.age) || 0;
+        if (age < minAge || age > maxAge) return;
+        if (tribeFilter && (!d.tribe || !d.tribe.toLowerCase().includes(tribeFilter))) return;
+        if (sexFilter && d.sex !== sexFilter) return;
+        if (verifiedFilter === "verified" && !d.verified) return;
+        if (verifiedFilter === "unverified" && d.verified) return;
+
+        const boostExpiry = d.boostExpiry?.toDate?.();
+        const isBoosted = d.boosted && boostExpiry && boostExpiry > now;
+        if (d.boosted && (!boostExpiry || boostExpiry <= now)) {
+          soulmateRef.doc(id).update({ boosted: false, boostExpiry: null }).catch(console.warn);
+        }
+
+        const profile = { id, ...d, isBoosted };
+        if (isBoosted) {
+          boosted.push(profile);
+          if (trendingContainer) trendingBoostedItems.push({ id, ...d, type: 'soulmate' });
+        } else {
+          normal.push(profile);
+        }
       }
-
-      if (verifiedFilter === "verified" && !d.verified) return;
-      if (verifiedFilter === "unverified" && d.verified) return;
-
-      const profile = { id, ...d, isBoosted };
-      if (isBoosted) {
-        boosted.push(profile);
-        if (trendingContainer) trendingBoostedItems.push({ id, ...d, type: 'soulmate' });
-      } else {
-        normal.push(profile);
-      }
-    }));
+    });
 
     soulmateBatch = [...boosted, ...normal].sort((a, b) => {
-      const now = new Date();
       const aBoosted = a.isBoosted && a.boostExpiry > now;
       const bBoosted = b.isBoosted && b.boostExpiry > now;
       if (aBoosted && bBoosted) return (b.boostExpiry || 0) - (a.boostExpiry || 0);
@@ -7819,194 +7905,185 @@ async function loadSoulmates(reset = true) {
       return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
     });
 
-    if (soulmateBatch.length === 0) {
-      container.innerHTML = `<div style="text-align:center;padding:20px;color:#999;">💔 No soulmate profiles found</div>`;
-      isLoadingSoulmates = false;
-      return;
-    }
-  }
+    if (reset) soulmateBatchIndex = 0;
+    renderSoulmateBatch();
+  });
+}
 
-  // Batch DOM insert for speed (reduce reflows)
-  const fragment = document.createDocumentFragment();
+// 🔹 Render next batch of soulmate cards
+function renderSoulmateBatch() {
+  const container = document.querySelector("#soulmateContainer");
+  if (!container) return;
 
   const nextBatch = soulmateBatch.slice(soulmateBatchIndex, soulmateBatchIndex + soulmateBatchSize);
   soulmateBatchIndex += soulmateBatchSize;
 
+  const fragment = document.createDocumentFragment();
+
   nextBatch.forEach(d => {
-    const id = d.id;
-    const isPoster = currentUser && (d.postedBy === currentUser.uid);
-    const isAdminUser = isAdmin === true;
-    const totalLikes = d.likes || 0;
-
-    const card = document.createElement("div");
-    card.className = "soulmate-card";
-    card.id = `soulmate-${id}`;
-    card.style = `
-      background: #e6f7ff;
-      padding: 14px;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      text-align: left;
-      position: relative;
-      min-width: 250px;
-      max-width: 300px;
-      box-sizing: border-box;
-    `;
-
-      const images = d.photos || [];
-    const profileImageHTML = images.length > 0 ? ` 
-      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        ${images.map((photo, index) => `
-          <img src="${photo}" alt="Profile Image ${index + 1}" style="width: 60px; height: 60px; object-fit: cover; margin-bottom: 10px; border-radius: 8px; cursor: pointer;" onclick="openImageModal(${index}, ${JSON.stringify(images)})">
-        `).join('')}
-      </div>
-    ` : `<div style="width: 100%; height: 200px; background: #f0f0f0; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; color: #888; cursor: pointer;" onclick="openImageModal()">No Image</div>`;
-
-    const contactHTML = `
-      <div style="margin:4px 0;">
-        <div style="border: 1px solid #4caf50; background-color: #4caf50; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; margin-bottom: 6px; max-width: 150px;">
-          <span style="font-size: 16px; color:white;">${d.phone}</span>
-          <i class="fas fa-phone-alt" style="margin-left: 4px; color:white;"></i>
-        </div>
-        <div style="border: 1px solid #25D366; background-color: #25D366; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; max-width: 150px;">
-          <span style="font-size: 16px; color:white;">WhatsApp</span>
-          <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
-        </div>
-      </div>
-    `;
-
-   const blurredContactHTML = `
-  <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
-    <!-- Phone (Blurred) -->
-    <div style="
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 12px; border-radius:8px; background:#f0f0f0; border:1px solid #ccc;
-      font-weight:bold; color:#999; font-size:14px; filter: blur(4px);
-    ">
-      📞 0700000000
-    </div>
-
-    <!-- WhatsApp (Blurred) -->
-    <div style="
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 12px; border-radius:8px; background:#f0f0f0; border:1px solid #ccc;
-      font-weight:bold; color:#999; font-size:14px; filter: blur(4px);
-    ">
-      💬 WhatsApp
-    </div>
-
-    <!-- Payment Notice -->
-    <div style="color:crimson; font-size:13px; margin-top:4px;">🔒 Pay Ksh 200 to Unlock</div>
-
-    <!-- Pay Button -->
-    <button onclick="handleSoulmateAction('${id}', 'unlock')" 
-      style="
-        margin-top:4px;
-        background:crimson;
-        color:white;
-        border:none;
-        padding:6px 14px;
-        border-radius:6px;
-        font-weight:bold;
-        cursor:pointer;
-        transition: background 0.3s;
-      "
-      onmouseover="this.style.background='#b71c1c';"
-      onmouseout="this.style.background='crimson';"
-    >
-      💳 Pay
-    </button>
-  </div>
-`;
-
-
-    const profileContent = d.isClosed ? `
-      <p style="color:#999;">Profile Locked</p>
-      <h4 style="margin:0 0 6px;font-size:16px;"><strong>Name:</strong> ${d.name}</h4>
-    ` : `
-      <h4 style="margin:0 0 6px;font-size:16px;"><strong>Name:</strong> ${d.name}</h4>
-      <p style="margin:0;color:#ff5722;"><strong>Sex:</strong> ${d.sex ? `${d.sex === 'Male' ? '♂️' : '♀️'} ${d.sex}` : '—'}</p>
-      <p style="margin:0;"><strong>Location:</strong> <span style="color:#009688;">${d.county || '—'}</span>${d.subCounty ? ` / <span style="color:#6a1b9a;">${d.subCounty}</span>` : ''}</p>
-      <p style="margin:0;color:#6a1b9a;"><strong>Tribe:</strong> ${d.tribe || '—'}</p>
-      <p style="margin:0;color:#ff5722;"><strong>Age:</strong> ${d.age}</p>
-      <p style="margin:0;color:#795548;"><strong>Status:</strong> ${d.status || '—'} ${d.status === "Single" ? "💔" : d.status === "Married" ? "💍" : ""}</p>
-      <p style="margin:0;color:#607d8b;"><strong>Occupation:</strong> ${d.occupation}</p>
-      <div style="margin-top:6px;">
-        ${hasPaid || isPoster || isAdminUser ? contactHTML : blurredContactHTML}
-      </div>`;
-
-     // Admin and Poster buttons with toggle functionality
-    const adminButtons = (isAdminUser || isPoster) ? `
-      <button onclick="toggleAdminButtons('${id}')"
-        style="background:#007BFF;color:white;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;margin-top:10px;">
-        🔽 More details 
-      </button>
-      <div id="admin-buttons-${id}" style="margin-top:10px; display:none; flex-wrap:wrap; gap:10px;">
-        <button onclick="deleteSoulmate('${id}')"
-          style="background:#dc3545; color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer;">
-          🗑️ Delete
-        </button>
-        <button onclick="handleSoulmateAction('${id}', 'boost')"
-          style="background:#ff9800; color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer;">
-          🚀 Boost
-        </button>
-        <button onclick="toggleSoulmateStatus('${id}', ${d.isClosed})"
-          style="background:${d.isClosed ? '#28a745' : '#6c757d'}; color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer;">
-          ${d.isClosed ? '♻️ Reopen' : '🚫 Mark as Closed'}
-        </button>
-        ${isAdminUser ? `
-          <button onclick="adminVerifyItem('soulmate', '${id}')"
-            style="background:#007BFF;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
-            🛡️ Admin Verify (Free)
-          </button>
-          <button onclick="adminBoostItem('soulmate', '${id}')"
-            style="background:#FF5722;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
-            🚀 Admin Boost (Free)
-          </button>` : `
-          <button onclick="showPaymentModalFor('soulmateVerification', 200, '${id}', '${d.name || ''}')"
-            style="background:#4CAF50;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
-            ✅ Verify Now – Ksh 200
-          </button>`}
-      </div>
-    ` : "";
-
-    const likeButtonHTML = `
-      <button id="likeBtn-${id}" onclick="toggleLike('${id}')"
-        style="background:#e91e63; color:white; border:none; padding:5px 12px; border-radius:50px; cursor:pointer;">
-        🤍 Like
-      </button>
-      <span id="likeCount-${id}" style="font-weight:bold; margin-left:10px;">
-        ${totalLikes} Likes
-      </span>
-    `;
-
-    card.innerHTML = `
-      ${profileImageHTML}
-      ${d.verified ? `<div class="verified-badge" style="position: absolute; top: 8px; right: 8px; background-color: #1DA1F2; color: white; border-radius: 25px; padding: 4px 10px; display: flex; align-items: center; font-size: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease-in-out; cursor: pointer;">
-          <i class="fas fa-check" style="transform: scale(1.2); margin-right: 5px;"></i>
-          Verified
-      </div>` : ""}
-      ${profileContent}
-      ${likeButtonHTML}
-      ${adminButtons}
-    `;
-
-    container.appendChild(card);
-    updateLikeUI(id);
-    listenForLikeChanges(id);
+    renderSoulmateCard(d, fragment);
   });
 
+  container.appendChild(fragment);
   isLoadingSoulmates = false;
 }
 
-// Infinite scroll listener
+// 🔹 Render one soulmate card
+function renderSoulmateCard(d, container) {
+  const id = d.id;
+  const isPoster = currentUser && (d.postedBy === currentUser.uid);
+  const isAdminUser = isAdmin === true;
+  const totalLikes = d.likes || 0;
+  const hasPaid = localStorage.getItem("paidForSoulmates") === "yes";
+
+  const card = document.createElement("div");
+  card.className = "soulmate-card";
+  card.id = `soulmate-${id}`;
+  card.style = `
+    background: #e6f7ff;
+    padding: 14px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    text-align: left;
+    position: relative;
+    min-width: 250px;
+    max-width: 300px;
+    box-sizing: border-box;
+  `;
+
+  const images = d.photos || [];
+  const profileImageHTML = images.length > 0 ? ` 
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      ${images.map((photo, index) => `<img src="${photo}" alt="Profile Image ${index+1}" style="width: 60px; height: 60px; object-fit: cover; margin-bottom: 10px; border-radius: 8px; cursor: pointer;" onclick="openImageModal(${index}, ${JSON.stringify(images)})">`).join('')}
+    </div>` : `<div style="width: 100%; height: 200px; background: #f0f0f0; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; color: #888; cursor: pointer;" onclick="openImageModal()">No Image</div>`;
+
+  const contactHTML = `<div style="margin:4px 0;">
+      <div style="border: 1px solid #4caf50; background-color: #4caf50; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; margin-bottom: 6px; max-width: 150px;">
+        <span style="font-size: 16px; color:white;">${d.phone}</span>
+        <i class="fas fa-phone-alt" style="margin-left: 4px; color:white;"></i>
+      </div>
+      <div style="border: 1px solid #25D366; background-color: #25D366; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; max-width: 150px;">
+        <span style="font-size: 16px; color:white;">WhatsApp</span>
+        <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
+      </div>
+    </div>`;
+
+  const blurredContactHTML = `<div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:8px; background:#f0f0f0; border:1px solid #ccc; font-weight:bold; color:#999; font-size:14px; filter: blur(4px);">📞 0700000000</div>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:8px; background:#f0f0f0; border:1px solid #ccc; font-weight:bold; color:#999; font-size:14px; filter: blur(4px);">💬 WhatsApp</div>
+    <div style="color:crimson; font-size:13px; margin-top:4px;">🔒 Pay Ksh 200 to Unlock</div>
+    <button onclick="handleSoulmateAction('${id}', 'unlock')" style="margin-top:4px;background:crimson;color:white;border:none;padding:6px 14px;border-radius:6px;font-weight:bold;cursor:pointer;">💳 Pay</button>
+  </div>`;
+
+  const profileContent = d.isClosed ? `
+    <p style="color:#999;">Profile Locked</p>
+    <h4 style="margin:0 0 6px;font-size:16px;"><strong>Name:</strong> ${d.name}</h4>
+  ` : `
+    <h4 style="margin:0 0 6px;font-size:16px;"><strong>Name:</strong> ${d.name}</h4>
+    <p style="margin:0;color:#ff5722;"><strong>Sex:</strong> ${d.sex ? `${d.sex === 'Male' ? '♂️' : '♀️'} ${d.sex}` : '—'}</p>
+    <p style="margin:0;"><strong>Location:</strong> <span style="color:#009688;">${d.county || '—'}</span>${d.subCounty ? ` / <span style="color:#6a1b9a;">${d.subCounty}</span>` : ''}</p>
+    <p style="margin:0;color:#6a1b9a;"><strong>Tribe:</strong> ${d.tribe || '—'}</p>
+    <p style="margin:0;color:#ff5722;"><strong>Age:</strong> ${d.age}</p>
+    <p style="margin:0;color:#795548;"><strong>Status:</strong> ${d.status || '—'} ${d.status === "Single" ? "💔" : d.status === "Married" ? "💍" : ""}</p>
+    <p style="margin:0;color:#607d8b;"><strong>Occupation:</strong> ${d.occupation}</p>
+    <div style="margin-top:6px;">
+      ${hasPaid || isPoster || isAdminUser ? contactHTML : blurredContactHTML}
+    </div>`;
+
+  const adminButtons = (isAdminUser || isPoster) ? `
+    <button onclick="toggleAdminButtons('${id}')"
+      style="background:#007BFF;color:white;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;margin-top:10px;">
+      🔽 More details 
+    </button>
+    <div id="admin-buttons-${id}" style="margin-top:10px; display:none; flex-wrap:wrap; gap:10px;">
+      <button onclick="deleteSoulmate('${id}')"
+        style="background:#dc3545; color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer;">
+        🗑️ Delete
+      </button>
+      <button onclick="handleSoulmateAction('${id}', 'boost')"
+        style="background:#ff9800; color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer;">
+        🚀 Boost
+      </button>
+      <button onclick="toggleSoulmateStatus('${id}', ${d.isClosed})"
+        style="background:${d.isClosed ? '#28a745' : '#6c757d'}; color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer;">
+        ${d.isClosed ? '♻️ Reopen' : '🚫 Mark as Closed'}
+      </button>
+      ${isAdminUser ? `
+        <button onclick="adminVerifyItem('soulmate', '${id}')"
+          style="background:#007BFF;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
+          🛡️ Admin Verify (Free)
+        </button>
+        <button onclick="adminBoostItem('soulmate', '${id}')"
+          style="background:#FF5722;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
+          🚀 Admin Boost (Free)
+        </button>` : `
+        <button onclick="showPaymentModalFor('soulmateVerification', 200, '${id}', '${d.name || ''}')"
+          style="background:#4CAF50;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;">
+          ✅ Verify Now – Ksh 200
+        </button>`}
+    </div>
+  ` : "";
+
+  const likeButtonHTML = `
+    <button id="likeBtn-${id}" onclick="toggleLike('${id}')"
+      style="background:#e91e63; color:white; border:none; padding:5px 12px; border-radius:50px; cursor:pointer;">
+      🤍 Like
+    </button>
+    <span id="likeCount-${id}" style="font-weight:bold; margin-left:10px;">
+      ${totalLikes} Likes
+    </span>
+  `;
+
+  card.innerHTML = `
+    ${profileImageHTML}
+    ${d.verified ? `<div class="verified-badge" style="position: absolute; top: 8px; right: 8px; background-color: #1DA1F2; color: white; border-radius: 25px; padding: 4px 10px; display: flex; align-items: center; font-size: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease-in-out; cursor: pointer;">
+        <i class="fas fa-check" style="transform: scale(1.2); margin-right: 5px;"></i>
+        Verified
+    </div>` : ""}
+    ${profileContent}
+    ${likeButtonHTML}
+    ${adminButtons}
+  `;
+
+  container.appendChild(card);
+  updateLikeUI(id);
+  listenForLikeChanges(id);
+}
+
+// 🔹 Infinite scroll
 window.addEventListener('scroll', () => {
   if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
     if (!isLoadingSoulmates && soulmateBatchIndex < soulmateBatch.length) {
-      loadSoulmates(false);
+      renderSoulmateBatch();
     }
   }
 });
+
+// 🔹 Reset soulmate badge when clicked
+function resetSoulmateBadge() {
+  const soulmateBadge = document.getElementById("soulmateBadge");
+  if (soulmateBadge) {
+    soulmateBadge.style.display = "none";
+    soulmateBadge.textContent = "0";
+    soulmateBadgeCount = 0;
+    lastSeenSoulmateTimestamp = new Date();
+    localStorage.setItem("lastSeenSoulmateTimestamp", lastSeenSoulmateTimestamp.toISOString());
+  }
+}
+
+// 🔹 Prepend new soulmate card in real-time
+function prependNewSoulmate(d) {
+  const container = document.querySelector("#soulmateContainer");
+  if (!container) return;
+
+  const fragment = document.createDocumentFragment();
+  renderSoulmateCard(d, fragment);
+  container.prepend(fragment);
+}
+
+// 🔹 Initialize
+loadSoulmates(true);
+
 
 async function toggleProfileLock(profileId, isLocked) {
   try {
@@ -10570,47 +10647,11 @@ async function deleteEntireChat(otherUserId) {
     confirmDiv.remove();
   };
 }
-
-
-
-
-
-async function verifyMarketDirectly(marketId) {
-  try {
-    await marketRef.doc(marketId).set({
-      verified: true
-    }, { merge: true });
-
-    showCustomAlert("✅ Market item verified successfully!", "success");
-
-    // Optional: reload market list, but we can update DOM instantly instead
-    // loadMarketItems();
-
-    // Instant DOM update without reload
-    const card = document.getElementById(`market-${marketId}`);
-    if (card && !card.querySelector('.verified-badge')) {
-      const badge = document.createElement('span');
-      badge.className = 'verified-badge';
-      badge.innerHTML = `<i class="fas fa-check-circle"></i> Verified`;
-      const titleElem = card.querySelector('h3');
-      if (titleElem) {
-        titleElem.insertAdjacentElement('beforebegin', badge);
-      }
-    }
-
-  } catch (err) {
-    console.error("❌ Error verifying market item:", err);
-    showCustomAlert("❌ Failed to verify market item: " + err.message, "error");
-  }
-}
-// ✅ Global Alerts Loading Handler
-async function loadAlerts() {
+// ✅ Real-Time Global Alerts Loading
+function loadAlerts() {
   const container = document.getElementById("marketAlerts");
   const list = document.getElementById("alertsList");
   const badge = document.getElementById("alertsBadge");
-  const spinner = document.getElementById("loadingSpinner");
-
-  container.style.display = "none";
 
   if (!isLoggedIn) {
     showCustomAlert("You must be logged in to view alerts.", "error");
@@ -10620,161 +10661,134 @@ async function loadAlerts() {
 
   container.style.display = "block";
   list.innerHTML = "<p>Loading alerts...</p>";
-  spinner.style.display = "flex";
 
-  if (!document.getElementById("alertsBadgeStyles")) {
-    const style = document.createElement("style");
-    style.id = "alertsBadgeStyles";
-    style.textContent = `
-      @keyframes pulseBadge {
-        0% { transform: scale(1); background-color: #f44336; }
-        50% { transform: scale(1.2); background-color: #e53935; }
-        100% { transform: scale(1); background-color: #f44336; }
+  const currentUserId = auth.currentUser?.uid;
+  const currentUserEmail = auth.currentUser?.email;
+
+  // Listen for real-time updates
+  db.collection("alerts")
+    .orderBy("timestamp", "desc")
+    .limit(50)
+    .onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        list.innerHTML = "<p style='color:#777;'>No alerts for now.</p>";
+        if (badge) badge.style.display = "none";
+        return;
       }
-      .pulse { animation: pulseBadge 0.6s ease; }
-    `;
-    document.head.appendChild(style);
-  }
 
-  const currentUserId = auth.currentUser?.uid || null;
-  const currentUserEmail = auth.currentUser?.email || null;
-  let previousUnreadCount = 0;
-
-  try {
-    const snapshot = await db.collection("alerts")
-      .orderBy("timestamp", "desc")
-      .limit(50)
-      .get();
-
-    spinner.style.display = "none";
-
-    if (snapshot.empty) {
-      list.innerHTML = "<p style='color:#777;'>No alerts yet.</p>";
-      if (badge) badge.style.display = "none";
-      previousUnreadCount = 0;
-      return;
-    }
-
-    const alerts = [];
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      if (
-        !data.targetUserId && !data.targetEmail || // global
-        data.targetUserId === currentUserId ||    // user specific
-        data.targetEmail === currentUserEmail     // email match
-      ) {
-        alerts.push({ id: doc.id, ref: doc.ref, ...data });
-      }
-    });
-
-    // Sort unread first
-    alerts.sort((a, b) => {
-      const aRead = a.readBy?.includes(currentUserId) || false;
-      const bRead = b.readBy?.includes(currentUserId) || false;
-      if (aRead !== bRead) return aRead ? 1 : -1;
-      return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
-    });
-
-    const unreadAlerts = alerts.filter(a => !a.readBy?.includes(currentUserId));
-
-    // 🔹 Update badge
-    if (badge) {
-      if (unreadAlerts.length > 0) {
-        badge.textContent = unreadAlerts.length;
-        badge.style.display = "inline-block";
-        if (unreadAlerts.length > previousUnreadCount) {
-          badge.classList.remove("pulse");
-          void badge.offsetWidth;
-          badge.classList.add("pulse");
+      const alerts = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (
+          !data.targetUserId && !data.targetEmail || // global
+          data.targetUserId === currentUserId ||    // user-specific
+          data.targetEmail === currentUserEmail     // email match
+        ) {
+          alerts.push({ id: doc.id, ref: doc.ref, ...data });
         }
-      } else {
-        badge.style.display = "none";
+      });
+
+      // Sort: unread first
+      alerts.sort((a, b) => {
+        const aRead = a.readBy?.includes(currentUserId) || false;
+        const bRead = b.readBy?.includes(currentUserId) || false;
+        if (aRead !== bRead) return aRead ? 1 : -1;
+        return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
+      });
+
+      const unreadAlerts = alerts.filter(a => !a.readBy?.includes(currentUserId));
+
+      // Update badge
+      if (badge) {
+        if (unreadAlerts.length > 0) {
+          badge.textContent = unreadAlerts.length;
+          badge.style.display = "inline-block";
+        } else {
+          badge.style.display = "none";
+        }
       }
-    }
-    previousUnreadCount = unreadAlerts.length;
 
-    let alertsHTML = `
-      <div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
-        ${unreadAlerts.length > 0 && currentUserId ? `
-          <button onclick="confirmMarkAllAlertsAsRead(${unreadAlerts.length})"
-            style="background:#4caf50;color:white;border:none;padding:6px 12px;
+      // Render alerts
+      let alertsHTML = `
+        <div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+          ${unreadAlerts.length > 0 && currentUserId ? `
+            <button onclick="confirmMarkAllAlertsAsRead(${unreadAlerts.length})"
+              style="background:#4caf50;color:white;border:none;padding:6px 12px;
+              border-radius:6px;cursor:pointer;">
+              ✅ Mark All as Read (${unreadAlerts.length})
+            </button>` : ""}
+          <button onclick="confirmDeleteAllAlerts()"
+            style="background:#f44336;color:white;border:none;padding:6px 12px;
             border-radius:6px;cursor:pointer;">
-            ✅ Mark All as Read (${unreadAlerts.length})
-          </button>` : ""}
-        <button onclick="confirmDeleteAllAlerts()"
-          style="background:#f44336;color:white;border:none;padding:6px 12px;
-          border-radius:6px;cursor:pointer;">
-          🗑️ Delete All
-        </button>
-      </div>
-    `;
-
-    alerts.forEach(data => {
-      const alertId = data.id;
-      const timestamp = data.timestamp?.toDate
-        ? new Date(data.timestamp.toDate()).toLocaleString()
-        : "Unknown date";
-
-      const isRead = data.readBy?.includes(currentUserId);
-
-      const readButton = (!isRead && currentUserId)
-        ? `<button onclick="markAlertAsRead('${alertId}')"
-              style="background:#4caf50;color:white;border:none;padding:4px 8px;
-              border-radius:4px;font-size:12px;cursor:pointer;">
-              ✅ Mark as Read
-           </button>` 
-        : `<span style="color:${isRead ? 'green' : 'red'}; font-size:12px;">
-            ${isRead ? '✅ Read' : '🆕 Unread'}
-           </span>`;
-
-      const deleteButton = (data.userId === currentUserId || isAdmin)
-        ? `<button onclick="confirmDeleteAlert('${alertId}')"
-            style="background:#f44336;color:white;border:none;padding:4px 8px;
-            border-radius:4px;font-size:12px;cursor:pointer;">
-            🗑️ Delete
-           </button>`
-        : "";
-
-      alertsHTML += `
-        <div class="alert-card" style="
-          border-left:4px solid ${isRead ? '#4caf50' : '#f44336'}; 
-          padding:8px;
-          margin-bottom:10px;
-          box-shadow:0 1px 4px rgba(0,0,0,0.08);
-          border-radius:6px;
-          background:${isRead ? '#e0f7fa' : '#fff3e0'};">
-          <div class="alert-content">
-            <strong>${escapeHTML(data.title)}</strong><br>
-            ${escapeHTML(data.message)}<br>
-            <small>${timestamp}</small><br>
-            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
-              ${readButton}
-              ${deleteButton}
-            </div>
-          </div>
+            🗑️ Delete All
+          </button>
         </div>
       `;
+
+      alerts.forEach(data => {
+        const alertId = data.id;
+        const timestamp = data.timestamp?.toDate
+          ? new Date(data.timestamp.toDate()).toLocaleString()
+          : "Unknown date";
+
+        const isRead = data.readBy?.includes(currentUserId);
+
+        const readButton = (!isRead && currentUserId)
+          ? `<button onclick="markAlertAsRead('${alertId}')"
+                style="background:#4caf50;color:white;border:none;padding:4px 8px;
+                border-radius:4px;font-size:12px;cursor:pointer;">
+                ✅ Mark as Read
+             </button>`
+          : `<span style="color:#2196f3;font-size:14px;">✔✔</span>`; // two blue ticks if read
+
+        const deleteButton = (data.userId === currentUserId || isAdminEmail(currentUserEmail))
+          ? `<button onclick="confirmDeleteAlert('${alertId}')"
+              style="background:#f44336;color:white;border:none;padding:4px 8px;
+              border-radius:4px;font-size:12px;cursor:pointer;">
+              🗑️ Delete
+             </button>`
+          : "";
+
+        alertsHTML += `
+          <div id="alert-${alertId}" class="alert-card" style="
+            border-left:4px solid ${isRead ? '#2196f3' : '#f44336'}; 
+            padding:8px;
+            margin-bottom:10px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.08);
+            border-radius:6px;
+            background:${isRead ? '#e0f7fa' : '#fff3e0'};">
+            <div class="alert-content">
+              <strong>${escapeHTML(data.title)}</strong><br>
+              ${escapeHTML(data.message)}<br>
+              <small>${timestamp}</small><br>
+              <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+                ${readButton}
+                ${deleteButton}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      list.innerHTML = alertsHTML;
     });
-
-    list.innerHTML = alertsHTML;
-
-  } catch (err) {
-    console.error("❌ Error loading alerts:", err);
-    spinner.style.display = "none";
-    list.innerHTML = "<p style='color:#777;'>Failed to load alerts. Please try again.</p>";
-  }
 }
 
-
-
-
-// ✅ Escape HTML
+// ✅ Escape HTML helper
 function escapeHTML(str) {
   return str ? str.replace(/[&<>"']/g, tag =>
     ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[tag] || tag)
   ) : "";
 }
-// ✅ Mark Single Alert as Read
+
+
+
+// ✅ Confirm Mark All Alerts as Read
+function confirmMarkAllAlertsAsRead(unreadCount) {
+  showToastConfirm(`Mark all ${unreadCount} alerts as read?`, markAllAlertsAsRead);
+}
+
+// ✅ Mark Single Alert as Read 
 async function markAlertAsRead(alertId) {
   const currentUserId = auth.currentUser?.uid;
   if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
@@ -10798,9 +10812,21 @@ async function markAlertAsRead(alertId) {
       return showCustomAlert("⛔ You cannot mark this alert", "error");
     }
 
+    // 🔹 Update Firestore
     await alertRef.update({
       readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
     });
+
+    // 🔹 Update UI instantly
+    const alertElement = document.getElementById(`alert-${alertId}`);
+    if (alertElement) {
+      alertElement.style.background = "#e0f7fa"; // light blue
+      alertElement.style.borderLeft = "4px solid #2196f3"; // blue border
+      const readButton = alertElement.querySelector("button");
+      if (readButton && readButton.textContent.includes("Mark as Read")) {
+        readButton.outerHTML = `<span style="color:#2196f3;font-size:14px;">✔✔</span>`;
+      }
+    }
 
     showCustomAlert("✅ Alert marked as read", "success");
   } catch (error) {
@@ -10810,18 +10836,12 @@ async function markAlertAsRead(alertId) {
   }
 }
 
-// ✅ Confirm Mark All Alerts as Read
-function confirmMarkAllAlertsAsRead(unreadCount) {
-  showToastConfirm(`Mark all ${unreadCount} alerts as read?`, markAllAlertsAsRead);
-}
-
 // ✅ Mark All Alerts as Read
 async function markAllAlertsAsRead() {
   const currentUserId = auth.currentUser?.uid;
   if (!currentUserId) return showCustomAlert("❌ You must be logged in", "error");
 
   const isAdmin = isAdminEmail(auth.currentUser.email);
-
   const spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "flex";
 
@@ -10830,17 +10850,10 @@ async function markAllAlertsAsRead() {
     if (snapshot.empty) return showCustomAlert("ℹ️ No alerts to mark as read", "info");
 
     const batch = db.batch();
+
     snapshot.forEach(doc => {
       const data = doc.data();
-
-      // ✅ Admins can mark everything
-      if (isAdmin) {
-        batch.update(doc.ref, {
-          readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
-        });
-      }
-      // ✅ Normal users can only mark their own alerts
-      else if (data.targetUserId === currentUserId) {
+      if (isAdmin || data.targetUserId === currentUserId) {
         batch.update(doc.ref, {
           readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId)
         });
@@ -10848,13 +10861,25 @@ async function markAllAlertsAsRead() {
     });
 
     await batch.commit();
-    showCustomAlert("✅ Alerts marked as read", "success");
+
+    // 🔹 Update all visible alerts in UI instantly
+    document.querySelectorAll(".alert-card").forEach(card => {
+      const readButton = card.querySelector("button");
+      if (readButton && readButton.textContent.includes("Mark as Read")) {
+        readButton.outerHTML = `<span style="color:#2196f3;font-size:14px;">✔✔</span>`;
+      }
+      card.style.background = "#e0f7fa"; // light blue
+      card.style.borderLeft = "4px solid #2196f3"; // blue border
+    });
+
+    showCustomAlert("✅ All alerts marked as read", "success");
   } catch (error) {
     showCustomAlert("❌ Error marking alerts: " + error.message, "error");
   } finally {
     if (spinner) spinner.style.display = "none";
   }
 }
+
 
 // ✅ Confirm Delete Single Alert
 function confirmDeleteAlert(alertId) {
@@ -10870,15 +10895,13 @@ async function deleteAlert(alertId) {
   if (spinner) spinner.style.display = "flex";
 
   try {
-    // Delete from Firestore
     await db.collection("alerts").doc(alertId).delete();
 
-    // 🔄 Update localStorage
-    let alerts = JSON.parse(localStorage.getItem("alerts")) || [];
-    alerts = alerts.filter(alert => alert.id !== alertId);
-    localStorage.setItem("alerts", JSON.stringify(alerts));
+    // Track deleted in localStorage
+    let deletedAlerts = JSON.parse(localStorage.getItem("deletedAlerts")) || [];
+    if (!deletedAlerts.includes(alertId)) deletedAlerts.push(alertId);
+    localStorage.setItem("deletedAlerts", JSON.stringify(deletedAlerts));
 
-    // 🔄 Remove from UI
     const alertElement = document.getElementById(`alert-${alertId}`);
     if (alertElement) alertElement.remove();
 
@@ -10908,23 +10931,22 @@ async function deleteAllAlerts() {
     if (snapshot.empty) return showCustomAlert("ℹ️ No alerts to delete", "info");
 
     const batch = db.batch();
+    let deletedIds = JSON.parse(localStorage.getItem("deletedAlerts")) || [];
 
     snapshot.forEach(doc => {
       const data = doc.data();
-      // Only delete alerts belonging to the current user or admin
-      if (data.targetUserId === currentUserId || isAdminEmail(auth.currentUser.email)) {
+      if (data.targetUserId === currentUserId || isAdminEmail(auth.currentUser.email) || !data.targetUserId) {
         batch.delete(doc.ref);
+        deletedIds.push(doc.id);
       }
     });
 
     await batch.commit();
 
-    // 🔄 Clear localStorage
-    localStorage.removeItem("alerts");
+    localStorage.setItem("deletedAlerts", JSON.stringify(deletedIds));
 
-    // 🔄 Clear UI
     const alertsList = document.getElementById("alertsList");
-    if (alertsList) alertsList.innerHTML = "";
+    if (alertsList) alertsList.innerHTML = "<p style='color:#777;'>All alerts deleted.</p>";
 
     showCustomAlert("🗑️ All alerts deleted successfully", "success");
   } catch (error) {
@@ -10943,6 +10965,9 @@ function isAdminEmail(email) {
   ];
   return adminEmails.includes(email);
 }
+
+
+
 
 
 async function loadInterestCount(itemId) {
@@ -12357,113 +12382,112 @@ function showToastConfirm(message, onConfirm) {
   setTimeout(() => toast.remove(), 8000); // auto-hide
 }
 
-async function loadAdminNotifications() {
+// ✅ Real-Time Admin Notifications Loader
+let adminNotifUnsubscribe = null;
+
+function loadAdminNotifications() {
   const list = document.getElementById("notificationList");
   const spinner = document.getElementById("loadingSpinner");
 
-  // Show the spinner before starting the loading process
-  if (spinner) spinner.style.display = "flex"; 
-
+  if (spinner) spinner.style.display = "flex";
   list.innerHTML = "<p>Loading...</p>";
 
-  try {
-    const snapshot = await db.collection("adminNotifications")
-      .orderBy("timestamp", "desc")
-      .get();
+  // Detach previous listener if exists
+  if (adminNotifUnsubscribe) adminNotifUnsubscribe();
 
-    if (snapshot.empty) {
-      list.innerHTML = "<p style='color:#666; font-style: italic;'>No admin notifications yet.</p>";
-      updateAdminNotifBadge(0);
-      return;
-    }
+  // Listen for real-time updates
+  adminNotifUnsubscribe = db.collection("adminNotifications")
+    .orderBy("timestamp", "desc")
+    .onSnapshot(snapshot => {
+      if (!snapshot || snapshot.empty) {
+        list.innerHTML = "<p style='color:#666; font-style: italic;'>No admin notifications for now.</p>";
+        updateAdminNotifBadge(0);
+        if (spinner) spinner.style.display = "none";
+        return;
+      }
 
-    const notifications = [];
-    snapshot.forEach(doc => {
-      notifications.push({ id: doc.id, ref: doc.ref, ...doc.data() });
-    });
+      const notifications = [];
+      snapshot.forEach(doc => notifications.push({ id: doc.id, ref: doc.ref, ...doc.data() }));
 
-    // Sort unread first
-    notifications.sort((a, b) => {
-      if (a.read !== b.read) return a.read ? 1 : -1;
-      return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
-    });
+      // Sort unread first
+      notifications.sort((a, b) => {
+        if (a.read !== b.read) return a.read ? 1 : -1;
+        return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
+      });
 
-    const unreadCount = notifications.filter(n => !n.read).length;
-    updateAdminNotifBadge(unreadCount);
+      const unreadCount = notifications.filter(n => !n.read).length;
+      updateAdminNotifBadge(unreadCount);
 
-    let html = `
-      <li style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
-        ${unreadCount > 0 ? `
-          <button onclick="confirmMarkAllAdminNotificationsAsRead(${unreadCount})"
-            style="background:#4caf50;color:white;border:none;padding:6px 12px;
-            border-radius:6px;cursor:pointer;">
-            ✅ Mark All as Read (${unreadCount})
-          </button>` : ""}
-        <button onclick="confirmDeleteAllAdminNotifications()"
-          style="background:#f44336;color:white;border:none;padding:6px 12px;
-          border-radius:6px;cursor:pointer;">
-          🗑️ Delete All
-        </button>
-      </li>
-    `;
-
-    notifications.forEach(n => {
-      const color = getNotificationColor(n.type);
-      const timestamp = n.timestamp?.toDate
-        ? new Date(n.timestamp.toDate()).toLocaleString()
-        : "Unknown date";
-
-      html += `
-        <li style="
-          margin-bottom: 12px;
-          padding: 12px 16px;
-          border-radius: 10px;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          position: relative;
-          background: ${n.read ? '#e0f7fa' : '#fff3e0'};
-          border-left: 6px solid ${color};
-        "
-        onclick="openPostedItem('${(n.type || '').toLowerCase()}', '${n.itemId || ''}')"
-        onmouseenter="this.style.backgroundColor='#dcedc8'"
-        onmouseleave="this.style.backgroundColor='${n.read ? '#e0f7fa' : '#fff3e0'}'">
-
-          <strong style="font-size: 1.1em; color: ${color};">
-            ${escapeHTML(n.type || "Notification")}
-          </strong>
-          <span style="color:#333; line-height: 1.4;">
-            ${escapeHTML(n.message || "")}
-          </span>
-          <small style="color: #666; font-size: 0.85em;">${timestamp}</small>
-
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            ${!n.read ? `
-              <button onclick="event.stopPropagation(); markAdminNotificationAsRead('${n.id}')"
-                style="background:#4caf50;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">
-                Mark as Read
-              </button>` 
-              : `<span style="color:green;font-size:12px;">✅ Read</span>`}
-
-            <button onclick="event.stopPropagation(); confirmDeleteAdminNotification('${n.id}')"
-              style="background:#f44336;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">
-              🗑️ Delete
-            </button>
-          </div>
+      let html = `
+        <li style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+          ${unreadCount > 0 ? `
+            <button onclick="confirmMarkAllAdminNotificationsAsRead(${unreadCount})"
+              style="background:#4caf50;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">
+              ✅ Mark All as Read (${unreadCount})
+            </button>` : ""}
+          <button onclick="confirmDeleteAllAdminNotifications()"
+            style="background:#f44336;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">
+            🗑️ Delete All
+          </button>
         </li>
       `;
+
+      notifications.forEach(n => {
+        const color = getNotificationColor(n.type);
+        const timestamp = n.timestamp?.toDate
+          ? new Date(n.timestamp.toDate()).toLocaleString()
+          : "Unknown date";
+
+        const readTick = n.read
+          ? `<span style="color:#2196f3;font-size:14px;">✔✔</span>` // two blue ticks if read
+          : `<button onclick="event.stopPropagation(); markAdminNotificationAsRead('${n.id}')"
+              style="background:#4caf50;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">
+              Mark as Read
+             </button>`;
+
+        html += `
+          <li style="
+            margin-bottom: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            background: ${n.read ? '#e0f7fa' : '#fff3e0'};
+            border-left: 6px solid ${color};
+          "
+          onclick="openPostedItem('${(n.type || '').toLowerCase()}', '${n.itemId || ''}')"
+          onmouseenter="this.style.backgroundColor='#dcedc8'"
+          onmouseleave="this.style.backgroundColor='${n.read ? '#e0f7fa' : '#fff3e0'}'">
+
+            <strong style="font-size: 1.1em; color: ${color};">
+              ${escapeHTML(n.type || "Notification")}
+            </strong>
+            <span style="color:#333; line-height: 1.4;">
+              ${escapeHTML(n.message || "")}
+            </span>
+            <small style="color: #666; font-size: 0.85em;">${timestamp}</small>
+
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              ${readTick}
+              <button onclick="event.stopPropagation(); confirmDeleteAdminNotification('${n.id}')"
+                style="background:#f44336;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">
+                🗑️ Delete
+              </button>
+            </div>
+          </li>
+        `;
+      });
+
+      list.innerHTML = html;
+      if (spinner) spinner.style.display = "none";
+    }, err => {
+      console.error("❌ Error in admin notifications listener:", err);
+      if (spinner) spinner.style.display = "none";
     });
-
-    list.innerHTML = html;
-
-  } catch (err) {
-    list.innerHTML = `<p style="color:red;">Error loading notifications: ${err.message}</p>`;
-  } finally {
-    // Hide the spinner after the notifications are loaded
-    if (spinner) spinner.style.display = "none";  // Hide spinner
-  }
 
   function escapeHTML(str) {
     return str ? str.replace(/[&<>"']/g, tag =>
@@ -13008,89 +13032,6 @@ function hideLoadingSpinner() {
     document.getElementById("loadingSpinner").style.display = "none";
 }
 
-// Function to display the reset password request form
-function showPasswordReset() {
-    document.getElementById("loginForm").style.display = "none";
-    document.getElementById("resetRequestForm").style.display = "block";
-}
-
-// Function to hide the reset password request form and show login form
-function hidePasswordReset() {
-    document.getElementById("resetRequestForm").style.display = "none";
-    document.getElementById("resetPasswordForm").style.display = "none";
-    document.getElementById("loginForm").style.display = "block";
-}
-
-// Function to send the password reset link
-function sendResetLink(event) {
-    event.preventDefault();
-    const email = document.getElementById("resetEmail").value;
-
-    // Show the loading spinner
-    showLoadingSpinner();
-
-    // Use Firebase Authentication to send a password reset link
-    firebase.auth().sendPasswordResetEmail(email).then(() => {
-        hideLoadingSpinner(); // Hide the spinner after the process is done
-        showCustomAlert("Password reset link has been sent to your email.", "success");
-        hidePasswordReset();
-    }).catch((error) => {
-        hideLoadingSpinner(); // Hide the spinner in case of an error
-        showCustomAlert(error.message, "error");
-    });
-}
-
-// Function to handle the password reset after the user clicks the reset link
-function resetPassword(event) {
-    event.preventDefault();
-
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (newPassword === confirmPassword) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const oobCode = urlParams.get('oobCode'); // Get the reset code from URL
-
-        if (oobCode) {
-            // Show the loading spinner
-            showLoadingSpinner();
-
-            // Use Firebase to confirm the password reset
-            firebase.auth().confirmPasswordReset(oobCode, newPassword).then(() => {
-                hideLoadingSpinner(); // Hide the spinner after the process is done
-                showCustomAlert("Your password has been reset successfully!", "success");
-                window.location.href = '/login'; // Redirect to login page
-            }).catch((error) => {
-                hideLoadingSpinner(); // Hide the spinner in case of an error
-                showCustomAlert(error.message, "error");
-            });
-        } else {
-            showCustomAlert("Invalid or expired reset link.", "error");
-        }
-    } else {
-        showCustomAlert("Passwords do not match!", "error");
-    }
-}
-
-// Function to handle login (for demonstration purposes)
-function loginUser(event) {
-    event.preventDefault();
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-
-    // Show the loading spinner
-    showLoadingSpinner();
-
-    firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
-        hideLoadingSpinner(); // Hide the spinner after the process is done
-        showCustomAlert("Login successful", "success");
-        // Redirect or handle successful login
-    }).catch((error) => {
-        hideLoadingSpinner(); // Hide the spinner in case of an error
-        showCustomAlert(error.message, "error");
-    });
-}
-
 // Listen to scroll event on the container
 const container = document.getElementById("soulmateContainer");
 const endMessage = document.getElementById("endOfListMessage");
@@ -13120,47 +13061,38 @@ function closeMyChats() {
   document.getElementById("myChatsSection").style.display = "none";
 }
 
-   // Close fancy disclaimer
+// Close disclaimer and remember choice if requested
   function closeDisclaimerFancy() {
     const modal = document.getElementById('disclaimerModal');
     const dontShow = document.getElementById('dontShowAgain').checked;
+
     if (dontShow) {
-      sessionStorage.setItem('disclaimerShown', 'yes');
+      // Save permanent preference
+      localStorage.setItem('disclaimerHidden', 'true');
     }
-    modal.style.display = 'none';
+    
+    modal.style.display = 'none'; // close only when user acts
+    showThankYouAlert();
   }
 
-  // Show on page load if not previously dismissed
-  window.addEventListener('load', () => {
-    if (!sessionStorage.getItem('disclaimerShown')) {
-      document.getElementById('disclaimerModal').style.display = 'flex';
-    } else {
-      document.getElementById('disclaimerModal').style.display = 'none';
-    }
-  });
-  // Function to show the thank-you alert
+  // Thank-you alert (disappears automatically)
   function showThankYouAlert() {
     const alertBox = document.getElementById('thankYouAlert');
     alertBox.style.display = 'block';
 
-    // Automatically hide after 4 seconds
     setTimeout(() => {
       alertBox.style.display = 'none';
     }, 4000);
   }
 
-  // Example: show alert when user clicks "I Understand" on disclaimer
-  function closeDisclaimerFancy() {
-    const modal = document.getElementById('disclaimerModal');
-    const dontShow = document.getElementById('dontShowAgain').checked;
-    if (dontShow) {
-      sessionStorage.setItem('disclaimerShown', 'yes');
+  // Show disclaimer only if never dismissed with "don't show again"
+  window.addEventListener('load', () => {
+    if (!localStorage.getItem('disclaimerHidden')) {
+      document.getElementById('disclaimerModal').style.display = 'flex';
+    } else {
+      document.getElementById('disclaimerModal').style.display = 'none';
     }
-    modal.style.display = 'none';
-    
-    // Show thank-you alert
-    showThankYouAlert();
-  }
+  });
 (function() {
   const priceRegex = /Ksh\.?\s*([0-9]+)/gi;
 
