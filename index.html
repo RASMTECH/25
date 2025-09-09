@@ -2131,7 +2131,33 @@ button:hover {
   display: none;
 }
 
+/* Background images for each modal */
+.register-bg {
+  background: url('https://i.imgur.com/oWpi8PT.jpeg') no-repeat center center;
+  background-size: cover;
+  color: white; /* make text readable */
+}
 
+.login-bg {
+  background: url('https://i.imgur.com/1fafhnF.jpeg') no-repeat center center;
+  background-size: cover;
+  color: white; /* make text readable */
+}
+
+/* Optional: make inputs stand out */
+.register-bg form input,
+.login-bg form input {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.register-bg h2,
+.login-bg h2 {
+  text-shadow: 1px 1px 3px #000;
+}
 </style>
 </head>
 <body>
@@ -2861,7 +2887,7 @@ button:hover {
    </div>
 <!-- Register Modal (HIDDEN by default) -->
 <div id="registerModal" class="modal" style="display:none;">
-  <div class="modal-content">
+  <div class="modal-content register-bg">
     <span class="close" onclick="closeModal('registerModal')">&times;</span>
     <h2><i class="fas fa-user-shield" style="color:#f44336; margin-right: 8px;"></i> Register</h2>
     <form id="registerForm">
@@ -2878,7 +2904,7 @@ button:hover {
 
 <!-- Login Modal (HIDDEN by default) -->
 <div id="loginModal" class="modal" style="display:none;">
-  <div class="modal-content">
+  <div class="modal-content login-bg">
     <span class="close" onclick="closeModal('loginModal')">&times;</span>
     <h2><i class="fas fa-sign-in-alt" style="color:#2196f3; margin-right: 8px;"></i> Login</h2>
 
@@ -2923,7 +2949,6 @@ button:hover {
     </div>
   </div>
 </div>
-
  
 
     <div id="swaps" class="page" style="display:none;">
@@ -4758,19 +4783,26 @@ const marketRef = db.collection("marketItems");
       console.error("Error loading payment status:", error.message);
     }
   }
+// ✅ Global helper to check if user is admin
+async function checkIfAdmin(user) {
+  if (!user) return false;
+  try {
+    const doc = await db.collection("admins").doc(user.uid).get();
+    return doc.exists; // ✅ true if UID exists in admins collection
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+}
+
 // ✅ Monitor Auth State
 auth.onAuthStateChanged(async user => {
   if (user) {
     currentUser = user;
     isLoggedIn = true;
 
-    const adminEmails = [
-      "mashabiki@teacherswapskenya.com",
-      "sironga@teacherswapskenya.com",
-      "sironga1@teacherswapskenya.com",
-      "admin@teacherswapskenya.com"
-    ];
-    isAdmin = adminEmails.includes(user.email); // Set isAdmin based on user email
+    // 🔹 Firestore-based admin check
+    isAdmin = await checkIfAdmin(user);
 
     await loadUserPaymentStatus(); // ✅ Load payment info immediately after login
 
@@ -4783,10 +4815,10 @@ auth.onAuthStateChanged(async user => {
       updateAdminNotifBadge();
 
       // Show admin upload form for admins only
-      document.getElementById('adminUploadForm').style.display = 'block';
+      document.getElementById("adminUploadForm").style.display = "block";
     } else {
       // Hide upload form for non-admin users
-      document.getElementById('adminUploadForm').style.display = 'none';
+      document.getElementById("adminUploadForm").style.display = "none";
     }
 
     // Toggle Admin Notifications button visibility
@@ -4803,7 +4835,7 @@ auth.onAuthStateChanged(async user => {
     showPage("home");
 
     // Ensure the admin upload form is hidden when logged out
-    document.getElementById('adminUploadForm').style.display = 'none';
+    document.getElementById("adminUploadForm").style.display = "none";
   }
 });
 
@@ -6676,9 +6708,10 @@ function renderBOMJobs(jobs) {
       text-align: center;
     `;
 
-    const isPoster = currentUser && (job.posterUid === currentUser.uid);
-    const isAdmin = currentUser && ["mashabiki@teacherswapskenya.com","sironga1@teacherswapskenya.com","admin1@teacherswapskenya.com"].includes(currentUser.email);
-    const isVerified = !!job.verified;
+   const isPoster = currentUser && (job.posterUid === currentUser.uid);
+const isAdminUser = !!window.isAdmin; // explicitly grab global
+const isVerified = !!job.verified;
+
 
     const badge = isVerified ? `<div class="verified-badge"><i class="fas fa-check-circle"></i> Verified</div>` : "";
     const verifyButton = (!isVerified && isAdmin) ? `<button onclick="adminVerifyItem('job','${job.id}')" style="background:#4CAF50;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">✅ Verify Now (Admin)</button>` : "";
@@ -7333,14 +7366,14 @@ async function closeJob(jobId) {
       return;
     }
 
-    // Check if user is admin or the poster
-    const isAdmin = ["mashabiki@teacherswapskenya.com", "sironga1@teacherswapskenya.com", "admin1@teacherswapskenya.com"].includes(currentUser.email);
-    const isPoster = currentUser.uid === jobData.postedBy;
+// ✅ Check if user is admin or the poster
+const isPoster = currentUser?.uid === jobData.postedBy;
+const isAdminUser = !!isAdmin; // reuse global flag
 
-    if (!isAdmin && !isPoster) {
-      showCustomAlert("❌ You do not have permission to change job status.", "error");
-      return;
-    }
+if (!isAdminUser && !isPoster) {
+  showCustomAlert("❌ You do not have permission to change job status.", "error");
+  return;
+}
 
     const currentStatus = jobData.isClosed || false;
     const newStatus = !currentStatus;
@@ -8228,13 +8261,9 @@ async function verifySoulmateDirectly(soulmateId) {
 }
 async function handleSoulmateAction(id, action) {
   const userEmail = currentUser?.email || "";
-  const adminEmails = [
-    "mashabiki@teacherswapskenya.com",
-    "sironga1@teacherswapskenya.com",
-    "admin1@teacherswapskenya.com"
-  ];
 
-  const isAdminUser = adminEmails.includes(userEmail);
+  // ✅ Use global isAdmin instead of hardcoded emails
+  const isAdminUser = !!isAdmin;
 
   // Show the spinner while processing
   document.getElementById("loadingSpinner").style.display = "flex";
@@ -8680,17 +8709,16 @@ async function loadServices() {
     const nowTime = new Date();
     let hasServiceAccess = false;
 
-    const isAdminUser = currentUser?.email && [
-      "mashabiki@teacherswapskenya.com",
-      "sironga1@teacherswapskenya.com",
-      "admin1@teacherswapskenya.com"
-    ].includes(currentUser.email);
+  // ✅ Use global isAdmin (set in onAuthStateChanged)
+const isAdminUser = !!isAdmin;
 
-    if (currentUser?.uid) {
-      const doc = await firebase.firestore().collection("users").doc(currentUser.uid).get();
-      hasServiceAccess = doc.exists && doc.data()?.paidForService === true;
-      if (hasServiceAccess) localStorage.setItem("paidForService", "yes");
-    }
+if (currentUser?.uid) {
+  const doc = await firebase.firestore().collection("users").doc(currentUser.uid).get();
+  hasServiceAccess = doc.exists && doc.data()?.paidForService === true;
+  if (hasServiceAccess) {
+    localStorage.setItem("paidForService", "yes");
+  }
+}
 
     const boosted = [], normal = [];
 
@@ -10956,19 +10984,17 @@ async function deleteAllAlerts() {
   }
 }
 
-// 🔑 Helper: Admin email check
-function isAdminEmail(email) {
-  const adminEmails = [
-    "mashabiki@teacherswapskenya.com",
-    "sironga1@teacherswapskenya.com",
-    "admin1@teacherswapskenya.com"
-  ];
-  return adminEmails.includes(email);
+// 🔑 Helper: Admin check using Firestore
+async function isAdminUser(user) {
+  if (!user) return false;
+  try {
+    const doc = await db.collection("admins").doc(user.uid).get();
+    return doc.exists; // true if UID exists in admins collection
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
 }
-
-
-
-
 
 async function loadInterestCount(itemId) {
   try {
@@ -11076,18 +11102,31 @@ async function loadReviews(section, itemId, intoModal = false) {
       return;
     }
 
-    const currentUser = auth.currentUser;
-    const currentEmail = currentUser?.email || "";
-    const isAdmin = [
-      "mashabiki@teacherswapskenya.com",
-      "sironga1@teacherswapskenya.com",
-      "admin1@teacherswapskenya.com"
-    ].includes(currentEmail);
+    // ✅ Reusable helper: check admin from Firestore
+async function checkIfAdmin(user) {
+  if (!user) return false;
+  try {
+    const doc = await db.collection("admins").doc(user.uid).get();
+    return doc.exists; // true if UID exists in admins
+  } catch (err) {
+    console.error("Error checking admin status:", err);
+    return false;
+  }
+}
 
-    snapshot.forEach(doc => {
-      const review = doc.data();
-      const reviewId = doc.id;
-      const isOwner = currentEmail === review.email;
+// ✅ Usage inside your snapshot handling
+const currentUser = auth.currentUser;
+const currentEmail = currentUser?.email || "";
+
+// 🔹 Check if current user is admin
+const isAdmin = await checkIfAdmin(currentUser);
+
+snapshot.forEach(doc => {
+  const review = doc.data();
+  const reviewId = doc.id;
+
+  // User owns this review if their email matches
+  const isOwner = currentEmail === review.email;
 
       const div = document.createElement("div");
       div.className = "review";
@@ -11302,13 +11341,17 @@ async function loadUserNotifications() {
     console.log("🔔", notif.message);
   });
 }
-// ✅ Admin emails
-const adminEmails = [
-  "mashabiki@teacherswapskenya.com",
-  "sironga@teacherswapskenya.com",
-  "sironga1@teacherswapskenya.com",
-  "admin@teacherswapskenya.com"
-];
+// ✅ Check admin status from Firestore (by UID)
+async function checkIfAdmin(user) {
+  try {
+    const doc = await db.collection("admins").doc(user.uid).get();
+    return doc.exists; // true if UID exists in admins collection
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+}
+
 // ======================= Custom Modal =======================
 // Create a reusable modal for user input if it doesn't exist
 function ensureInterestModal() {
@@ -13195,24 +13238,30 @@ function closeMyChats() {
     document.getElementById("pricePopup").style.display = "none";
   });
 
-  // ✅ Hook into your auth state
-  auth.onAuthStateChanged(async user => {
-    if (user) {
-      const adminEmails = [
-        "mashabiki@teacherswapskenya.com",
-        "sironga@teacherswapskenya.com",
-        "sironga1@teacherswapskenya.com",
-        "admin@teacherswapskenya.com"
-      ];
-      const isAdmin = adminEmails.includes(user.email);
+// ✅ Helper: Check if user is admin from Firestore (by UID)
+async function checkIfAdmin(user) {
+  try {
+    const doc = await db.collection("admins").doc(user.uid).get();
+    return doc.exists; // true if UID exists in admins collection
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+}
 
-      if (isAdmin) {
-        document.getElementById("scanPricesBtn").style.display = "block";
-      } else {
-        document.getElementById("scanPricesBtn").style.display = "none";
-      }
+// ✅ Hook into your auth state
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    const isAdmin = await checkIfAdmin(user);
+
+    if (isAdmin) {
+      document.getElementById("scanPricesBtn").style.display = "block";
     } else {
       document.getElementById("scanPricesBtn").style.display = "none";
+    }
+  } else {
+    document.getElementById("scanPricesBtn").style.display = "none";
+
     }
   });
 })();
@@ -13243,43 +13292,51 @@ async function loadPayments() {
   }
 }
 
-// Auth check → Show button only for admins
+// ✅ Helper: Check if user is admin from Firestore
+async function checkIfAdmin(user) {
+  try {
+    const doc = await db.collection("admins").doc(user.uid).get();
+    return doc.exists; // true if UID is listed in "admins" collection
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+}
+
+// ✅ Auth check → Show button only for admins
 auth.onAuthStateChanged(async user => {
   if (user) {
-    const adminEmails = [
-      "mashabiki@teacherswapskenya.com",
-      "sironga@teacherswapskenya.com",
-      "sironga1@teacherswapskenya.com",
-      "admin@teacherswapskenya.com"
-    ];
-    const isAdmin = adminEmails.includes(user.email);
+    const isAdmin = await checkIfAdmin(user);
 
     if (isAdmin) {
       document.getElementById("viewPaymentsBtn").style.display = "inline-block";
 
-      // When admin clicks button → show dashboard + load payments
+      // Show dashboard & load payments when admin clicks
       document.getElementById("viewPaymentsBtn").addEventListener("click", () => {
         document.getElementById("paymentsDashboard").style.display = "block";
         loadPayments();
       });
+    } else {
+      // Hide button for non-admins
+      document.getElementById("viewPaymentsBtn").style.display = "none";
     }
+  } else {
+    // Logged out → hide button + dashboard
+    document.getElementById("viewPaymentsBtn").style.display = "none";
+    document.getElementById("paymentsDashboard").style.display = "none";
   }
 });
-// Show payments
-document.getElementById("viewPaymentsBtn").addEventListener("click", () => {
-  document.getElementById("paymentsDashboard").style.display = "block";
-  loadPayments();
-});
 
-// Close button
+// ✅ Close button
 document.getElementById("closePaymentsBtn").addEventListener("click", () => {
   document.getElementById("paymentsDashboard").style.display = "none";
 });
 
-// Refresh button
+// ✅ Refresh button
 document.getElementById("refreshPaymentsBtn").addEventListener("click", () => {
   loadPayments();
 });
+
 
 </script>
 
