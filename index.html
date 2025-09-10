@@ -5212,6 +5212,7 @@ async function showPage(pageId) {
     return;
   }
 
+
   if (pageId === "alerts" && !isLoggedIn) {
     showCustomAlert("You must be logged in to view alerts.", "error");
     showPage("login");
@@ -10675,48 +10676,90 @@ async function deleteEntireChat(otherUserId) {
     confirmDiv.remove();
   };
 }
-// ✅ Real-Time Global Alerts Loading
+// ✅ Global Alerts Loading Handler (Real-Time)
 function loadAlerts() {
   const container = document.getElementById("marketAlerts");
   const list = document.getElementById("alertsList");
   const badge = document.getElementById("alertsBadge");
+  const spinner = document.getElementById("loadingSpinner");
 
+  // Hide container and show spinner while loading
+  container.style.display = "none";
+  spinner.style.display = "flex";
+  list.innerHTML = "<p>Loading alerts...</p>";
+
+  // Check if user is logged in
   if (!isLoggedIn) {
     showCustomAlert("You must be logged in to view alerts.", "error");
     showPage("login");
     return;
   }
 
+  // Show the container after checks
   container.style.display = "block";
-  list.innerHTML = "<p>Loading alerts...</p>";
 
-  const currentUserId = auth.currentUser?.uid;
-  const currentUserEmail = auth.currentUser?.email;
+  // Add badge animation style if not already added
+  if (!document.getElementById("alertsBadgeStyles")) {
+    const style = document.createElement("style");
+    style.id = "alertsBadgeStyles";
+    style.textContent = `
+      @keyframes pulseBadge {
+        0% { transform: scale(1); background-color: #f44336; }
+        50% { transform: scale(1.2); background-color: #e53935; }
+        100% { transform: scale(1); background-color: #f44336; }
+      }
+      .pulse { animation: pulseBadge 0.6s ease; }
+    `;
+    document.head.appendChild(style);
+  }
 
-  // Listen for real-time updates
-  db.collection("alerts")
+  const currentUserId = auth.currentUser?.uid || null;
+  const currentUserEmail = auth.currentUser?.email || null;
+  let previousUnreadCount = 0;
+
+  // Real-time listener for alerts from Firestore
+  return db.collection("alerts")
     .orderBy("timestamp", "desc")
     .limit(50)
     .onSnapshot(snapshot => {
+      // Debugging: Log the snapshot
+      console.log("Snapshot received:", snapshot);  // This will log the snapshot object
+
+      spinner.style.display = "none";
+
+      // If no alerts are returned
       if (snapshot.empty) {
-        list.innerHTML = "<p style='color:#777;'>No alerts for now.</p>";
+        console.log("No alerts found.");  // Debugging: Log when no alerts are found
+        list.innerHTML = "<p style='color:#777;'>No alerts yet.</p>";
         if (badge) badge.style.display = "none";
+        previousUnreadCount = 0;
         return;
       }
 
+      // Load deleted alerts from localStorage
+      const deletedAlerts = JSON.parse(localStorage.getItem("deletedAlerts")) || [];
       const alerts = [];
+
       snapshot.forEach(doc => {
         const data = doc.data();
+
+        // Debugging: Log each alert document
+        console.log("Alert data:", data);  // This will log each alert's data
+
+        // Skip deleted alerts
+        if (deletedAlerts.includes(doc.id)) return;
+
+        // Check if the alert is global or specific to the current user
         if (
           !data.targetUserId && !data.targetEmail || // global
-          data.targetUserId === currentUserId ||    // user-specific
+          data.targetUserId === currentUserId ||    // user specific
           data.targetEmail === currentUserEmail     // email match
         ) {
           alerts.push({ id: doc.id, ref: doc.ref, ...data });
         }
       });
 
-      // Sort: unread first
+      // Sort unread alerts first
       alerts.sort((a, b) => {
         const aRead = a.readBy?.includes(currentUserId) || false;
         const bRead = b.readBy?.includes(currentUserId) || false;
@@ -10724,19 +10767,29 @@ function loadAlerts() {
         return (b.timestamp?.toDate?.() || 0) - (a.timestamp?.toDate?.() || 0);
       });
 
+      // Filter unread alerts
       const unreadAlerts = alerts.filter(a => !a.readBy?.includes(currentUserId));
 
-      // Update badge
+      // Debugging: Log unread alerts
+      console.log("Unread alerts:", unreadAlerts);  // This will log the unread alerts
+
+      // Update the badge for unread alerts
       if (badge) {
         if (unreadAlerts.length > 0) {
           badge.textContent = unreadAlerts.length;
           badge.style.display = "inline-block";
+          if (unreadAlerts.length > previousUnreadCount) {
+            badge.classList.remove("pulse");
+            void badge.offsetWidth; // Trigger the animation reset
+            badge.classList.add("pulse");
+          }
         } else {
           badge.style.display = "none";
         }
       }
+      previousUnreadCount = unreadAlerts.length;
 
-      // Render alerts
+      // Create the HTML for alerts
       let alertsHTML = `
         <div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
           ${unreadAlerts.length > 0 && currentUserId ? `
@@ -10753,6 +10806,7 @@ function loadAlerts() {
         </div>
       `;
 
+      // Loop through alerts and generate HTML for each
       alerts.forEach(data => {
         const alertId = data.id;
         const timestamp = data.timestamp?.toDate
@@ -10766,20 +10820,22 @@ function loadAlerts() {
                 style="background:#4caf50;color:white;border:none;padding:4px 8px;
                 border-radius:4px;font-size:12px;cursor:pointer;">
                 ✅ Mark as Read
-             </button>`
-          : `<span style="color:#2196f3;font-size:14px;">✔✔</span>`; // two blue ticks if read
+             </button>` 
+          : `<span style="color:${isRead ? 'green' : 'red'}; font-size:12px;">
+              ${isRead ? '✅ Read' : '🆕 Unread'}
+             </span>`;
 
-        const deleteButton = (data.userId === currentUserId || isAdminEmail(currentUserEmail))
+        const deleteButton = (data.userId === currentUserId || isAdminEmail(auth.currentUser.email))
           ? `<button onclick="confirmDeleteAlert('${alertId}')"
               style="background:#f44336;color:white;border:none;padding:4px 8px;
               border-radius:4px;font-size:12px;cursor:pointer;">
               🗑️ Delete
-             </button>`
+             </button>` 
           : "";
 
         alertsHTML += `
           <div id="alert-${alertId}" class="alert-card" style="
-            border-left:4px solid ${isRead ? '#2196f3' : '#f44336'}; 
+            border-left:4px solid ${isRead ? '#4caf50' : '#f44336'}; 
             padding:8px;
             margin-bottom:10px;
             box-shadow:0 1px 4px rgba(0,0,0,0.08);
@@ -10798,9 +10854,16 @@ function loadAlerts() {
         `;
       });
 
+      // Insert the alerts HTML into the list
       list.innerHTML = alertsHTML;
+
+    }, err => {
+      console.error("❌ Error loading alerts:", err);
+      spinner.style.display = "none";
+      list.innerHTML = "<p style='color:#777;'>Failed to load alerts. Please try again.</p>";
     });
 }
+
 
 // ✅ Escape HTML helper
 function escapeHTML(str) {
@@ -10984,17 +11047,33 @@ async function deleteAllAlerts() {
   }
 }
 
+
 // 🔑 Helper: Admin check using Firestore
-async function isAdminUser(user) {
-  if (!user) return false;
-  try {
-    const doc = await db.collection("admins").doc(user.uid).get();
-    return doc.exists; // true if UID exists in admins collection
-  } catch (error) {
-    console.error("Error checking admin status:", error);
+function isAdminEmail() {
+  const user = firebase.auth().currentUser;
+
+  if (!user) {
+    console.log('No user is logged in.');
     return false;
   }
+
+  const userRef = firebase.firestore().collection("users").doc(user.uid);
+
+  // Fetch the user's role from Firestore
+  return userRef.get().then(doc => {
+    if (doc.exists && doc.data().role === "admin") {
+      console.log("User is an admin.");
+      return true;  // User is an admin
+    } else {
+      console.log("User is not an admin.");
+      return false; // User is not an admin
+    }
+  }).catch(error => {
+    console.log("Error checking admin status:", error);
+    return false;  // Error in checking
+  });
 }
+
 
 async function loadInterestCount(itemId) {
   try {
@@ -11535,13 +11614,6 @@ async function showMarketInterest(itemId) {
     if (spinner) spinner.style.display = "none";
   }
 }
-
-
-
-
-
-
-
 async function openEditForm(itemId) {
   const itemRef = marketRef.doc(itemId);
 
@@ -11918,34 +11990,24 @@ function resetMarketFilters() {
   filterMarketItems();
 }
 
+// ✅ Show payment modal
 function showPaymentModalFor(type, amount, itemId, itemName) {
-  // ✅ Decide modal title dynamically
   let titleText = "Pay to Unlock";
-
-  // Normalize type to lowercase for safety
   const normalizedType = type.toLowerCase();
 
-  if (normalizedType === "boost") {
-    titleText = "Pay to Boost";  // For boost
-  } 
-  else if (normalizedType === "unlock") {
-    titleText = "Pay to Unlock Contacts";  // For unlock contacts
-  } 
-  else if (normalizedType.endsWith("verification")) {
-    titleText = "Pay for Verification";  // For all verification types
-  }
+  if (normalizedType === "boost") titleText = "Pay to Boost";
+  else if (normalizedType === "unlock") titleText = "Pay to Unlock Contacts";
+  else if (normalizedType.endsWith("verification")) titleText = "Pay for Verification";
 
-  // Remove existing modal if present
   const existingModal = document.getElementById("universalPayModal");
   if (existingModal) existingModal.remove();
 
-  // Determine highest z-index in the document
   let maxZ = 1000;
   document.querySelectorAll("body *").forEach(el => {
     const z = parseInt(window.getComputedStyle(el).zIndex);
     if (!isNaN(z) && z > maxZ) maxZ = z;
   });
-  const modalZIndex = maxZ + 1; // ensure modal is on top
+  const modalZIndex = maxZ + 1;
 
   const modalHTML = `
     <div id="universalPayModal" class="modal" style="
@@ -11973,7 +12035,7 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
       ">
         <h3 style="color:#2c3e50;">${titleText}: <span style="color:#4CAF50;">${itemName}</span></h3>
         <p style="font-size:16px;">Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong></p>
-        <input type="tel" id="universalPhone" placeholder="Enter your MPESA number (e.g. 0712345678)"
+        <input type="tel" id="universalPhone" placeholder="Enter your MPESA number (07XXXXXXXX)"
                style="padding:10px; width:100%; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;" />
         <button onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
                 style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:6px; font-weight:bold;">
@@ -11985,71 +12047,115 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
           ❌ Cancel
         </button>
         <p id="universalPaymentStatus" style="margin-top:10px; color:#555;"></p>
+        <p id="universalCountdown" style="margin-top:5px; color:#007bff; font-weight:bold;"></p>
       </div>
     </div>
   `;
 
   document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+  // ✅ Countdown timer (2 minutes)
+  let countdown = 120; 
+  const countdownEl = document.getElementById("universalCountdown");
+  const interval = setInterval(() => {
+    const minutes = Math.floor(countdown / 60);
+    const seconds = countdown % 60;
+    countdownEl.innerText = `⏳ Waiting for payment... ${minutes}:${seconds.toString().padStart(2,"0")}`;
+    countdown--;
+
+    if (countdown < 0) {
+      clearInterval(interval);
+      countdownEl.innerText = "⌛ Payment window expired. Please try again.";
+    }
+  }, 1000);
 }
 
+// ✅ Close modal
 function closeUniversalModal() {
   const modal = document.getElementById("universalPayModal");
   if (modal) modal.remove();
 }
 
-
-
-// ✅ Initiates STK Push and uses consistent accountReference
+// ✅ Initiate STK Push & poll server for payment
 async function initiateStkPayment(type, amount, itemId, itemName) {
-  const phone = document.getElementById("universalPhone").value.trim();
+  const phoneInput = document.getElementById("universalPhone").value.trim();
   const statusEl = document.getElementById("universalPaymentStatus");
-  if (!/^07\d{8}$/.test(phone)) {
+
+  // Validate phone number
+  if (!/^07\d{8}$/.test(phoneInput)) {
     statusEl.innerText = "⚠️ Please enter a valid Safaricom number";
     return;
   }
 
+  // Convert to 254 format required by Safaricom
+  const formattedPhone = "254" + phoneInput.slice(1);
+
   statusEl.innerText = "⏳ Sending STK Push...";
   const userId = currentUser?.uid || "anonymous";
-  const accountReference = `${type}_${itemId}_${userId}`; // ✅ Consistent reference
+  const accountReference = `${userId}_${Date.now()}`; // unique per payment
 
   try {
-    const response = await fetch("http://localhost:3000/stkpush", {
+    // ✅ Replace with your active ngrok HTTPS URL
+    const response = await fetch("https://4d15fe0ab110.ngrok-free.app/stkpush", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone, amount, accountReference, itemId, itemName, userId })
+      body: JSON.stringify({
+        phone: formattedPhone,
+        amount,
+        accountReference,
+        itemId,
+        itemName,
+        userId
+      })
     });
 
     const data = await response.json();
-    if (data.success) {
-      statusEl.innerText = "✅ STK Push sent. Please complete payment on your phone.";
 
-      // ✅ Listen to Firestore payments collection for this accountReference
-      const paymentRef = firebase.firestore().collection("payments").doc(accountReference);
-      const unsubscribe = paymentRef.onSnapshot(async (doc) => {
-        if (doc.exists && doc.data().status === "paid") {
-          // Payment completed, update boosts/unlocks/verifications
-          handlePaymentSuccess(type, itemId, itemName, userId);
-          unsubscribe(); // stop listening
-          closeUniversalModal();
-        }
-      });
-
-    } else {
-      statusEl.innerText = `❌ Error: ${data.errorMessage || "Unknown failure"}`;
+    // Check for MPESA errors
+    if (data.ResponseCode !== "0") {
+      statusEl.innerText = `❌ Error: ${data.errorMessage || data.ResultDesc || "Unknown failure"}`;
+      return;
     }
+
+    statusEl.innerText = "✅ STK Push sent. Complete payment on your phone.";
+
+    // ✅ Poll backend every 3 seconds for payment status
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`https://4d15fe0ab110.ngrok-free.app/payment-status/${accountReference}`);
+        const statusData = await res.json();
+
+        if (statusData.ResultCode !== undefined) {
+          if (statusData.ResultCode === 0) {
+            statusEl.innerText = "🎉 Payment successful!";
+            clearInterval(interval);
+            handlePaymentSuccess(type, itemId, itemName, userId);
+            setTimeout(closeUniversalModal, 1500);
+          } else if (statusData.ResultCode !== 0) {
+            statusEl.innerText = `❌ Payment failed: ${statusData.ResultDesc}`;
+            clearInterval(interval);
+          }
+        }
+      } catch (err) {
+        statusEl.innerText = "❌ Network error while checking payment: " + err.message;
+        clearInterval(interval);
+      }
+    }, 3000);
+
   } catch (err) {
     statusEl.innerText = "❌ Network error: " + err.message;
   }
 }
 
-// ✅ Handles Firestore updates after payment
+
+// ✅ Handles Firestore updates after successful payment
 async function handlePaymentSuccess(type, itemId, itemName, userId) {
   const now = new Date();
   const isoNow = now.toISOString();
   const userRef = userId !== "anonymous" ? firebase.firestore().collection("users").doc(userId) : null;
 
   if (type === "soulmate") {
-    const boostExpiry = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const boostExpiry = new Date(now.getTime() + 7*24*60*60*1000);
     await firebase.firestore().collection("soulmates").doc(itemId).update({ boosted: true, boostExpiry });
     showCustomAlert("✅ Soulmate profile boosted successfully!", "success");
     loadSoulmates();
@@ -12078,6 +12184,7 @@ async function handlePaymentSuccess(type, itemId, itemName, userId) {
     loadSoulmates();
   }
 }
+
 
 function closeUniversalModal() {
   const modal = document.getElementById("universalPayModal");
