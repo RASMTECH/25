@@ -11992,7 +11992,7 @@ function resetMarketFilters() {
   filterMarketItems();
 }
 
-// ✅ Show payment modal
+// ✅ Show Payment Modal
 function showPaymentModalFor(type, amount, itemId, itemName) {
   let titleText = "Pay to Unlock";
   const normalizedType = type.toLowerCase();
@@ -12001,43 +12001,21 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
   else if (normalizedType === "unlock") titleText = "Pay to Unlock Contacts";
   else if (normalizedType.endsWith("verification")) titleText = "Pay for Verification";
 
+  // Remove existing modal
   const existingModal = document.getElementById("universalPayModal");
   if (existingModal) existingModal.remove();
 
-  let maxZ = 1000;
-  document.querySelectorAll("body *").forEach(el => {
-    const z = parseInt(window.getComputedStyle(el).zIndex);
-    if (!isNaN(z) && z > maxZ) maxZ = z;
-  });
-  const modalZIndex = maxZ + 1;
-
   const modalHTML = `
     <div id="universalPayModal" class="modal" style="
-         display:flex;
-         justify-content:center;
-         align-items:center;
-         position:fixed;
-         top:0;
-         left:0;
-         width:100%;
-         height:100%;
-         background:rgba(0,0,0,0.6);
-         z-index:${modalZIndex};
-    ">
+         display:flex; justify-content:center; align-items:center;
+         position:fixed; top:0; left:0; width:100%; height:100%;
+         background:rgba(0,0,0,0.6); z-index:9999;">
       <div class="modal-content" style="
-           padding:20px;
-           background:#f9f9ff;
-           border:2px solid #4CAF50;
-           width:80%;
-           max-width:400px;
-           border-radius:10px;
-           text-align:center;
-           box-shadow:0 0 10px rgba(0,0,0,0.3);
-           position:relative;
-      ">
+           padding:20px; background:#f9f9ff; border:2px solid #4CAF50;
+           width:80%; max-width:400px; border-radius:10px; text-align:center;">
         <h3 style="color:#2c3e50;">${titleText}: <span style="color:#4CAF50;">${itemName}</span></h3>
         <p style="font-size:16px;">Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong></p>
-        <input type="tel" id="universalPhone" placeholder="Enter your MPESA number (07XXXXXXXX)"
+        <input type="tel" id="universalPhone" placeholder="Enter your MPESA number (e.g. 0712345678)"
                style="padding:10px; width:100%; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;" />
         <button onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
                 style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:6px; font-weight:bold;">
@@ -12053,18 +12031,16 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
       </div>
     </div>
   `;
-
   document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-  // ✅ Countdown timer (2 minutes)
-  let countdown = 120; 
+  // Countdown timer 2 minutes
+  let countdown = 120;
   const countdownEl = document.getElementById("universalCountdown");
   const interval = setInterval(() => {
     const minutes = Math.floor(countdown / 60);
     const seconds = countdown % 60;
     countdownEl.innerText = `⏳ Waiting for payment... ${minutes}:${seconds.toString().padStart(2,"0")}`;
     countdown--;
-
     if (countdown < 0) {
       clearInterval(interval);
       countdownEl.innerText = "⌛ Payment window expired. Please try again.";
@@ -12085,35 +12061,27 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
 
   // Validate phone number
   if (!/^07\d{8}$/.test(phoneInput)) {
-    statusEl.innerText = "⚠️ Please enter a valid Safaricom number";
+    statusEl.innerText = "⚠️ Please enter a valid Safaricom number (07XXXXXXXX)";
     return;
   }
 
-  // Convert to 254 format required by Safaricom
-  const formattedPhone = "254" + phoneInput.slice(1);
+  // Convert to international format
+  const phone = "254" + phoneInput.substring(1);
+  const userId = currentUser?.uid || "anonymous";
+  const accountReference = `${userId}_${Date.now()}`;
 
   statusEl.innerText = "⏳ Sending STK Push...";
-  const userId = currentUser?.uid || "anonymous";
-  const accountReference = `${userId}_${Date.now()}`; // unique per payment
 
   try {
-    // ✅ Replace with your active ngrok HTTPS URL
-    const response = await fetch("https://4d15fe0ab110.ngrok-free.app/stkpush", {
+    // 🔹 Call your backend (ngrok or localhost depending on setup)
+   const response = await fetch("https://491435d71529.ngrok-free.app/stkpush", {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        phone: formattedPhone,
-        amount,
-        accountReference,
-        itemId,
-        itemName,
-        userId
-      })
+      body: JSON.stringify({ phone, amount, accountReference, itemId, itemName, userId })
     });
 
     const data = await response.json();
-
-    // Check for MPESA errors
     if (data.ResponseCode !== "0") {
       statusEl.innerText = `❌ Error: ${data.errorMessage || data.ResultDesc || "Unknown failure"}`;
       return;
@@ -12121,26 +12089,26 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
 
     statusEl.innerText = "✅ STK Push sent. Complete payment on your phone.";
 
-    // ✅ Poll backend every 3 seconds for payment status
-    const interval = setInterval(async () => {
+    // 🔹 Poll backend every 3s for payment result
+    const poll = setInterval(async () => {
       try {
-        const res = await fetch(`https://4d15fe0ab110.ngrok-free.app/payment-status/${accountReference}`);
+        const res = await fetch(`https://491435d71529.ngrok-free.app/payment-status/${accountReference}`);
+
         const statusData = await res.json();
 
         if (statusData.ResultCode !== undefined) {
           if (statusData.ResultCode === 0) {
             statusEl.innerText = "🎉 Payment successful!";
-            clearInterval(interval);
+            clearInterval(poll);
             handlePaymentSuccess(type, itemId, itemName, userId);
             setTimeout(closeUniversalModal, 1500);
-          } else if (statusData.ResultCode !== 0) {
+          } else {
             statusEl.innerText = `❌ Payment failed: ${statusData.ResultDesc}`;
-            clearInterval(interval);
+            clearInterval(poll);
           }
         }
       } catch (err) {
-        statusEl.innerText = "❌ Network error while checking payment: " + err.message;
-        clearInterval(interval);
+        console.error("Poll error:", err.message);
       }
     }, 3000);
 
@@ -12149,8 +12117,15 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
   }
 }
 
+// ✅ Handle Firestore updates
+async function handlePaymentSuccess(type, itemId, itemName, userId) {
+  console.log("Handle payment success:", type, itemId, itemName, userId);
+  // 🔹 Add your Firestore updates here
+}
 
-// ✅ Handles Firestore updates after successful payment
+
+
+// ✅ Handle Firestore updates after payment
 async function handlePaymentSuccess(type, itemId, itemName, userId) {
   const now = new Date();
   const isoNow = now.toISOString();
@@ -12186,6 +12161,7 @@ async function handlePaymentSuccess(type, itemId, itemName, userId) {
     loadSoulmates();
   }
 }
+
 
 
 function closeUniversalModal() {
