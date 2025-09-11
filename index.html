@@ -2160,6 +2160,203 @@ button:hover {
 .login-bg h2 {
   text-shadow: 1px 1px 3px #000;
 }
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode header {
+  background-color: #1f1f1f;
+}
+
+.dark-mode .menu-box {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+.dark-mode button {
+  background-color: #333;
+  color: white;
+}
+
+.dark-mode button:hover {
+  background-color: #555;
+}
+
+.dark-mode #loggedInUser {
+  color: #e0e0e0;
+}
+
+.dark-mode .scrolling-banner {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+}
+
+.dark-mode a {
+  color: #bb86fc;
+}
+/* Custom Mode Styles */
+body.custom-mode {
+  background-color: var(--custom-bg-color, #ffffff);
+  color: var(--custom-text-color, #000000);
+  font-size: var(--custom-font-size, 16px);
+}
+
+/* Define styles for each theme */
+body.theme1 {
+  background-color: #1e3a5f;
+  color: #ffffff;
+}
+
+body.theme2 {
+  background-color: #2e8b57;
+  color: #ffffff;
+}
+
+body.theme3 {
+  background-color: #ff5733;
+  color: #ffffff;
+}
+
+body.theme4 {
+  background-color: #e1b07b;
+  color: #4e4e4e;
+}
+
+body.theme5 {
+  background-color: #9b1e5a;
+  color: #ffffff;
+}
+
+body.theme6 {
+  background-color: #f4c6d9;
+  color: #4e4e4e;
+}
+
+body.theme7 {
+  background-color: #5a5a5a;
+  color: #e8e8e8;
+}
+
+body.theme8 {
+  background-color: #87ceeb;
+  color: #ffffff;
+}
+
+body.theme9 {
+  background-color: #8b4513;
+  color: #ffffff;
+}
+
+body.theme10 {
+  background-color: #0a2f52;
+  color: #ffffff;
+}
+
+body.theme11 {
+  background-color: #6a5acd;
+  color: #ffffff;
+}
+
+body.theme12 {
+  background-color: #ff8c00;
+  color: #ffffff;
+}
+
+body.theme13 {
+  background-color: #1f1f1f;
+  color: #e6f0ff;
+}
+
+body.theme14 {
+  background-color: #ff7f32;
+  color: #ffffff;
+}
+
+body.theme15 {
+  background-color: #b3e5fc;
+  color: #1a237e;
+}
+
+body.theme16 {
+  background-color: #212121;
+  color: #bdbdbd;
+}
+
+body.theme17 {
+  background-color: #66bb6a;
+  color: #ffffff;
+}
+
+body.theme18 {
+  background-color: #ffe5b4;
+  color: #000000;
+}
+
+body.theme19 {
+  background-color: #9e2a2b;
+  color: #ffffff;
+}
+
+body.theme20 {
+  background-color: #98ff98;
+  color: #1b5e20;
+}
+/* Theme Customization Modal Width */
+#themeCustomization {
+  max-width: 400px; /* Default width for larger screens */
+  width: 100%; /* Full width on small screens */
+}
+
+/* For small devices like phones */
+@media (max-width: 768px) {
+  #themeCustomization {
+    max-width: 300px; /* Narrower modal on smaller devices */
+    width: 100%;
+  }
+}
+/* Styling for the floating buttons */
+#themeCustomizeToggle, #scanPricesBtn {
+  position: fixed;
+  z-index: 9999;
+  padding: 10px 15px;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Theme Customization Button */
+#themeCustomizeToggle {
+  bottom: 80px; /* Distance from the bottom */
+  right: 20px;
+  background: #4CAF50;
+}
+
+/* Scan Prices Button */
+#scanPricesBtn {
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px;
+  background: #007bff;
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+  #themeCustomizeToggle, #scanPricesBtn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  #themeCustomizeToggle {
+    bottom: 70px; /* Adjust bottom position for mobile */
+  }
+  #scanPricesBtn {
+    bottom: 30px; /* Adjust bottom position for mobile */
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2175,19 +2372,36 @@ button:hover {
       Nyota Mtaani – Teacher Swaps & Daily Hustles
     </h1>
 
-    <!-- Display logged-in user and logout button inside the header -->
-    <div id="loggedInUser" style="text-align:center; margin-top:10px; color: white;"></div>
+<!-- Display logged-in user and logout button inside the header -->
+<div id="loggedInUser" style="text-align:center; color: white; margin-top: 10px; font-family: Arial, sans-serif;">
+  <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">
+    <i class="fas fa-user-circle" style="font-size: 24px; color: #4CAF50;"></i>
+    <!-- Removed the placeholder name here -->
+  </div>
+  <span style="font-size: 14px; font-style: italic; color: #B0B0B0;">Good Evening!</span> <!-- Dynamic greeting -->
+  <br>
+
+
+<!-- Dark Mode Toggle Button -->
+<div style="text-align: center; margin-top: 15px;">
+  <button id="darkModeToggle" style="background-color: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background-color 0.3s;">
+    🌙 Dark Mode
+  </button>
+</div>
+
+
 
   <!-- Advertisement inside the header -->
 <div style="margin-top:10px; padding:12px; background: #ffecb3; border-radius:8px; text-align:center; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
   <p style="font-size: 14px; color: #5d4037; margin:0;">
  "🚀 Boost Your Business! Advertise with Nyota Mtaani and reach thousands instantly!"
   </p>
-  <p style="margin:6px 0 0 0; font-size:14px;">
-    <a href="https://wa.me/254792755676" target="_blank" style="color: #d32f2f; font-weight:bold; text-decoration:none;">
-      Call / WhatsApp 0792755676
-    </a>
-  </p>
+<p style="margin:6px 0 0 0; font-size:14px;">
+  <a href="mailto:Nyotamtaani@gmail.com" target="_blank" style="color: #d32f2f; font-weight:bold; text-decoration:none;">
+    Email us on :Nyotamtaani@gmail.com
+  </a>
+</p>
+
 </div>
 
 
@@ -2228,7 +2442,10 @@ button:hover {
     <span>Login</span>
   </a>
 </li>
-
+<!-- Toggle Button to open theme customization panel -->
+<button id="themeCustomizeToggle" style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px;">
+  Customize Theme
+</button>
 
   <li><a class="menu-box" href="#" onclick="showPage('usageHelp')">
     <img src="https://i.imgur.com/tHuRu3z.jpeg" alt="How to Use">
@@ -2877,8 +3094,56 @@ button:hover {
 </div>
 </div>
 
+<!-- Theme Customization Panel -->
+<div id="themeCustomization" style="position: fixed; top: 20px; right: 20px; background-color: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 10000; display: none; max-width: 300px; width: 100%; transition: all 0.3s ease;">
+  <h3>Theme Customization</h3>
+  
+  <!-- Theme Select -->
+  <label for="themeSelect">Select Theme: </label>
+  <select id="themeSelect">
+  <option value="light">Light</option>
+  <option value="dark">Dark</option>
+  <option value="custom">Custom</option>
+  <option value="theme1">Blue Ocean</option>
+  <option value="theme2">Green Forest</option>
+  <option value="theme3">Sunset Red</option>
+  <option value="theme4">Golden Desert</option>
+  <option value="theme5">Purple Night</option>
+  <option value="theme6">Pink Blossom</option>
+  <option value="theme7">Misty Mountain</option>
+  <option value="theme8">Sky Blue</option>
+  <option value="theme9">Earthy Brown</option>
+  <option value="theme10">Deep Ocean</option>
+  <option value="theme11">Lavender Fields</option>
+  <option value="theme12">Autumn Leaves</option>
+  <option value="theme13">Neon Glow</option>
+  <option value="theme14">Citrus Orange</option>
+  <option value="theme15">Sea Breeze</option>
+  <option value="theme16">Space Black</option>
+  <option value="theme17">Tropical Green</option>
+  <option value="theme18">Soft Peach</option>
+  <option value="theme19">Rustic Red</option>
+  <option value="theme20">Cool Mint</option>
+</select>
 
+  <div id="customThemeOptions" style="display: none;">
+    <h4>Custom Theme</h4>
+    <label for="bgColor">Background Color: </label>
+    <input type="color" id="bgColor" value="#ffffff"><br><br>
+    
+    <label for="textColor">Text Color: </label>
+    <input type="color" id="textColor" value="#000000"><br><br>
 
+    <label for="fontSize">Font Size: </label>
+    <input type="number" id="fontSize" value="16" min="12" max="24">
+  </div>
+
+  <button id="applyThemeBtn">Apply Theme</button>
+  <button id="resetThemeBtn">Reset to Default</button>
+  
+  <!-- Close Button -->
+  <button id="closeThemePanel" style="margin-top: 10px; padding: 8px 15px; background: #f44336; color: white; border: none; border-radius: 5px;">Close</button>
+</div>
   <main id="content">
 <div id="home" class="page" style="display: none;">
   <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0;">
@@ -5348,15 +5613,36 @@ document.getElementById("loginForm").addEventListener("submit", async e => {
 function displayLoggedInUser() {
   const user = localStorage.getItem("loggedInUser");
   const userDiv = document.getElementById("loggedInUser");
+
   if (user) {
+    // Get the current time of day greeting
+    const greeting = getGreeting();
+    
+    // Insert the logged-in user's name along with the greeting
     userDiv.innerHTML = `
-      <i class="fas fa-user-circle"></i> ${user}
-      <button onclick="logoutUser()" style="margin-left:10px; padding:4px 8px; border:none; border-radius:5px; background:red; color:white;">
+      <div style="font-size: 16px; font-weight: bold; color: #fff;">
+        <i class="fas fa-user-circle" style="font-size: 24px; color: #4CAF50;"></i>
+        <span style="margin-left: 8px;">${user}</span>
+        <span style="margin-left: 10px; font-size: 14px; font-style: italic; color: #B0B0B0;">- ${greeting}</span>
+      </div>
+      <button onclick="logoutUser()" style="margin-top: 10px; padding: 8px 15px; border:none; border-radius: 5px; background: #FF4D4D; color: white; font-weight: bold; font-size: 14px; cursor: pointer;">
         Logout
       </button>
     `;
   } else {
     userDiv.innerHTML = "";
+  }
+}
+
+// Function to get greeting message based on the time of day
+function getGreeting() {
+  const currentHour = new Date().getHours();
+  if (currentHour >= 0 && currentHour < 12) {
+    return "Good Morning!";
+  } else if (currentHour >= 12 && currentHour < 18) {
+    return "Good Afternoon!";
+  } else {
+    return "Good Evening!";
   }
 }
 
@@ -13421,6 +13707,144 @@ document.getElementById("closePaymentsBtn").addEventListener("click", () => {
 document.getElementById("refreshPaymentsBtn").addEventListener("click", () => {
   loadPayments();
 });
+// Function to toggle dark mode and change button text
+function toggleDarkMode() {
+  const body = document.body;
+  const currentMode = body.classList.contains("dark-mode");
+  
+  if (currentMode) {
+    body.classList.remove("dark-mode");
+    localStorage.setItem("theme", "light");
+    document.getElementById("darkModeToggle").textContent = "🌙 Dark Mode"; // Change button text to light mode
+  } else {
+    body.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark");
+    document.getElementById("darkModeToggle").textContent = "🌞 Light Mode"; // Change button text to dark mode
+  }
+}
+
+
+// Function to load the user's preferred theme
+function loadTheme() {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
+}
+
+// Add event listener to the toggle button
+document.getElementById("darkModeToggle").addEventListener("click", toggleDarkMode);
+
+// Show the theme customization panel when the button is clicked
+document.getElementById("themeCustomizeToggle").addEventListener("click", function() {
+  const customizationPanel = document.getElementById("themeCustomization");
+  customizationPanel.style.display = customizationPanel.style.display === "none" ? "block" : "none";
+});
+
+// Apply theme based on selection or custom color/font settings
+document.getElementById("applyThemeBtn").addEventListener("click", function() {
+  const selectedTheme = document.getElementById("themeSelect").value;
+  const body = document.body;
+
+  // Apply selected theme (light, dark, custom)
+  if (selectedTheme === "light") {
+    applyLightTheme();
+  } else if (selectedTheme === "dark") {
+    applyDarkTheme();
+  } else if (selectedTheme === "custom") {
+    applyCustomTheme();
+  }
+
+  // Save the user's theme preference in localStorage
+  localStorage.setItem("theme", selectedTheme);
+
+  // Close the customization panel
+  document.getElementById("themeCustomization").style.display = "none";
+});
+
+// Reset to default light theme
+document.getElementById("resetThemeBtn").addEventListener("click", function() {
+  applyLightTheme();
+  localStorage.setItem("theme", "light");
+  document.getElementById("themeCustomization").style.display = "none";
+});
+
+// Function to apply light theme
+function applyLightTheme() {
+  document.body.classList.remove("dark-mode");
+  document.body.classList.remove("custom-mode");
+  document.body.style.backgroundColor = "#ffffff"; // Light background
+  document.body.style.color = "#000000"; // Dark text
+  document.body.style.fontSize = "16px"; // Default font size
+}
+
+// Function to toggle dark mode
+function toggleDarkMode() {
+  const body = document.body;
+  const currentMode = body.classList.contains("dark-mode");
+  
+  if (currentMode) {
+    body.classList.remove("dark-mode");
+    localStorage.setItem("theme", "light"); // Save the mode in localStorage
+  } else {
+    body.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark"); // Save the mode in localStorage
+  }
+}
+
+// Function to apply selected theme from dropdown
+document.getElementById("themeSelect").addEventListener("change", function() {
+  const selectedTheme = this.value;
+  const body = document.body;
+
+  // Remove all theme classes
+  body.classList.remove(
+    "light", "dark", "theme1", "theme2", "theme3", "theme4", "theme5", 
+    "theme6", "theme7", "theme8", "theme9", "theme10", "theme11", "theme12", 
+    "theme13", "theme14", "theme15", "theme16", "theme17", "theme18", "theme19", 
+    "theme20"
+  );
+  
+  // Apply the selected theme class
+  if (selectedTheme === "light") {
+    body.classList.add("light");
+  } else if (selectedTheme === "dark") {
+    body.classList.add("dark");
+  } else if (selectedTheme === "custom") {
+    body.classList.add("custom-mode");
+  } else {
+    body.classList.add(selectedTheme); // For theme1, theme2, ..., theme20
+  }
+
+  // Save the theme selection in localStorage
+  localStorage.setItem("theme", selectedTheme);
+});
+
+// Function to load the user's theme preference on page load
+function loadUserTheme() {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme) {
+    document.getElementById("themeSelect").value = savedTheme; // Set the dropdown value
+    document.body.classList.add(savedTheme); // Apply the saved theme class
+  } else {
+    // Default to light theme if no theme is saved
+    document.body.classList.add("light");
+  }
+}
+
+// Directly call the loadUserTheme function on page load
+loadUserTheme();
+
+// Close the theme customization panel when the close button is clicked
+document.getElementById("closeThemePanel").addEventListener("click", function() {
+  const customizationPanel = document.getElementById("themeCustomization");
+  customizationPanel.style.display = "none"; // Hide the panel
+});
+
 
 
 </script>
