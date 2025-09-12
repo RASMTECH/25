@@ -12277,6 +12277,8 @@ function resetMarketFilters() {
   // Re-run filter to show all items
   filterMarketItems();
 }
+// ✅ Set your backend URL here (update when ngrok changes)
+const BACKEND_URL = "https://1cfbb4192c81.ngrok-free.app";
 
 // ✅ Show Payment Modal
 function showPaymentModalFor(type, amount, itemId, itemName) {
@@ -12351,7 +12353,7 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
     return;
   }
 
-  // Convert to international format
+  // Convert to international format (2547XXXXXXXX)
   const phone = "254" + phoneInput.substring(1);
   const userId = currentUser?.uid || "anonymous";
   const accountReference = `${userId}_${Date.now()}`;
@@ -12359,9 +12361,8 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
   statusEl.innerText = "⏳ Sending STK Push...";
 
   try {
-    // 🔹 Call your backend (ngrok or localhost depending on setup)
-   const response = await fetch("https://491435d71529.ngrok-free.app/stkpush", {
-
+    // 🔹 Call your backend
+    const response = await fetch(`${BACKEND_URL}/stkpush`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone, amount, accountReference, itemId, itemName, userId })
@@ -12378,8 +12379,7 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
     // 🔹 Poll backend every 3s for payment result
     const poll = setInterval(async () => {
       try {
-        const res = await fetch(`https://491435d71529.ngrok-free.app/payment-status/${accountReference}`);
-
+        const res = await fetch(`${BACKEND_URL}/payment-status/${accountReference}`);
         const statusData = await res.json();
 
         if (statusData.ResultCode !== undefined) {
