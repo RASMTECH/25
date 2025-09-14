@@ -2360,17 +2360,19 @@ body.theme20 {
 </style>
 </head>
 <body>
-<header style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-image: url('https://i.imgur.com/cm7xKDS.jpeg'); background-size: cover; background-position: center;">
+<header style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-image: url('https://i.imgur.com/6c6FCiB.jpeg'); background-size: cover; background-position: center;">
 
   <!-- Left Image -->
   <img src="https://i.imgur.com/pdTgJX3.jpeg" alt="Left Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
 
-  <!-- Header Content -->
-  <div style="flex-grow: 1; text-align: center;">
-    <h1 style="color: white; font-weight: bold; display: flex; align-items: center; gap: 10px; justify-content: center;">
-      <i class="fas fa-star"></i>
-      Nyota Mtaani – Teacher Swaps & Daily Hustles
-    </h1>
+<!-- Header Content -->
+<div style="flex-grow: 1; text-align: center;">
+  <h1 style="color: white; font-weight: bold; display: flex; align-items: center; gap: 10px; justify-content: center; background-color: #ffeb3b; padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); color: #000;">
+    <i class="fas fa-star" style="color:#fbc02d;"></i>
+    Nyota Mtaani – Teacher Swaps & Daily Hustles
+  </h1>
+
+
 
 <!-- Display logged-in user and logout button inside the header -->
 <div id="loggedInUser" style="text-align:center; color: white; margin-top: 10px; font-family: Arial, sans-serif;">
@@ -2957,12 +2959,15 @@ body.theme20 {
   </table>
 </div>
 
-
 <!-- ✅ How to Use the System Section -->
 <div id="usageHelp" class="page" style="display:none; padding: 20px;">
-  <h2 style="color:#2196f3; text-align:center;">📘 How to Use the System</h2>
-  <div style="max-width:800px;margin:auto;background:#f9f9f9;padding:20px;border-radius:10px;">
+  <h2 style="background-color: yellow; padding: 10px 15px; border-radius: 5px; font-weight: bold; font-size: 22px; color: #000; text-align:center; display: inline-block;">
+    📘 How to Use the System
+  </h2>
+  <div style="max-width:800px; margin:auto; background:#f9f9f9; padding:20px; border-radius:10px;">
     <ul style="line-height:1.7; list-style:none; padding:0;">
+     
+
       
       <li><a href="#" onclick="showPage('home')"><img src="https://i.imgur.com/lek58ah.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>Home</strong></a> – See latest updates, featured jobs, market items, and quick links to other sections.</li>
      
@@ -3085,73 +3090,80 @@ body.theme20 {
 </div>
 
 <section id="trendingSection" style="display: none; padding: 16px;">
-  <h2 style="color: #ff5722; margin-bottom: 16px; text-align: center;">🔥 Trending Now</h2>
+  <h2 style="color: red; margin-bottom: 16px; text-align: center; font-weight: bold; font-size: 22px;">
+    🔥 Trending Now
+  </h2>
   <div id="trendingContainer" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center; width: 100%;">
     <!-- Trending items (cards) will appear here -->
   </div>
 </section>
 
+
 </div>
 </div>
 
 <!-- Theme Customization Panel -->
-<div id="themeCustomization" style="position: fixed; top: 20px; right: 20px; background-color: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 10000; display: none; max-width: 300px; width: 100%; transition: all 0.3s ease;">
-  <h3>Theme Customization</h3>
+<div id="themeCustomization" style="position: fixed; top: 20px; right: 20px; background-color: rgba(255, 255, 255, 0.8); background-image: url('https://i.imgur.com/6c6FCiB.jpeg'); background-size: cover; background-position: center; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 10000; display: none; max-width: 300px; width: 100%; transition: all 0.3s ease;">
+  <h3 style="color: white;">Theme Customization</h3>
   
   <!-- Theme Select -->
-  <label for="themeSelect">Select Theme: </label>
+  <label for="themeSelect" style="color: white;">Select Theme: </label>
   <select id="themeSelect">
-  <option value="light">Light</option>
-  <option value="dark">Dark</option>
-  <option value="custom">Custom</option>
-  <option value="theme1">Blue Ocean</option>
-  <option value="theme2">Green Forest</option>
-  <option value="theme3">Sunset Red</option>
-  <option value="theme4">Golden Desert</option>
-  <option value="theme5">Purple Night</option>
-  <option value="theme6">Pink Blossom</option>
-  <option value="theme7">Misty Mountain</option>
-  <option value="theme8">Sky Blue</option>
-  <option value="theme9">Earthy Brown</option>
-  <option value="theme10">Deep Ocean</option>
-  <option value="theme11">Lavender Fields</option>
-  <option value="theme12">Autumn Leaves</option>
-  <option value="theme13">Neon Glow</option>
-  <option value="theme14">Citrus Orange</option>
-  <option value="theme15">Sea Breeze</option>
-  <option value="theme16">Space Black</option>
-  <option value="theme17">Tropical Green</option>
-  <option value="theme18">Soft Peach</option>
-  <option value="theme19">Rustic Red</option>
-  <option value="theme20">Cool Mint</option>
-</select>
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+    <option value="custom">Custom</option>
+    <option value="theme1">Blue Ocean</option>
+    <option value="theme2">Green Forest</option>
+    <option value="theme3">Sunset Red</option>
+    <option value="theme4">Golden Desert</option>
+    <option value="theme5">Purple Night</option>
+    <option value="theme6">Pink Blossom</option>
+    <option value="theme7">Misty Mountain</option>
+    <option value="theme8">Sky Blue</option>
+    <option value="theme9">Earthy Brown</option>
+    <option value="theme10">Deep Ocean</option>
+    <option value="theme11">Lavender Fields</option>
+    <option value="theme12">Autumn Leaves</option>
+    <option value="theme13">Neon Glow</option>
+    <option value="theme14">Citrus Orange</option>
+    <option value="theme15">Sea Breeze</option>
+    <option value="theme16">Space Black</option>
+    <option value="theme17">Tropical Green</option>
+    <option value="theme18">Soft Peach</option>
+    <option value="theme19">Rustic Red</option>
+    <option value="theme20">Cool Mint</option>
+  </select>
 
   <div id="customThemeOptions" style="display: none;">
-    <h4>Custom Theme</h4>
-    <label for="bgColor">Background Color: </label>
+    <h4 style="color: white;">Custom Theme</h4>
+    <label for="bgColor" style="color: white;">Background Color: </label>
     <input type="color" id="bgColor" value="#ffffff"><br><br>
     
-    <label for="textColor">Text Color: </label>
+    <label for="textColor" style="color: white;">Text Color: </label>
     <input type="color" id="textColor" value="#000000"><br><br>
 
-    <label for="fontSize">Font Size: </label>
+    <label for="fontSize" style="color: white;">Font Size: </label>
     <input type="number" id="fontSize" value="16" min="12" max="24">
   </div>
 
-  <button id="applyThemeBtn">Apply Theme</button>
-  <button id="resetThemeBtn">Reset to Default</button>
+  <button id="applyThemeBtn" style="margin-top: 10px; padding: 8px 15px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">Apply Theme</button>
+  <button id="resetThemeBtn" style="margin-top: 10px; padding: 8px 15px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">Reset to Default</button>
   
   <!-- Close Button -->
   <button id="closeThemePanel" style="margin-top: 10px; padding: 8px 15px; background: #f44336; color: white; border: none; border-radius: 5px;">Close</button>
 </div>
-  <main id="content">
-<div id="home" class="page" style="display: none;">
-  <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0;">
-  <img src="https://i.imgur.com/ld8vrze.jpeg" alt="Rasm" class="logo-img" style="width: 200px;">
-  <img src="https://i.imgur.com/JTvf2AF.jpeg" alt="Rasm" class="logo-img" style="width: 200px;">
-</div>
 
-   </div>
+<!-- Content Section -->
+<main id="content">
+  <div id="home" class="page" style="display: none;">
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0;">
+      <img src="https://i.imgur.com/ld8vrze.jpeg" alt="Rasm" class="logo-img" style="width: 200px;">
+      <img src="https://i.imgur.com/JTvf2AF.jpeg" alt="Rasm" class="logo-img" style="width: 200px;">
+    </div>
+  </div>
+
+
+
 <!-- Register Modal (HIDDEN by default) -->
 <div id="registerModal" class="modal" style="display:none;">
   <div class="modal-content register-bg">
@@ -3219,10 +3231,11 @@ body.theme20 {
  
 
     <div id="swaps" class="page" style="display:none;">
- <h2>
-  <i class="fas fa-exchange-alt" style="color:#ff9800; margin-right: 8px;"></i>
- 🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!
+<h2>
+  <i class="fas fa-exchange-alt" style="color:red; margin-right: 8px;"></i>
+  <span style="color:red;">🌟 Be part of the smart teacher network – your perfect swap awaits register your swap here!</span>
 </h2>
+
 
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
@@ -3268,9 +3281,10 @@ body.theme20 {
   <option value="">Select County</option>
 </select>
 
-<small style="color:#555; display:block; margin-top:4px; font-style:italic;">
+<small style="color:red; display:block; margin-top:4px; font-style:italic;">
   Hold Ctrl (Cmd on Mac) to select multiple counties.
 </small>
+
 
   <label for="category" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Category:</label>
   <select id="category" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;">
@@ -3307,7 +3321,11 @@ body.theme20 {
 
 
 
-<h3><i class="fas fa-filter" style="color:#43a047; margin-right: 8px;"></i> Filter Swaps</h3>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-flex; align-items: center; gap: 8px;">
+  <i class="fas fa-filter" style="color:#43a047;"></i>
+  Filter Swaps
+</h3>
+
 
 <!-- ✅ Horizontal Compact Filter Box with Black Labels -->
 <div style="
@@ -3454,10 +3472,11 @@ body.theme20 {
 
 <!-- ✅ Action Box Wrapper End -->
 
-<h3>
+<h3 style="background-color: white; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
   <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
- 🏆 Don’t wait – find your ideal swap partners and complete your triangular cycle today!
+  🏆 Don’t wait – find your ideal swap partners and complete your triangular cycle today!
 </h3>
+
 <div id="triangularSwapSection" style="
       margin:20px; 
       padding:15px; 
@@ -3469,10 +3488,11 @@ body.theme20 {
 ">
   <h3 style="color:#1a237e; margin-bottom:6px;">🔺 Find Triangular Swap</h3>
   
-  <!-- Short note for users -->
-  <p style="font-size:13px; color:red; margin-bottom:12px;">
-    Enter three counties to find a matching triangular swap. All three must have teachers wanting to swap in a cycle. Click "Find Triangular Swap" to see results.
-  </p>
+<!-- Short note for users -->
+<p style="font-size:13px; color:red; margin-bottom:12px; background-color: yellow; padding: 5px; border-radius: 3px;">
+  Enter three counties to find a matching triangular swap. All three must have teachers wanting to swap in a cycle. Click "Find Triangular Swap" to see results.
+</p>
+
   
   <input type="text" id="countyA" placeholder="Enter County A" 
          style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
@@ -3497,10 +3517,11 @@ body.theme20 {
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
   </div>
 </div>
-<h3>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
   <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
- 🔺 Unlock a perfect swap today – find teachers ready to exchange counties effortlessly lets scroll down!
+  🔺 Unlock a perfect swap today – find teachers ready to exchange counties effortlessly. Let's scroll down!
 </h3>
+
 <!-- 🔥 VIP Swaps Modal -->
 <div id="vipSwapsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; max-height:80%; overflow:auto; background:white; padding:20px; border:2px solid crimson; border-radius:10px; z-index:9999; box-shadow:0 0 12px rgba(0,0,0,0.3);">
   <h3 style="color:crimson;">🔥 Available VIP Swaps</h3>
@@ -3521,7 +3542,7 @@ body.theme20 {
 </div>
 
 <div id="bomJobs" class="page" style="display:none;">
-<h2>
+<h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: #000; display: inline-block;">
   <i class="fas fa-briefcase" style="color:#6f42c1; margin-right: 8px;"></i>
   Post Any Job Opportunity Here
 </h2>
@@ -3722,10 +3743,11 @@ body.theme20 {
     </div>
   </div>
 </div>
-<h3>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
   <i class="fas fa-clipboard-list" style="color:#6f42c1; margin-right: 8px;"></i>
   Available Job Opportunities
 </h3>
+
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
@@ -3747,10 +3769,10 @@ body.theme20 {
 </div>
 
 <div id="resources" class="page" style="display:none;">
-  <h2>
-    <i class="fas fa-upload" style="color:#4CAF50; margin-right: 8px;"></i>
-    Teaching Resources
-  </h2>
+<h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: #000; display: inline-block;">
+  <i class="fas fa-upload" style="color:#4CAF50; margin-right: 8px;"></i>
+  Teaching Resources
+</h2>
 
 <!-- Filters Section with Action Box -->
 <div id="filters" style="background-image: url('https://i.imgur.com/h5MhbFN.jpeg'); background-size: cover; padding: 20px; border-radius: 8px; color: white;">
@@ -3988,10 +4010,11 @@ body.theme20 {
 </div>
 
 
-<h3>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
   <i class="fas fa-book-open" style="color:#3f51b5; margin-right: 8px;"></i>
   Available Resources
 </h3>
+
 
 <table id="resourcesTable">
   <thead>
@@ -4014,10 +4037,11 @@ body.theme20 {
 
 
 <div id="soulmates" class="page" style="display:none;">
-<h3>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
   <i class="fas fa-venus-mars" style="color:#e91e63; margin-right: 8px;"></i>
-Register To Connect With  Available Soulmates
+  Register To Connect With Available Soulmates
 </h3>
+
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
@@ -4149,7 +4173,7 @@ Register To Connect With  Available Soulmates
     margin-bottom: 30px;
     font-family: 'Arial', sans-serif;
     ">
-  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; background-image: url('https://i.imgur.com/XxT7DeA.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 8px;">
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; background-image: url('https://i.imgur.com/9txrlso.jpeg'); background-size: cover; background-position: center; padding: 20px; border-radius: 8px;">
     
     <!-- Age Filter -->
     <label for="ageFilter" style="font-weight: 600; color: #fff; min-width: 150px;">
@@ -4315,23 +4339,29 @@ Register To Connect With  Available Soulmates
 </div>
 
 <div id="notifications" class="page" style="display:none;"> 
-  <h2>🔔 My Notifications</h2>
-  <ul id="notificationList"></ul>
+  <h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: #000; display: inline-block;">
+    🔔 My Notifications
+  </h2>
+  <ul id="notificationList" style="margin-top: 12px;"></ul>
 </div>
+
 
 <!-- 🔹 Market Alerts Section -->
 <div id="marketAlerts" class="page" style="display:none; padding:15px;">
-  <h2>📢My Alerts</h2>
-  <div id="alertsList">
+  <h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: #000; display: inline-block;">
+    📢 My Alerts
+  </h2>
+  <div id="alertsList" style="margin-top: 12px;">
     <p style="color:gray; text-align:center;">Loading alerts...</p>
   </div>
 </div>
 
 
 
+
 <!-- 🔹 My Chats Section -->
 <div id="myChatsSection" class="page" style="display: none; padding: 20px;">
-  <h2>💬 My Chats</h2>
+  <h2> My Chats</h2>
   <ul id="chatList" style="list-style:none; padding:0; margin-top:10px;">
     <!-- Chats will be dynamically added here -->
   </ul>
@@ -4341,11 +4371,11 @@ Register To Connect With  Available Soulmates
 
 <!-- Seeking Services Section -->
 <div id="seekingServices" class="page" style="display:none;">
- 
-<h2 style="display: flex; align-items: center; color: crimson;">
-  <i class="fas fa-concierge-bell" style="color:#009688; margin-right: 8px;"></i>
+<h2 style="display: flex; align-items: center; color: #000; background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; gap: 8px;">
+  <i class="fas fa-concierge-bell" style="color:#009688;"></i>
   Post Your Service
 </h2>
+
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
@@ -4478,9 +4508,11 @@ Register To Connect With  Available Soulmates
 
 
 
-<h3>
-  <i class="fas fa-users-cog" style="color:#00796b; margin-right: 8px;"></i>
- <h3 style="color: crimson;">Available Service Providers</h3>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: crimson; display: inline-flex; align-items: center; gap: 8px;">
+  <i class="fas fa-users-cog" style="color:#00796b;"></i>
+  Available Service Providers
+</h3>
+
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
@@ -4537,7 +4569,10 @@ Register To Connect With  Available Soulmates
   </div>
   </div>
 <div id="market" class="page" style="display:none;">
-<h2 style="color: crimson;">🛒 Market place - Post & Browse Items</h2>
+<h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: crimson; display: inline-block;">
+  🛒 Market Place - Post & Browse Items
+</h2>
+
 <div class="scrolling-banner">
   <div class="scrolling-banner-content">
     🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
@@ -4922,20 +4957,23 @@ Register To Connect With  Available Soulmates
   </div>
 </div>
 
-<div id="trendingSection" class="page" style="display: none;">
+<section id="trendingSection" class="page" hidden>
   <h2>
-    <i class="fas fa-fire" style="color: crimson; margin-right: 8px;"></i>
+    <i class="fas fa-fire" aria-hidden="true"></i>
     Trending Boosted Items
   </h2>
+  
   <div class="scrolling-banner">
     <div class="scrolling-banner-content">
       🌟 Hot listings from every corner of Kenya | 💼 Jobs | 🛍️ Market | ❤️ Soulmates | 🛠️ Services – All Boosted & Trending Now!
     </div>
   </div>
-  <div id="trendingContainer" style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; padding: 20px;">
+  
+  <div id="trendingContainer">
     <!-- Boosted cards will be inserted here -->
   </div>
-</div>
+</section>
+
 
 
 <!-- ✅ Confirm Delete Modal -->
@@ -5622,8 +5660,8 @@ function displayLoggedInUser() {
     userDiv.innerHTML = `
       <div style="font-size: 16px; font-weight: bold; color: #fff;">
         <i class="fas fa-user-circle" style="font-size: 24px; color: #4CAF50;"></i>
-        <span style="margin-left: 8px;">${user}</span>
-        <span style="margin-left: 10px; font-size: 14px; font-style: italic; color: #B0B0B0;">- ${greeting}</span>
+        <span style="margin-left: 8px; color: #1E90FF;">${user}</span>
+        <span style="margin-left: 10px; font-size: 14px; font-style: italic; color: red;">- ${greeting}</span>
       </div>
       <button onclick="logoutUser()" style="margin-top: 10px; padding: 8px 15px; border:none; border-radius: 5px; background: #FF4D4D; color: white; font-weight: bold; font-size: 14px; cursor: pointer;">
         Logout
@@ -5633,6 +5671,7 @@ function displayLoggedInUser() {
     userDiv.innerHTML = "";
   }
 }
+
 
 // Function to get greeting message based on the time of day
 function getGreeting() {
@@ -5650,6 +5689,10 @@ function getGreeting() {
 function logoutUser() {
   showLoadingSpinner();
 
+  // Get the full name from localStorage
+  const fullName = localStorage.getItem("loggedInUser") || "";
+  const firstName = fullName.split(" ")[0] || "User"; // Extract first name
+
   auth.signOut().then(() => {
     localStorage.removeItem("loggedInUser");
 
@@ -5660,7 +5703,8 @@ function logoutUser() {
 
     const toast = document.getElementById("logoutToast");
     toast.style.display = "block";
-    toast.textContent = "You have logged out successfully!";
+    toast.style.backgroundColor = "#4CAF50"; // optional: green for success
+    toast.textContent = `${firstName}, you have logged out successfully!`;
 
     setTimeout(() => {
       hideLoadingSpinner();
@@ -5860,7 +5904,6 @@ async function saveSwap(swap) {
 }
 
 
-
 let swapUnsubscribe;
 
 // Load last seen timestamp from localStorage
@@ -5981,8 +6024,17 @@ async function loadSwaps() {
           }
 
           const showVIPBadge = s.isVIP ? `<span class="vip-badge">🔥 VIP</span>` : "";
-          const showBoostedBadge = s.isBoosted && s.boostExpiry
-            ? `<span class="boosted-badge" style="color: red; font-weight: bold; font-size: 14px; background-color: yellow; padding: 4px; border-radius: 6px;">🔥 Boosted (${Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24))} day${Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''} left)</span>` : "";
+
+          // ✅ Always render a boosted badge placeholder
+          const boostedDaysLeft = s.isBoosted && s.boostExpiry
+            ? Math.ceil((s.boostExpiry - now) / (1000 * 60 * 60 * 24))
+            : 0;
+          const showBoostedBadge = s.isBoosted && boostedDaysLeft > 0
+            ? `<span id="boosted-badge-${s.id}" class="boosted-badge" 
+                style="color: red; font-weight: bold; font-size: 14px; background-color: yellow; padding: 4px; border-radius: 6px;">
+                🔥 Boosted (${boostedDaysLeft} day${boostedDaysLeft !== 1 ? 's' : ''} left)
+              </span>`
+            : `<span id="boosted-badge-${s.id}"></span>`;
 
           // === Integrated Section Starts Here ===
           const hotBadge = isHotSwap ? `<span class="hot-badge" style="color:white;background:red;padding:4px;border-radius:4px;font-size:12px;margin-left:6px;">HOT</span>` : "";
@@ -6082,6 +6134,14 @@ async function loadSwaps() {
         }
 
         if (spinner) spinner.style.display = "none";
+
+        // ✅ Alert user when they scroll to bottom
+        window.onscroll = function () {
+          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            showCustomAlert("📢 You have reached the end of the list.", "info", true);
+          }
+        };
+
       },
       error => {
         console.error("Firestore listener error:", error);
@@ -6107,6 +6167,16 @@ function resetSwapBadge() {
   lastSeenSwapTimestamp = new Date();
   localStorage.setItem("lastSeenSwapTimestamp", lastSeenSwapTimestamp.toISOString());
 }
+
+// ✅ Instantly update boosted badge
+function updateBoostedBadge(swapId, days = 7) {
+  const badgeEl = document.getElementById(`boosted-badge-${swapId}`);
+  if (badgeEl) {
+    badgeEl.innerHTML = `🔥 Boosted (${days} day${days !== 1 ? 's' : ''} left)`;
+    badgeEl.style.cssText = "color: red; font-weight: bold; font-size: 14px; background-color: yellow; padding: 4px; border-radius: 6px;";
+  }
+}
+
 
 
 
@@ -6144,7 +6214,7 @@ function showModalAlert(message, color = "#ff9800") {
     padding:8px 12px;
     border-radius:6px;
     font-weight:bold;
-    z-index:9999;
+    z-index:9999; /* Ensure this alert stays on top */
     box-shadow:0 2px 6px rgba(0,0,0,0.3);
   `;
   alertDiv.innerText = message;
@@ -6197,6 +6267,7 @@ document.getElementById("nextSwapBtn").addEventListener("click", () => {
   }
 });
 
+// Previous Swap Button
 document.getElementById("prevSwapBtn").addEventListener("click", () => {
   if (currentSwapIndex > 0) {
     currentSwapIndex--;
@@ -6214,6 +6285,7 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
     document.getElementById("countyC").value.trim().toLowerCase()
   ].filter(Boolean);
 
+  // Check if all 3 counties are entered
   if (countyInputs.length < 3) {
     document.getElementById("triangularSwapModal").style.display = "flex";
     document.getElementById("triangularSwapNotice").style.display = "block";
@@ -6222,6 +6294,7 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
   }
 
   try {
+    // Display the "Searching" message while the swaps are being searched
     document.getElementById("triangularSwapModal").style.display = "flex";
     document.getElementById("triangularSwapNotice").style.display = "block";
     document.getElementById("triangularSwapNotice").innerHTML = `<p style="color:blue;">Searching triangular swaps...</p>`;
@@ -6235,27 +6308,32 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
     const displayedCombos = new Set();
     const foundSwaps = [];
 
+    // Search through all swaps to find matches
     swaps.forEach(a => {
       swaps.forEach(b => {
         swaps.forEach(c => {
           const swapCounties = [a.county, b.county, c.county].map(x => (x || "").toLowerCase()).sort();
 
-    if (
-  JSON.stringify(swapCounties) === JSON.stringify(normalizedInput) &&
-  normalizeCounty(a.swapCounty) === (b.county || "").toLowerCase() &&
-  normalizeCounty(b.swapCounty) === (c.county || "").toLowerCase() &&
-  normalizeCounty(c.swapCounty) === (a.county || "").toLowerCase()
-) {
-  const comboKey = [a.id, b.id, c.id].sort().join("-");
-  if (!displayedCombos.has(comboKey)) {
-    displayedCombos.add(comboKey);
-    foundSwaps.push({ a, b, c });
- }
+          if (
+            JSON.stringify(swapCounties) === JSON.stringify(normalizedInput) &&
+            normalizeCounty(a.swapCounty) === (b.county || "").toLowerCase() &&
+            normalizeCounty(b.swapCounty) === (c.county || "").toLowerCase() &&
+            normalizeCounty(c.swapCounty) === (a.county || "").toLowerCase()
+          ) {
+            const comboKey = [a.id, b.id, c.id].sort().join("-");
+            if (!displayedCombos.has(comboKey)) {
+              displayedCombos.add(comboKey);
+              foundSwaps.push({ a, b, c });
+            }
           }
         });
       });
     });
 
+    // Hide the "Searching" message once the search is completed
+    document.getElementById("triangularSwapNotice").style.display = "none";
+
+    // If swaps are found, display them, otherwise show a no swap message
     if (foundSwaps.length) {
       openTriangularModalWithSwaps(foundSwaps);
     } else {
@@ -6264,11 +6342,25 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
     }
 
   } catch (err) {
+    // Handle error and hide the "Searching" message
     console.error("Error:", err);
     document.getElementById("triangularSwapModalContent").innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
     document.getElementById("triangularSwapPaywall").style.display = "none";
+    document.getElementById("triangularSwapNotice").style.display = "none";
   }
 });
+
+// Function to show MPESA payment modal above the swap modal
+function showPaymentModalFor(type, amount, teacherId, description) {
+  const mpesaModal = document.getElementById("mpesaPaymentModal");
+
+  // Adjust z-index of MPESA modal to ensure it's on top
+  mpesaModal.style.zIndex = "10000"; // Ensure it's above the triangular swap modal
+  document.getElementById("triangularSwapModal").style.zIndex = "999"; // Ensure swap modal is below
+
+  // Show the MPESA modal
+  mpesaModal.style.display = "flex";
+}
 
 function maskPhone(phone) {
   return phone ? phone.slice(0, 2) + "XX XXX" + phone.slice(-3) : "";
@@ -6303,6 +6395,7 @@ function toggleActionButtons(swapId) {
   const actionButtons = document.getElementById(`action-buttons-${swapId}`);
   actionButtons.style.display = actionButtons.style.display === "none" ? "block" : "none";
 }
+
 function normalizeCounty(val) {
   if (Array.isArray(val)) {
     return val[0] ? val[0].toLowerCase() : "";
@@ -6645,50 +6738,56 @@ async function boostSwap(swapId) {
     return;
   }
 
-  // Check if the current user is an admin
   const isAdminUser = isAdmin === true;
-
-  // Show the loading spinner while processing the boost action
   document.getElementById("loadingSpinner").style.display = "flex";
 
   try {
+    const boostExpiry = firebase.firestore.Timestamp.fromDate(
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    );
+
     if (isAdminUser) {
-      // Admins boost the swap for free
-      await updateSwapBoostStatus(swapId, true);
+      await updateSwapBoostStatus(swapId, true, boostExpiry);
+      updateBoostedBadge(swapId, boostExpiry.toDate());
       showCustomAlert("✅ The swap has been boosted for free!", "success");
-
-      // Send an admin notification
       await sendBoostAdminNotification(swapId, currentUser.uid, "admin");
-
     } else {
-      // Show the payment modal for boosting (non-admin)
-      showPaymentModalFor('boost', 250, swapId, 'Boost Swap');
-
-      // Send an admin notification (non-admin boosting)
-      await sendBoostAdminNotification(swapId, currentUser.uid, "user");
+      showPaymentModalFor("swapBoost", 250, swapId, "Boost Swap", async () => {
+        await updateSwapBoostStatus(swapId, true, boostExpiry);
+        updateBoostedBadge(swapId, boostExpiry.toDate());
+        showCustomAlert("🚀 Your swap has been boosted for 7 days!", "success");
+        await sendBoostAdminNotification(swapId, currentUser.uid, "user");
+      });
     }
   } catch (error) {
     console.error("❌ Error boosting swap:", error);
     showCustomAlert("❌ Failed to boost swap: " + error.message, "error");
   } finally {
-    // Hide the loading spinner once the process is complete (whether successful or failed)
     document.getElementById("loadingSpinner").style.display = "none";
   }
 }
 
 
 // Function to update the swap boost status in Firestore
-async function updateSwapBoostStatus(swapId, boostStatus) {
-  const swapRef = firebase.firestore().doc(`teacherSwaps/${swapId}`);
+async function updateSwapBoostStatus(swapId, isBoosted, boostExpiry) {
+  const swapRef = db.collection("teacherSwaps").doc(swapId);
   await swapRef.update({
-    boosted: boostStatus,
+    boosted: isBoosted,
+    boostExpiry: isBoosted ? boostExpiry : null,
     boostTimestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
+
+  const boostButton = document.getElementById(`boostSwapBtn-${swapId}`);
+  if (boostButton) {
+    boostButton.innerText = isBoosted ? "🚀 Boosted" : "🚀 Boost Swap";
+    boostButton.disabled = isBoosted;
+  }
 }
+
 
 // Function to send an admin notification when a swap is boosted
 async function sendBoostAdminNotification(swapId, userId, userType) {
-  const swapRef = firebase.firestore().doc(`teacherSwaps/${swapId}`);
+  const swapRef = db.collection("teacherSwaps").doc(swapId);
   const swapDoc = await swapRef.get();
 
   if (!swapDoc.exists) {
@@ -6697,43 +6796,84 @@ async function sendBoostAdminNotification(swapId, userId, userType) {
   }
 
   const swapData = swapDoc.data();
-  const swapName = swapData.name || "Swap";
+  const swapName = swapData.teacherName || swapData.name || "Swap";
 
-  const notifRef = firebase.firestore().collection("adminNotifications").doc();
+  const notifRef = db.collection("adminNotifications").doc();
   await notifRef.set({
     type: "Swap Boost",
     swapId: swapId,
     userId: userId,
     swapName: swapName,
-    userType: userType, // either 'admin' or 'user'
+    userType: userType,
     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    message: `🚀 ${userType === "admin" ? "Admin" : "User"} boosted the swap "${swapName}" (ID: ${swapId}).`,
+    message: `🚀 ${userType === "admin" ? "Admin" : "User"} boosted the swap "${swapName}" (ID: ${swapId}).`
   });
-
-  console.log("Admin notification sent for swap boost.");
-}
-
-// ✅ Dummy fallback so you never get "sendAdminNotification is not defined"
-function sendAdminNotification(message) {
-  console.log("Admin notification:", message);
 }
 
 
-// Helper function to update the swap boost status in Firestore
-async function updateSwapBoostStatus(swapId, isBoosted) {
-  const swapRef = db.collection("teacherSwaps").doc(swapId);
-  await swapRef.update({
-    boosted: isBoosted,
-    boostExpiry: isBoosted ? firebase.firestore.Timestamp.fromDate(new Date()) : null
-  });
+// ✅ Helper: Instantly update Boosted badge in the UI
+function updateBoostedBadge(swapId, boostExpiryDate) {
+  const card = document.querySelector(`#swapCardContainer .swap-card[data-id="${swapId}"]`);
+  if (card) {
+    const now = new Date();
+    const diffDays = Math.max(1, Math.ceil((boostExpiryDate - now) / (1000 * 60 * 60 * 24)));
 
-  // Optionally, update UI or notify user of success
-  const boostButton = document.getElementById(`boostSwapBtn-${swapId}`);
-  if (boostButton) {
-    boostButton.innerText = "🚀 Boosted (Free)";
-    boostButton.disabled = true;
+    let badgeContainer = card.querySelector(".boosted-badge");
+    if (!badgeContainer) {
+      const badgeHTML = `<span class="boosted-badge" style="color: red; font-weight: bold; font-size: 14px; background-color: yellow; padding: 4px; border-radius: 6px; margin-left:6px;">🔥 Boosted (${diffDays} days left)</span>`;
+      const header = card.querySelector("h3");
+      if (header) header.insertAdjacentHTML("afterend", `<div style="margin:4px 0;">${badgeHTML}</div>`);
+    } else {
+      badgeContainer.textContent = `🔥 Boosted (${diffDays} days left)`;
+    }
+
+    // ✅ Move boosted card to top instantly
+    const container = document.getElementById("swapCardContainer");
+    if (container) {
+      container.prepend(card);
+    }
+
+    // ✅ Auto-remove badge when expired
+    const interval = setInterval(() => {
+      const now = new Date();
+      if (now >= boostExpiryDate) {
+        const badge = card.querySelector(".boosted-badge");
+        if (badge) badge.remove();
+
+        db.collection("teacherSwaps").doc(swapId).update({
+          boosted: false,
+          boostExpiry: null
+        });
+
+        clearInterval(interval);
+      } else {
+        const daysLeft = Math.max(1, Math.ceil((boostExpiryDate - now) / (1000 * 60 * 60 * 24)));
+        const badge = card.querySelector(".boosted-badge");
+        if (badge) badge.textContent = `🔥 Boosted (${daysLeft} days left)`;
+      }
+    }, 1000 * 60 * 60); // check hourly
   }
 }
+
+
+// ✅ Auto-refresh all boosted badges daily
+setInterval(() => {
+  document.querySelectorAll("#swapCardContainer .swap-card").forEach(card => {
+    const badge = card.querySelector(".boosted-badge");
+    if (badge) {
+      const swapId = card.getAttribute("data-id");
+      db.collection("teacherSwaps").doc(swapId).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.boosted && data.boostExpiry?.toDate) {
+            updateBoostedBadge(swapId, data.boostExpiry.toDate());
+          }
+        }
+      }).catch(err => console.error("Error refreshing badge:", err));
+    }
+  });
+}, 24 * 60 * 60 * 1000); // every 24 hours
+
 
 
 
@@ -7313,7 +7453,7 @@ function updateFollowedCount(jobId) {
 // ✅ Boost Job
 async function boostJob(jobId) { 
   const spinner = document.getElementById("loadingSpinner");
-  if (spinner) spinner.style.display = "flex"; // Show spinner
+  if (spinner) spinner.style.display = "flex";
 
   try {
     const jobRef = db.collection("bomJobs").doc(jobId);
@@ -7324,25 +7464,33 @@ async function boostJob(jobId) {
     }
 
     const data = doc.data();
-    const posterUid = data.posterUid; // ✅ Correct UID field
-
+    const posterUid = data.posterUid;
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       showCustomAlert("❌ You need to be logged in to boost a job.", "error");
       return;
     }
 
-    // Poster: trigger payment first
-    if (currentUser.uid === posterUid) {
-      showPaymentModalFor('boost', 350, jobId, data.jobType, async () => {
-        await applyBoost(jobRef, data);
+    const isAdminUser = isAdmin === true;
+    const boostExpiry = firebase.firestore.Timestamp.fromDate(
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    );
+
+    if (currentUser.uid === posterUid && !isAdminUser) {
+      // Poster: pay before boosting
+      showPaymentModalFor("jobBoost", 350, jobId, data.jobType, async () => {
+        await updateJobBoostStatus(jobId, true, boostExpiry);
+        updateJobBoostedBadge(jobId, boostExpiry.toDate());
+        showCustomAlert("🚀 Your job has been boosted for 7 days!", "success");
+        await sendJobBoostAdminNotification(jobId, currentUser.uid, "user", data.jobType);
       });
-      return; // Stop here until payment completes
+    } else {
+      // Admin or other privilege: boost instantly
+      await updateJobBoostStatus(jobId, true, boostExpiry);
+      updateJobBoostedBadge(jobId, boostExpiry.toDate());
+      showCustomAlert("✅ The job has been boosted for free!", "success");
+      await sendJobBoostAdminNotification(jobId, currentUser.uid, "admin", data.jobType);
     }
-
-    // Admin or others: boost directly
-    await applyBoost(jobRef, data);
-
   } catch (err) {
     console.error("❌ Boost error:", err);
     showCustomAlert("❌ Failed to boost: " + err.message, "error");
@@ -7351,30 +7499,100 @@ async function boostJob(jobId) {
   }
 }
 
-// ✅ Helper function to apply boost
-async function applyBoost(jobRef, data) {
-  const boostExpiry = new Date();
-  boostExpiry.setDate(boostExpiry.getDate() + 7);
 
+// ✅ Update Firestore job boost status
+async function updateJobBoostStatus(jobId, isBoosted, boostExpiry) {
+  const jobRef = db.collection("bomJobs").doc(jobId);
   await jobRef.update({
-    isBoosted: true,
-    boostExpiry: firebase.firestore.Timestamp.fromDate(boostExpiry)
-    // ✅ timestamp removed to prevent Firestore rules errors
+    isBoosted: isBoosted,
+    boostExpiry: isBoosted ? boostExpiry : null,
+    boostTimestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  showCustomAlert("✅ Job boosted successfully.", "success");
-  loadBOMJobs(); // Refresh list
+  // Optionally update boost button
+  const boostBtn = document.getElementById(`boostJobBtn-${jobId}`);
+  if (boostBtn) {
+    boostBtn.innerText = isBoosted ? "🚀 Boosted" : "🚀 Boost Job";
+    boostBtn.disabled = isBoosted;
+  }
+}
 
-  // Admin notification
-  await db.collection("adminNotifications").add({
-    type: "Job Boosted",
-    jobId: jobRef.id,
-    jobType: data.jobType,
-    boostedBy: firebase.auth().currentUser.displayName || firebase.auth().currentUser.email,
+
+// ✅ Send notification when a job is boosted
+async function sendJobBoostAdminNotification(jobId, userId, userType, jobType) {
+  const notifRef = db.collection("adminNotifications").doc();
+  await notifRef.set({
+    type: "Job Boost",
+    jobId: jobId,
+    userId: userId,
+    jobType: jobType,
+    userType: userType, // 'admin' or 'user'
     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    message: `🚀 Job "${data.jobType}" boosted by ${firebase.auth().currentUser.displayName || firebase.auth().currentUser.email}`
+    message: `🚀 ${userType === "admin" ? "Admin" : "User"} boosted the job "${jobType}" (ID: ${jobId}).`
   });
 }
+
+
+// ✅ Instantly update boosted badge on job card
+function updateJobBoostedBadge(jobId, boostExpiryDate) {
+  const card = document.querySelector(`#jobCardContainer .job-card[data-id="${jobId}"]`);
+  if (card) {
+    const now = new Date();
+    const diffDays = Math.max(1, Math.ceil((boostExpiryDate - now) / (1000 * 60 * 60 * 24)));
+
+    let badgeContainer = card.querySelector(".boosted-badge");
+    if (!badgeContainer) {
+      const badgeHTML = `<span class="boosted-badge" style="color:red;font-weight:bold;font-size:14px;background:yellow;padding:4px;border-radius:6px;margin-left:6px;">🔥 Boosted (${diffDays} days left)</span>`;
+      const header = card.querySelector("h3");
+      if (header) header.insertAdjacentHTML("afterend", `<div style="margin:4px 0;">${badgeHTML}</div>`);
+    } else {
+      badgeContainer.textContent = `🔥 Boosted (${diffDays} days left)`;
+    }
+
+    // ✅ Move boosted job to top
+    const container = document.getElementById("jobCardContainer");
+    if (container) container.prepend(card);
+
+    // ✅ Auto-remove badge when expired
+    const interval = setInterval(() => {
+      const now = new Date();
+      if (now >= boostExpiryDate) {
+        const badge = card.querySelector(".boosted-badge");
+        if (badge) badge.remove();
+
+        db.collection("bomJobs").doc(jobId).update({
+          isBoosted: false,
+          boostExpiry: null
+        });
+
+        clearInterval(interval);
+      } else {
+        const daysLeft = Math.max(1, Math.ceil((boostExpiryDate - now) / (1000 * 60 * 60 * 24)));
+        const badge = card.querySelector(".boosted-badge");
+        if (badge) badge.textContent = `🔥 Boosted (${daysLeft} days left)`;
+      }
+    }, 1000 * 60 * 60); // hourly
+  }
+}
+
+
+// ✅ Daily refresh of boosted job badges
+setInterval(() => {
+  document.querySelectorAll("#jobCardContainer .job-card").forEach(card => {
+    const badge = card.querySelector(".boosted-badge");
+    if (badge) {
+      const jobId = card.getAttribute("data-id");
+      db.collection("bomJobs").doc(jobId).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.isBoosted && data.boostExpiry?.toDate) {
+            updateJobBoostedBadge(jobId, data.boostExpiry.toDate());
+          }
+        }
+      }).catch(err => console.error("Error refreshing job badge:", err));
+    }
+  });
+}, 24 * 60 * 60 * 1000); // every 24h
 
 // ✅ Verify Job
 async function verifyJob(jobId) {
@@ -8279,23 +8497,40 @@ function renderSoulmateCard(d, container) {
       ${images.map((photo, index) => `<img src="${photo}" alt="Profile Image ${index+1}" style="width: 60px; height: 60px; object-fit: cover; margin-bottom: 10px; border-radius: 8px; cursor: pointer;" onclick="openImageModal(${index}, ${JSON.stringify(images)})">`).join('')}
     </div>` : `<div style="width: 100%; height: 200px; background: #f0f0f0; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; color: #888; cursor: pointer;" onclick="openImageModal()">No Image</div>`;
 
-  const contactHTML = `<div style="margin:4px 0;">
-      <div style="border: 1px solid #4caf50; background-color: #4caf50; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; margin-bottom: 6px; max-width: 150px;">
-        <span style="font-size: 16px; color:white;">${d.phone}</span>
-        <i class="fas fa-phone-alt" style="margin-left: 4px; color:white;"></i>
-      </div>
-      <div style="border: 1px solid #25D366; background-color: #25D366; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; max-width: 150px;">
-        <span style="font-size: 16px; color:white;">WhatsApp</span>
-        <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
-      </div>
-    </div>`;
+ const contactHTML = `<div style="margin:4px 0; font-family: Arial, sans-serif;">
+  <!-- Phone Number -->
+  <div style="border: 2px solid #4caf50; background-color: #4caf50; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 8px; max-width: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <span style="font-size: 18px; color:white; font-weight: bold;">${d.phone}</span>
+    <i class="fas fa-phone-alt" style="margin-left: 8px; color:white;"></i>
+  </div>
 
-  const blurredContactHTML = `<div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:8px; background:#f0f0f0; border:1px solid #ccc; font-weight:bold; color:#999; font-size:14px; filter: blur(4px);">📞 0700000000</div>
-    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:8px; background:#f0f0f0; border:1px solid #ccc; font-weight:bold; color:#999; font-size:14px; filter: blur(4px);">💬 WhatsApp</div>
-    <div style="color:crimson; font-size:13px; margin-top:4px;">🔒 Pay Ksh 200 to Unlock</div>
-    <button onclick="handleSoulmateAction('${id}', 'unlock')" style="margin-top:4px;background:crimson;color:white;border:none;padding:6px 14px;border-radius:6px;font-weight:bold;cursor:pointer;">💳 Pay</button>
-  </div>`;
+  <!-- WhatsApp -->
+  <div style="border: 2px solid #25D366; background-color: #25D366; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; max-width: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <span style="font-size: 18px; color:white; font-weight: bold;">WhatsApp</span>
+    <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
+  </div>
+</div>`;
+
+const blurredContactHTML = `<div style="display:flex; flex-direction:column; gap:12px; margin-top:12px; font-family: 'Arial', sans-serif;">
+  <!-- Phone Number Blur -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-radius:12px; background:#f9f9f9; border:2px solid #ccc; font-weight: bold; color:#999; font-size:18px; filter: blur(4px); transition: filter 0.3s ease-in-out; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    📞 0700000000
+  </div>
+  
+  <!-- WhatsApp Blur -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-radius:12px; background:#f9f9f9; border:2px solid #ccc; font-weight: bold; color:#999; font-size:18px; filter: blur(4px); transition: filter 0.3s ease-in-out; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+    💬 WhatsApp
+  </div>
+
+  <!-- Unlock Message -->
+  <div style="color:crimson; font-size:16px; font-weight:bold; margin-top:8px;">🔒 Pay Ksh 200 to Unlock Contacts </div>
+  
+  <!-- Pay Button -->
+  <button onclick="handleSoulmateAction('${id}', 'unlock')" 
+    style="margin-top:8px; background:crimson; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:18px; transition: background 0.3s ease, transform 0.2s ease;">
+    💳 Pay
+  </button>
+</div>`;
 
   const profileContent = d.isClosed ? `
     <p style="color:#999;">Profile Locked</p>
@@ -10127,148 +10362,255 @@ async function loadMarketItems() {
       return;
     }
 
-    // -----------------------------
-    // RENDER TRENDING (ONLY BOOSTED)
-    // -----------------------------
-    if (trendingContainer) {
-      boostedItems.forEach(d => {
-        const id = d.id;
-        const boostBadge = `<span style="color:#ff5722; font-weight:bold; font-size:0.85em; margin-left:6px;">🔥 Boosted</span>`;
-        const card = document.createElement("div");
-        card.className = "market-card";
-        card.id = `trending-${id}`;
-        card.dataset.boosted = "true";
-        card.style.position = "relative";
+// -----------------------------
+// RENDER TRENDING (ONLY BOOSTED)
+// -----------------------------
+if (trendingContainer) {
+  boostedItems.forEach(d => {
+    const id = d.id;
 
-        const images = d.photoURLs || [];
-        let imageHTML = '';
-        if (images.length > 0) {
-          images.forEach((img, idx) => {
-            imageHTML += `<img src="${img}" alt="Item Image ${idx + 1}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:8px; cursor:pointer;" onclick="openImageModal(${idx}, ${JSON.stringify(images)})">`;
-          });
-        } else {
-          imageHTML = `<div style="width:100%; height:180px; background: #f0f0f0; border-radius:8px; margin-bottom:8px; display:flex; justify-content:center; align-items:center; color:#888; cursor:pointer;" onclick="openImageModal()">No Images</div>`;
-        }
-
-        card.innerHTML = `
-          <h3 style="margin-bottom:6px; color:#2e7d32;">${d.posterName || "Unknown Seller"} ${boostBadge}</h3>
-          ${imageHTML}
-          <p style="color:#4caf50;">📦 <strong>Item name:</strong> ${d.name || "-"}</p>
-          <p style="color:#ff9800;">💰 <strong>Price:</strong> KES ${d.price ? parseInt(d.price).toLocaleString() : "N/A"}</p>
-          <p style="color:#3f51b5;">📍 <strong>Location:</strong> ${d.county || "Unknown"}, ${d.subcounty || "Unknown"}</p>
-          <p style="color:#673ab7;">📞 <strong>Contact:</strong> <a href="tel:${d.phone}" style="color:#673ab7;text-decoration:none;">${d.phone || "N/A"}</a></p>
-        `;
-        trendingContainer.appendChild(card);
-      });
+    // ✅ Boost expiry countdown
+    let boostBadge = "";
+    if (d.boosted && d.boostExpiry?.toDate?.() > new Date()) {
+      const expiryDate = d.boostExpiry.toDate();
+      const now = new Date();
+      const diffDays = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+      boostBadge = `<span style="color:#ff5722; font-weight:bold; font-size:0.85em; margin-left:6px;">🔥 Boosted (${diffDays} day${diffDays !== 1 ? "s" : ""} left)</span>`;
     }
 
-    // -----------------------------
-    // RENDER ALL MARKET ITEMS
-    // -----------------------------
-    [...boostedItems, ...normalItems].forEach(d => {
-      const id = d.id;
-      const isPoster = currentUser && currentUser.uid === d.postedBy;
-      const isBoosted = d.boosted && d.boostExpiry?.toDate?.() > new Date();
-      const isExpired = d.isExpired;
-      const canDelete = isPoster || isAdmin;
-      const canBoost = isPoster || isAdmin;
+    const card = document.createElement("div");
+    card.className = "market-card";
+    card.id = `trending-${id}`;
+    card.dataset.boosted = "true";
+    card.style.position = "relative";
 
-      const verifiedBadge = d.verified
-        ? `<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>`
-        : "";
+    const images = d.photoURLs || [];
+    let imageHTML = '';
+    if (images.length > 0) {
+      images.forEach((img, idx) => {
+        imageHTML += `<img src="${img}" alt="Item Image ${idx + 1}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:8px; cursor:pointer;" onclick="openImageModal(${idx}, ${JSON.stringify(images)})">`;
+      });
+    } else {
+      imageHTML = `<div style="width:100%; height:180px; background: #f0f0f0; border-radius:8px; margin-bottom:8px; display:flex; justify-content:center; align-items:center; color:#888; cursor:pointer;" onclick="openImageModal()">No Images</div>`;
+    }
 
-      let verifyBtnHTML = "";
-      if (!d.verified) {
-        if (isPoster && !isAdmin) {
-          verifyBtnHTML = `<button onclick="payForVerification('marketVerification', '${id}', '${d.name || ''}')" style="background:#4CAF50;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">✅ Get Verified – Ksh 500</button>`;
-        }
-        if (isAdmin) {
-          verifyBtnHTML += `<button onclick="adminVerifyItem('market', '${id}')" style="background:#2196F3;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">🛡️ Verify Now (Admin)</button>`;
-        }
-      }
-
-      const boostBadgeHTML = isBoosted
-        ? `<span style="color:#ff5722; font-weight:bold; font-size:0.85em; margin-left:6px;">🔥 Boosted</span>`
-        : "";
-
-      const card = document.createElement("div");
-      card.className = "market-card";
-      card.id = `market-${id}`;
-      card.dataset.category = d.category || "";
-      card.dataset.county = d.county || "";
-      if (isBoosted) card.dataset.boosted = "true";
-      card.style.position = "relative";
-
-      const images = d.photoURLs || [];
-      let imageHTML = '';
-      if (images.length > 0) {
-        images.forEach((img, idx) => {
-          imageHTML += `<img src="${img}" alt="Item Image ${idx + 1}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:8px; cursor:pointer;" onclick="openImageModal(${idx}, ${JSON.stringify(images)})">`;
-        });
-      } else {
-        imageHTML = `<div style="width:100%; height:180px; background:#f0f0f0; border-radius:8px; margin-bottom:8px; display:flex; justify-content:center; align-items:center; color:#888; cursor:pointer;" onclick="openImageModal()">No Images</div>`;
-      }
-
-      card.innerHTML = `
-        <h3 style="margin-bottom:6px; color:#2e7d32;">${d.posterName || "Unknown Seller"} ${verifiedBadge} ${boostBadgeHTML}</h3>
-        ${imageHTML}
-        <p style="color:#4caf50;">📦 <strong>Item name:</strong> ${d.name || "-"}</p>
-
-        <div id="more-${id}" style="display:none; margin-top:8px;">
-          <p style="color:#2196f3;">📝 <strong>Status:</strong> ${d.description || "-"}</p>
-          <p style="color:#e91e63;">🏷️ <strong>Category:</strong> ${d.category || "-"}</p>
-          <p style="color:#ff9800;">💰 <strong>Price:</strong> KES ${d.price ? parseInt(d.price).toLocaleString() : "N/A"}</p>
-          <p style="color:#9c27b0;">🧰 <strong>Condition:</strong> ${d.condition || "New"}</p>
-          <p style="color:#3f51b5;">📍 <strong>Location:</strong> ${d.county || "Unknown"}, ${d.subcounty || "Unknown"}</p>
-        </div>
-
-        <button onclick="toggleMore('${id}', this)" style="background:#009688;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">➕ More</button>
-
-        <p style="color:#673ab7; margin-top:10px;">📞 <strong>Contact:</strong> <a href="tel:${d.phone}" style="color:#673ab7;text-decoration:none;">${d.phone || "N/A"}</a></p>
-        ${verifyBtnHTML}
-
-        <!-- Action Buttons -->
-        <div style="margin-top:10px;">
-          <button onclick="toggleAction('${id}')" style="background:#2196F3;color:#fff;border:none;border-radius:5px;padding:6px 12px;">🛠️ Action</button>
-          <div id="action-buttons-${id}" style="display:none; margin-top:10px; flex-direction:column; gap:8px;">
-            ${isPoster || isAdmin ? `
-              <button onclick="openMarketChat('${d.firebaseUid || d.phone}', '${d.posterName || 'Seller'}')" style="background:#673ab7;color:#fff;border:none;border-radius:5px;padding:6px 12px;">💬 View Chat</button>
-              <button onclick="toggleSoldStatus('${id}')" style="background:#9e9e9e;color:#fff;border:none;border-radius:5px;padding:6px 12px;">${d.isSold ? "❌ Sold Out" : "✅ Mark as Sold"}</button>
-              <button onclick="openAllReviewsModal('${id}')" style="background:#03a9f4;color:#fff;border:none;border-radius:6px;padding:6px 12px;">💬 View All Reviews</button>
-              <button onclick="deleteMarketItem('${id}')" style="background:#dc3545;color:#fff;border:none;border-radius:6px;padding:6px 12px;">🗑️ Delete</button>
-              <button onclick="boostMarketItem('${id}')" style="background:#ff9800;color:#fff;border:none;border-radius:6px;padding:6px 12px;">🚀 Boost</button>
-              ${isExpired ? `<button onclick="renewBoost('${id}')" style="background:#ff9800;color:#fff;border:none;border-radius:6px;padding:6px 12px;">🔄 Renew Boost</button>` : ""}
-              <button onclick="openEditForm('${id}')" style="background:#673ab7;color:#fff;border:none;border-radius:6px;padding:6px 12px;">✏️ Edit Item</button>
-            ` : ""}
-
-            ${(!isPoster && currentUser) ? `
-              <button onclick="showMarketInterest('${id}')" style="background:#f44336;color:#fff;border:none;border-radius:5px;padding:6px 12px;">💬 Interest</button>
-              <button onclick="reportMarketItem('${id}')" style="background:#ff1744;color:#fff;border:none;border-radius:5px;padding:6px 12px;">🚩 Report</button>
-              <button onclick="openMarketChat('${d.firebaseUid || d.phone}', '${d.posterName || 'Seller'}')" style="background:#673ab7;color:#fff;border:none;border-radius:5px;padding:6px 12px;">💬 Chat</button>
-              <button onclick="openReviewModal('${id}')" style="background:#4CAF50;color:#fff;border:none;border-radius:5px;padding:6px 12px;">📝 Review</button>
-            ` : ""}
-          </div>
-        </div>
-
-        <div style="margin-top:10px;">
-          <button onclick="window.open('https://wa.me/${d.phone}', '_blank')" style="background:#25D366;color:#fff;border:none;border-radius:5px;padding:6px 12px;">📱 Contact on WhatsApp</button>
-        </div>
-      `;
-      container.appendChild(card);
-      updateAverageRating(id);
-      loadReviews("market", id);
-      loadInterestCount(id);
-    });
-
-  } catch (err) {
-    console.error("❌ Error loading market items:", err);
-  } finally {
-    // Always hide spinner no matter what happens
-    if (spinner) spinner.style.display = "none";
-  }
+    card.innerHTML = `
+      <h3 style="margin-bottom:6px; color:#2e7d32;">${d.posterName || "Unknown Seller"} ${boostBadge}</h3>
+      ${imageHTML}
+      <p style="color:#4caf50;">📦 <strong>Item name:</strong> ${d.name || "-"}</p>
+      <p style="color:#ff9800;">💰 <strong>Price:</strong> KES ${d.price ? parseInt(d.price).toLocaleString() : "N/A"}</p>
+      <p style="color:#3f51b5;">📍 <strong>Location:</strong> ${d.county || "Unknown"}, ${d.subcounty || "Unknown"}</p>
+      <p style="color:#673ab7;">📞 <strong>Contact:</strong> <a href="tel:${d.phone}" style="color:#673ab7;text-decoration:none;">${d.phone || "N/A"}</a></p>
+    `;
+    trendingContainer.appendChild(card);
+  });
 }
 
+// -----------------------------
+// RENDER ALL MARKET ITEMS
+// -----------------------------
+let allItems = [...boostedItems, ...normalItems];
 
+// ✅ Sort items: freeBoost first, then boosted, then normal
+allItems.sort((a, b) => {
+  const aExpiry = a.boostExpiry
+    ? (typeof a.boostExpiry.toDate === "function" ? a.boostExpiry.toDate() : new Date(a.boostExpiry))
+    : null;
+  const bExpiry = b.boostExpiry
+    ? (typeof b.boostExpiry.toDate === "function" ? b.boostExpiry.toDate() : new Date(b.boostExpiry))
+    : null;
+
+  const aBoosted = a.boosted && aExpiry && aExpiry > new Date();
+  const bBoosted = b.boosted && bExpiry && bExpiry > new Date();
+
+  // Free boost should always come first
+  if (a.freeBoost && !b.freeBoost) return -1;
+  if (!a.freeBoost && b.freeBoost) return 1;
+
+  // Paid boost above normal
+  if (aBoosted && !bBoosted) return -1;
+  if (!aBoosted && bBoosted) return 1;
+
+  return 0; // keep original order if same type
+});
+
+allItems.forEach(d => {
+  const id = d.id;
+  const isPoster = currentUser && currentUser.uid === d.postedBy;
+
+  // ✅ Safe boost expiry handling
+  let expiryDate = null;
+  if (d.boostExpiry) {
+    expiryDate = typeof d.boostExpiry.toDate === "function"
+      ? d.boostExpiry.toDate()
+      : new Date(d.boostExpiry);
+  }
+  const isBoosted = d.boosted && expiryDate && expiryDate > new Date();
+  const isExpired = d.boosted && expiryDate && expiryDate <= new Date();
+
+  const canDelete = isPoster || isAdmin;
+  const canBoost = isPoster || isAdmin;
+
+  const verifiedBadge = d.verified
+    ? `<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>`
+    : "";
+
+  let verifyBtnHTML = "";
+  if (!d.verified) {
+    if (isPoster && !isAdmin) {
+      verifyBtnHTML = `<button onclick="payForVerification('marketVerification', '${id}', '${d.name || ''}')" style="background:#4CAF50;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">✅ Get Verified – Ksh 500</button>`;
+    }
+    if (isAdmin) {
+      verifyBtnHTML += `<button onclick="adminVerifyItem('market', '${id}')" style="background:#2196F3;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">🛡️ Verify Now (Admin)</button>`;
+    }
+  }
+
+  // ✅ Boost countdown badge
+  let boostBadgeHTML = "";
+  if (isBoosted) {
+    const now = new Date();
+    const diffDays = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+    boostBadgeHTML = `<span class="boosted-badge" data-expiry="${expiryDate.toISOString()}" style="color:${d.freeBoost ? "dodgerblue" : "#ff5722"}; font-weight:bold; font-size:0.85em; margin-left:6px;">🔥 ${d.freeBoost ? "Free Boost" : "Boosted"} (${diffDays} day${diffDays !== 1 ? "s" : ""} left)</span>`;
+  }
+
+
+
+  const card = document.createElement("div");
+  card.className = "market-card";
+  card.id = `market-${id}`;
+  card.dataset.category = d.category || "";
+  card.dataset.county = d.county || "";
+  if (isBoosted) card.dataset.boosted = "true";
+  card.style.position = "relative";
+
+  // ✅ Auto-remove sold > 2 days
+  if (d.isSold && d.soldAt) {
+    const soldDate = new Date(d.soldAt.toDate ? d.soldAt.toDate() : d.soldAt);
+    const now = new Date();
+    const diffDays = (now - soldDate) / (1000 * 60 * 60 * 24);
+    if (diffDays >= 2) {
+      console.log(`Auto-removing sold item: ${id}`);
+      return;
+    }
+  }
+
+  const images = d.photoURLs || [];
+  let imageHTML = '';
+  if (images.length > 0) {
+    images.forEach((img, idx) => {
+      imageHTML += `<img src="${img}" alt="Item Image ${idx + 1}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:8px; cursor:pointer;" onclick="openImageModal(${idx}, ${JSON.stringify(images)})">`;
+    });
+  } else {
+    imageHTML = `<div style="width:100%; height:180px; background:#f0f0f0; border-radius:8px; margin-bottom:8px; display:flex; justify-content:center; align-items:center; color:#888; cursor:pointer;" onclick="openImageModal()">No Images</div>`;
+  }
+
+  // ✅ Status badge
+  let statusBadge = "";
+  if (d.isSold) {
+    statusBadge = `
+      <div style="
+        position:absolute;
+        top:10px;
+        left:10px;
+        background:red;
+        color:white;
+        padding:4px 10px;
+        border-radius:5px;
+        font-size:0.85em;
+        font-weight:bold;
+        z-index:10;
+      ">❌ Sold Out</div>`;
+  } else {
+    statusBadge = `
+      <div style="
+        position:absolute;
+        top:10px;
+        left:10px;
+        background:green;
+        color:white;
+        padding:4px 10px;
+        border-radius:5px;
+        font-size:0.85em;
+        font-weight:bold;
+        z-index:10;
+      ">✅ Available</div>`;
+  }
+
+  card.innerHTML = `
+    ${statusBadge}
+    <h3 style="margin-bottom:6px; color:#2e7d32;">
+      ${d.posterName || "Unknown Seller"} ${verifiedBadge} ${boostBadgeHTML}
+    </h3>
+    ${imageHTML}
+    <p style="color:#4caf50;">📦 <strong>Item name:</strong> ${d.name || "-"}</p>
+
+    <div id="more-${id}" style="display:none; margin-top:8px;">
+      <p style="color:#2196f3;">📝 <strong>Status:</strong> ${d.description || "-"}</p>
+      <p style="color:#e91e63;">🏷️ <strong>Category:</strong> ${d.category || "-"}</p>
+      <p style="color:#ff9800;">💰 <strong>Price:</strong> KES ${d.price ? parseInt(d.price).toLocaleString() : "N/A"}</p>
+      <p style="color:#9c27b0;">🧰 <strong>Condition:</strong> ${d.condition || "New"}</p>
+      <p style="color:#3f51b5;">📍 <strong>Location:</strong> ${d.county || "Unknown"}, ${d.subcounty || "Unknown"}</p>
+    </div>
+
+    <button onclick="toggleMore('${id}', this)" style="background:#009688;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">➕ More</button>
+
+    <p style="color:#673ab7; margin-top:10px;">📞 <strong>Contact:</strong> <a href="tel:${d.phone}" style="color:#673ab7;text-decoration:none;">${d.phone || "N/A"}</a></p>
+    ${verifyBtnHTML}
+
+    <!-- Action Buttons -->
+    <div style="margin-top:10px;">
+      <button onclick="toggleAction('${id}')" style="background:#2196F3;color:#fff;border:none;border-radius:5px;padding:6px 12px;">🛠️ Action</button>
+      <div id="action-buttons-${id}" style="display:none; margin-top:10px; flex-direction:column; gap:8px;">
+        ${isPoster || isAdmin ? `
+          <button onclick="openMarketChat('${d.firebaseUid || d.phone}', '${d.posterName || 'Seller'}')" style="background:#673ab7;color:#fff;border:none;border-radius:5px;padding:6px 12px;">💬 View Chat</button>
+          <button onclick="toggleSoldStatus('${id}')" style="background:#9e9e9e;color:#fff;border:none;border-radius:5px;padding:6px 12px;">${d.isSold ? "🔄 Mark as Available" : "✅ Mark as Sold"}</button>
+          <button onclick="openAllReviewsModal('${id}')" style="background:#03a9f4;color:#fff;border:none;border-radius:6px;padding:6px 12px;">💬 View All Reviews</button>
+          <button onclick="deleteMarketItem('${id}')" style="background:#dc3545;color:#fff;border:none;border-radius:6px;padding:6px 12px;">🗑️ Delete</button>
+
+          ${!isBoosted && !isExpired ? `
+            <button id="boostMarketBtn-${id}" onclick="boostMarketItem('${id}')" style="background:#ff9800;color:#fff;border:none;border-radius:6px;padding:6px 12px;">🚀 Boost</button>
+          ` : ""}
+
+          ${isExpired ? `
+            <button onclick="renewBoost('${id}')" style="background:#ff9800;color:#fff;border:none;border-radius:6px;padding:6px 12px;">🔄 Renew Boost</button>
+          ` : ""}
+
+          <button onclick="openEditForm('${id}')" style="background:#673ab7;color:#fff;border:none;border-radius:6px;padding:6px 12px;">✏️ Edit Item</button>
+        ` : ""}
+
+        ${(!isPoster && currentUser) ? `
+          <button onclick="showMarketInterest('${id}')" style="background:#f44336;color:#fff;border:none;border-radius:5px;padding:6px 12px;">💬 Interest</button>
+          <button onclick="reportMarketItem('${id}')" style="background:#ff1744;color:#fff;border:none;border-radius:5px;padding:6px 12px;">🚩 Report</button>
+          <button onclick="openMarketChat('${d.firebaseUid || d.phone}', '${d.posterName || 'Seller'}')" style="background:#673ab7;color:#fff;border:none;border-radius:5px;padding:6px 12px;">💬 Chat</button>
+          <button onclick="openReviewModal('${id}')" style="background:#4CAF50;color:#fff;border:none;border-radius:5px;padding:6px 12px;">📝 Review</button>
+        ` : ""}
+      </div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <button onclick="window.open('https://wa.me/${d.phone}', '_blank')" style="background:#25D366;color:#fff;border:none;border-radius:5px;padding:6px 12px;">📱 Contact on WhatsApp</button>
+    </div>
+  `;
+  container.appendChild(card);
+  updateAverageRating(id);
+  loadReviews("market", id);
+  loadInterestCount(id);
+});
+
+// ✅ ADD ALERT AT THE BOTTOM
+const endMessage = document.createElement("div");
+endMessage.style.textAlign = "center";
+endMessage.style.margin = "20px 0";
+endMessage.style.color = "#666";
+endMessage.innerHTML = "📌 That's all for now";
+container.appendChild(endMessage);
+
+} catch (err) {
+  console.error("❌ Error loading market items:", err);
+} finally {
+  if (spinner) spinner.style.display = "none";
+}
+}
 
 // Toggle Action Button Visibility
 function toggleAction(itemId) {
@@ -10276,7 +10618,6 @@ function toggleAction(itemId) {
   const isVisible = actionButtons.style.display === 'block';
   actionButtons.style.display = isVisible ? 'none' : 'block';
 }
-
 
 function toggleMore(id, btn) {
   const moreDiv = document.getElementById(`more-${id}`);
@@ -10590,7 +10931,7 @@ function showChatAlert(text, color) {
   setTimeout(() => alertBox.style.display = "none", 2000);
 }
 
-/// ✅ Load My Chats list with unread badge
+// ✅ Load My Chats list with unread badge
 async function loadMyChats() {
   const chatList = document.getElementById("chatList");
   chatList.innerHTML = "<p style='color:gray; text-align:center;'>Loading your chats...</p>";
@@ -10599,31 +10940,42 @@ async function loadMyChats() {
     .where("participants", "array-contains", marketChatState.currentUserId)
     .orderBy("timestamp", "desc")
     .onSnapshot(snapshot => {
+      // Clear "loading" text once data is back
+      chatList.innerHTML = "";
+
       if (snapshot.empty) {
         chatList.innerHTML = "<p style='color:gray; text-align:center;'>No chats yet.</p>";
         updateMyChatsBadge(0);
         return;
       }
 
-      chatList.innerHTML = "";
       const conversations = {};
-      let totalUnread = 0; // Count unread messages
+      let totalUnread = 0;
 
       snapshot.forEach(doc => {
         const msg = doc.data();
-        const otherUser = msg.senderId === marketChatState.currentUserId ? msg.receiverId : msg.senderId;
+        const otherUser = msg.senderId === marketChatState.currentUserId
+          ? msg.receiverId
+          : msg.senderId;
 
-        // Only keep the latest message per conversation
-        if (!conversations[otherUser] || msg.timestamp?.toMillis() > conversations[otherUser].timestamp?.toMillis()) {
+        // Keep only the latest message per conversation
+        if (
+          !conversations[otherUser] ||
+          msg.timestamp?.toMillis() > conversations[otherUser].timestamp?.toMillis()
+        ) {
           conversations[otherUser] = { ...msg, otherUser };
         }
 
-        // Count unread messages for badge
-        if (msg.receiverId === marketChatState.currentUserId && msg.status !== "read") {
+        // Count unread messages
+        if (
+          msg.receiverId === marketChatState.currentUserId &&
+          msg.status !== "read"
+        ) {
           totalUnread++;
         }
       });
 
+      // Render chat items
       Object.values(conversations).forEach(chat => {
         const div = document.createElement("div");
         div.style.display = "flex";
@@ -10637,20 +10989,24 @@ async function loadMyChats() {
         left.style.alignItems = "center";
         left.style.gap = "8px";
 
-        // Text avatar using first letter of senderName
+        // Text avatar
         const avatar = createTextAvatar(chat.senderName || "U");
         left.appendChild(avatar);
 
         const textWrapper = document.createElement("div");
 
         const name = document.createElement("strong");
-        name.textContent = chat.senderId === marketChatState.currentUserId
-          ? "You → " + chat.receiverId
-          : chat.senderName;
+        name.textContent =
+          chat.senderId === marketChatState.currentUserId
+            ? "You → " + chat.receiverId
+            : chat.senderName;
         textWrapper.appendChild(name);
 
         const snippet = document.createElement("div");
-        snippet.textContent = chat.message.length > 35 ? chat.message.slice(0, 35) + "…" : chat.message;
+        snippet.textContent =
+          chat.message.length > 35
+            ? chat.message.slice(0, 35) + "…"
+            : chat.message;
         snippet.style.fontSize = "12px";
         snippet.style.color = "#666";
         textWrapper.appendChild(snippet);
@@ -10658,10 +11014,13 @@ async function loadMyChats() {
         left.appendChild(textWrapper);
         div.appendChild(left);
 
-        div.onclick = () => openMarketChat(
-          chat.otherUser,
-          chat.senderId === marketChatState.currentUserId ? chat.receiverId : chat.senderName
-        );
+        div.onclick = () =>
+          openMarketChat(
+            chat.otherUser,
+            chat.senderId === marketChatState.currentUserId
+              ? chat.receiverId
+              : chat.senderName
+          );
 
         chatList.appendChild(div);
       });
@@ -10670,6 +11029,7 @@ async function loadMyChats() {
       updateMyChatsBadge(totalUnread);
     });
 }
+
 
 // ✅ Update My Chats unread badge
 function updateMyChatsBadge(count) {
@@ -11861,29 +12221,37 @@ async function showMarketInterest(itemId) {
     const posterLocation = `${item.county || ""} ${item.subcounty || ""}`.trim() || "No location provided";
     const userName = user.displayName || user.email || "Someone";
 
-    // ⚡ Prepare notifications with improved format
+    // ⚡ Prepare notifications
     const alertPromises = [];
 
-    // Notify the poster of the new interest, including the user's phone number and better message format
+    // Notify the poster of the new interest
     if (posterId && posterId !== user.uid) {
       alertPromises.push(
         db.collection("alerts").add({
           targetUserId: posterId,
           title: "❤️ New Interest in Your Item",
-          message: `${userName}, has expressed interest in item "${itemName}" (User Phone: ${phone}, posted by you).`,
+          message: `${userName} has expressed interest in "${itemName}" (User Phone: ${phone}).`,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           readBy: []
         })
       );
     }
 
-    // Notify admins about the new interest, including the user's phone number
+    // 🔹 Dynamically fetch admin emails from Firestore
+    const adminSnapshot = await db.collection("users").where("isAdmin", "==", true).get();
+    const adminEmails = [];
+    adminSnapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.email) adminEmails.push(data.email);
+    });
+
+    // Notify admins
     for (const email of adminEmails) {
       alertPromises.push(
         db.collection("alerts").add({
           targetEmail: email,
           title: "📢 Market Interest",
-          message: `${userName} has expressed interest in item "${itemName}" (User Phone: ${phone}, Item Poster Phone: ${posterPhone}, 📍 ${posterLocation}).`,
+          message: `${userName} has expressed interest in "${itemName}" (User Phone: ${phone}, Poster Phone: ${posterPhone}, 📍 ${posterLocation}).`,
           itemId: itemId,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           readBy: []
@@ -11891,7 +12259,7 @@ async function showMarketInterest(itemId) {
       );
     }
 
-    // Fire off alerts without blocking UI (don't await here to keep UX instant)
+    // Fire off alerts without blocking UI
     Promise.allSettled(alertPromises);
 
     showCustomAlert("✅ Your interest has been recorded!", "success", true);
@@ -11902,6 +12270,7 @@ async function showMarketInterest(itemId) {
     if (spinner) spinner.style.display = "none";
   }
 }
+
 async function openEditForm(itemId) {
   const itemRef = marketRef.doc(itemId);
 
@@ -12050,9 +12419,10 @@ function showCustomAlert(message, type = "info") {
   }, 3500);
 }
 
+// ✅ Boost market item
 async function boostMarketItem(id) {
   const spinner = document.getElementById("loadingSpinner");
-  if (spinner) spinner.style.display = "flex"; // Show the spinner before processing
+  if (spinner) spinner.style.display = "flex";
 
   try {
     const itemRef = marketRef.doc(id);
@@ -12063,54 +12433,110 @@ async function boostMarketItem(id) {
     }
 
     const data = doc.data();
-    const postedBy = data.postedBy; // Access postedBy from the Firestore document
-
+    const postedBy = data.postedBy;
     const currentUser = firebase.auth().currentUser;
+
     if (!currentUser) {
       showCustomAlert("❌ You need to be logged in to boost an item.", "error");
       return;
     }
 
-    // If the current user is the poster, prompt for payment
-    if (currentUser.uid === postedBy) {
-      // Show the payment modal for the poster
-      showPaymentModalFor('boost', 250, id, data.name);
-      return; // Stop the boosting process until payment is completed
+    // ✅ Admin can boost FREE always
+    const token = await currentUser.getIdTokenResult();
+    const isAdmin = token.claims.admin === true;
+
+    if (isAdmin) {
+      await applyMarketBoost(itemRef, id, data, currentUser, true); // free boost
+      return;
     }
 
-    // For admin or others, boost the item directly (free for admin)
-    const boostExpiry = new Date();
-    boostExpiry.setDate(boostExpiry.getDate() + 7);
+    // ✅ Normal poster must pay
+    if (currentUser.uid === postedBy) {
+      showPaymentModalFor("boost", 250, id, data.name, async () => {
+        await applyMarketBoost(itemRef, id, data, currentUser, false);
+      });
+      return;
+    }
 
-    // Update the item to set it as boosted with an expiry date
-    await itemRef.update({
-      boosted: true,
-      boostExpiry: firebase.firestore.Timestamp.fromDate(boostExpiry)
-    });
-
-    showCustomAlert("✅ Item boosted successfully (admin).", "success");
-    loadMarketItems(); // Refresh the list to reflect the change
-
-    // Create Admin Notification about Boost (Even for Admin boost)
-    const notifRef = db.collection("adminNotifications").doc();
-    await notifRef.set({
-      type: "Item Boosted",
-      itemId: id,
-      itemName: data.name,
-      boostedBy: currentUser.displayName || currentUser.email,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      message: `🚀 Item "${data.name}" has been boosted by ${currentUser.displayName || currentUser.email} (Admin).`
-    });
-
-    console.log("Admin notification created for item boost");
+    // ✅ Other users (non-admin, non-poster) → free boost
+    await applyMarketBoost(itemRef, id, data, currentUser, true);
 
   } catch (err) {
     console.error("❌ Boost error:", err);
     showCustomAlert("❌ Failed to boost: " + err.message, "error");
   } finally {
-    if (spinner) spinner.style.display = "none"; // Hide the spinner once done
+    if (spinner) spinner.style.display = "none";
   }
 }
+
+// ✅ Extracted helper to reuse for poster & admin
+async function applyMarketBoost(itemRef, id, data, currentUser, freeBoost = false) {
+  const boostExpiry = new Date();
+  boostExpiry.setDate(boostExpiry.getDate() + 7);
+
+  await itemRef.update({
+    boosted: true,
+    freeBoost: freeBoost, // 🔹 mark if free boost
+    boostExpiry: firebase.firestore.Timestamp.fromDate(boostExpiry)
+  });
+
+  showCustomAlert(
+    freeBoost
+      ? "✅ Item boosted for FREE by Admin."
+      : "✅ Item boosted successfully.",
+    "success"
+  );
+
+  // 🔹 Update badge instantly in UI
+  const card = document.getElementById(`market-${id}`);
+  const container = document.getElementById("marketContainer");
+  if (card && container) {
+    const now = new Date();
+    const diffDays = Math.ceil((boostExpiry - now) / (1000 * 60 * 60 * 24));
+    let h3 = card.querySelector("h3");
+    if (h3) {
+      // remove old badge if any
+      h3.querySelectorAll(".boosted-badge").forEach(el => el.remove());
+      h3.innerHTML += ` <span class="boosted-badge" data-expiry="${boostExpiry.toISOString()}" style="color:${freeBoost ? "dodgerblue" : "#ff5722"}; font-weight:bold; font-size:0.85em; margin-left:6px;">🔥 ${freeBoost ? "Free Boost" : "Boosted"} (${diffDays} day${diffDays !== 1 ? "s" : ""} left)</span>`;
+    }
+
+    // 🔹 Move boosted item card to TOP immediately
+    container.prepend(card);
+  }
+
+  // 🔹 Admin Notification
+  await db.collection("adminNotifications").add({
+    type: "Item Boosted",
+    itemId: id,
+    itemName: data.name,
+    freeBoost,
+    boostedBy: currentUser.displayName || currentUser.email,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    message: `🚀 Item "${data.name}" ${freeBoost ? "FREE Boosted" : "Boosted"} by ${currentUser.displayName || currentUser.email}`
+  });
+}
+
+// 🔄 Auto-update boosted badges every minute
+setInterval(() => {
+  const now = new Date();
+  document.querySelectorAll(".boosted-badge").forEach(badge => {
+    const expiryAttr = badge.dataset.expiry;
+    if (!expiryAttr) return;
+    const expiryDate = new Date(expiryAttr);
+    const diffDays = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+    if (diffDays > 0) {
+      badge.textContent = badge.textContent.includes("Free")
+        ? `🔥 Free Boost (${diffDays} day${diffDays !== 1 ? "s" : ""} left)`
+        : `🔥 Boosted (${diffDays} day${diffDays !== 1 ? "s" : ""} left)`;
+    } else {
+      badge.textContent = "🔥 Boost Expired";
+      badge.style.color = "gray";
+    }
+  });
+}, 60 * 1000); // update every 1 minute
+
+
+
 
 async function toggleSoldStatus(itemId) {
   const spinner = document.getElementById("loadingSpinner");
