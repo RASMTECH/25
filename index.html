@@ -2445,9 +2445,14 @@ body.theme20 {
   </a>
 </li>
 <!-- Toggle Button to open theme customization panel -->
-<button id="themeCustomizeToggle" style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px;">
+<button id="themeCustomizeToggle" 
+        style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; 
+               border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold;
+               display: flex; align-items: center; gap: 6px; cursor: pointer;">
+  <i class="fas fa-paint-brush"></i>
   Customize Theme
 </button>
+
 
   <li><a class="menu-box" href="#" onclick="showPage('usageHelp')">
     <img src="https://i.imgur.com/tHuRu3z.jpeg" alt="How to Use">
@@ -2488,11 +2493,14 @@ body.theme20 {
   </li>
 <!-- ✅ Price Scanner Button (hidden by default) -->
 <button id="scanPricesBtn" 
-        style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;
+        style="display:none; position:fixed; bottom:65px; right:100px; z-index:9999;
                background:#007bff; color:white; border:none; padding:10px 15px; 
-               border-radius:6px; cursor:pointer; font-size:14px;">
+               border-radius:6px; cursor:pointer; font-size:14px; display:flex; align-items:center; gap:6px;">
+  <i class="fas fa-search"></i>
   Scan Prices
 </button>
+
+</li>
 
 <!-- 🔘 Button to load payments (Admins Only) -->
 <li id="viewPaymentsBtn" style="display:none;">
@@ -4373,7 +4381,8 @@ body.theme20 {
 <div id="seekingServices" class="page" style="display:none;">
 <h2 style="display: flex; align-items: center; color: #000; background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; gap: 8px;">
   <i class="fas fa-concierge-bell" style="color:#009688;"></i>
-  Post Your Service
+   🚀 Don’t wait! Showcase your services today and connect with potential clients instantly.  
+  The more you share, the more opportunities you create! 💼✨
 </h2>
 
 <div class="scrolling-banner">
@@ -4584,7 +4593,7 @@ body.theme20 {
  <img src="https://i.imgur.com/uyloDlg.jpeg " class="side-image" />
  <img src="https://i.imgur.com/CLnRHF4.jpeg" class="side-image" />
 <form id="marketForm" style="
-    background-image: url('https://i.imgur.com/Mm2b91e.jpeg');
+    background-image: url('https://i.imgur.com/ORcAA8t.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -4733,7 +4742,6 @@ body.theme20 {
     </button>
 </form>
 
-
  <img src="https://i.imgur.com/vwwqSJU.jpeg " class="side-image" />
  <img src="https://i.imgur.com/s4w8sJa.jpeg " class="side-image" />
  <img src="https://i.imgur.com/bpolGgB.jpeg " class="side-image" />
@@ -4742,26 +4750,24 @@ body.theme20 {
   <div>
 
 
-<!-- ✅ Market Filter Action Box -->
-<div style="
-  border: 2px solid #cfd8dc; 
-  background-image: url('https://i.imgur.com/UulNMrB.jpeg'); /* Add your image URL here */
-  background-size: cover; 
-  background-position: center;
-  padding: 16px 20px; 
-  border-radius: 10px; 
-  margin-bottom: 20px;
-">
-
-  <h3 style="margin-bottom: 12px; color: #ffffff;">
-    <i class="fas fa-filter" style="margin-right: 6px;"></i>
-    Filter Marketplace Items
-  </h3>
+<!-- Container for Market Action / Filter Box -->
+<div class="market-action-wrapper" style="margin-top: 40px;">
+  <div style="
+      border: 2px solid #cfd8dc; 
+      background-image: url('https://i.imgur.com/opNvQte.png');
+      background-size: cover; 
+      background-position: center;
+      padding: 16px 20px; 
+      border-radius: 10px; 
+  ">
   <!-- 🔍 Free Text Search -->
-  <div style="margin-bottom: 14px;">
-    <label for="filterSearch" style="font-size: 13px; color: #ffffff; margin-bottom: 4px; display:block;">
-      <i class="fas fa-search" style="margin-right: 6px;"></i>Search Anything:
-    </label>
+<div style="margin-bottom: 14px; background:#f44336; padding:8px 20px; border-radius:6px; display:inline-block;">
+  <label for="filterSearch" style="font-size: 13px; color: #ffffff; margin-bottom: 4px; display:block;">
+    <i class="fas fa-search" style="margin-right: 6px; color:#fff;"></i>
+    Search Anything:
+  </label>
+
+
     <input type="text" id="filterSearch" placeholder="Type to search..."
       oninput="filterMarketItems()" 
       style="width: 100%; background-color: rgba(255, 255, 255, 0.85); 
@@ -4776,11 +4782,14 @@ body.theme20 {
 
   <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;">
 
-    <!-- Category Filter -->
-    <div style="display: flex; flex-direction: column;">
-      <label for="filterItemCategory" style="font-size: 13px; color: #ffffff; margin-bottom: 4px;">
-        <i class="fas fa-tags" style="margin-right: 6px;"></i>Filter by Category:
-      </label>
+<!-- Category Filter -->
+<div style="display: flex; flex-direction: column; background:#ff9800; padding:8px 12px; border-radius:6px; margin-bottom:12px; width:fit-content;">
+  <label for="filterItemCategory" style="font-size: 13px; color: #ffffff; margin-bottom: 4px;">
+    <i class="fas fa-tags" style="margin-right: 6px; color:#fff;"></i>
+    Filter by Category:
+  </label>
+
+
       <select id="filterItemCategory" onchange="filterMarketItems()"
         style="width: 180px; background-color: rgba(227, 242, 253, 0.8); border: 2px solid #90caf9; padding: 6px; border-radius: 6px; font-weight: bold;">
         <option value="">🔽 Select Category</option>
@@ -4896,20 +4905,24 @@ body.theme20 {
       </select>
     </div>
 
-    <!-- Min Price Filter -->
-    <div style="display: flex; flex-direction: column;">
-      <label for="filterMinPrice" style="font-size: 13px; color: #ffffff; margin-bottom: 4px;">
-        <i class="fas fa-dollar-sign" style="margin-right: 6px;"></i>Min Price:
-      </label>
+  <!-- Min Price Filter -->
+<div style="display: flex; flex-direction: column; background:#4caf50; padding:8px 12px; border-radius:6px; margin-bottom:12px; width:fit-content;">
+  <label for="filterMinPrice" style="font-size: 13px; color: #ffffff; margin-bottom: 4px;">
+    <i class="fas fa-dollar-sign" style="margin-right: 6px; color:#fff;"></i>
+    Min Price:
+  </label>
+
+
       <input type="number" id="filterMinPrice" placeholder="KES 0" onchange="filterMarketItems()"
         style="width: 120px; background-color: rgba(232, 245, 233, 0.8); border: 2px solid #a5d6a7; padding: 6px; border-radius: 6px; font-weight: bold;" />
     </div>
 
-    <!-- Max Price Filter -->
-    <div style="display: flex; flex-direction: column;">
-      <label for="filterMaxPrice" style="font-size: 13px; color: #ffffff; margin-bottom: 4px;">
-        <i class="fas fa-dollar-sign" style="margin-right: 6px;"></i>Max Price:
-      </label>
+<!-- Max Price Filter -->
+<div style="display: flex; flex-direction: column; background:#2e7d32; padding:8px 12px; border-radius:6px; margin-bottom:12px; width:fit-content;">
+  <label for="filterMaxPrice" style="font-size: 13px; color: #ffffff; margin-bottom: 4px;">
+    <i class="fas fa-dollar-sign" style="margin-right: 6px; color:#fff;"></i>
+    Max Price:
+  </label>
       <input type="number" id="filterMaxPrice" placeholder="KES 10000" onchange="filterMarketItems()"
         style="width: 120px; background-color: rgba(255, 235, 238, 0.8); border: 2px solid #ef9a9a; padding: 6px; border-radius: 6px; font-weight: bold;" />
     </div>
@@ -4927,6 +4940,39 @@ body.theme20 {
     </div>
 
   </div>
+</div>
+<!-- ⚠️ Floating Payment Alert -->
+<div id="paymentAlert" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffeb3b; /* Yellow background */
+    color: #d32f2f;            /* Red text */
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+    max-width: 300px;
+">
+  <i class="fas fa-exclamation-triangle" style="font-size: 18px;"></i>
+  <span> Attention: Always pay <u>after delivery</u>! Avoid advance payments to prevent fraud.</span>
+  <button onclick="document.getElementById('paymentAlert').style.display='none';" 
+          style="
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            color: #d32f2f;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+          ">
+    ×
+  </button>
 </div>
 
 
