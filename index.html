@@ -5,7 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="google-site-verification" content="avAOYmLGInigyninrH1UV5TAnarbb_TEx8vKUeGaN-o" />
-  
+   <!-- ✅ Leaflet (OpenStreetMap) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <title>Teacher Swaps Kenya</title>
@@ -2356,7 +2359,18 @@ body.theme20 {
     bottom: 30px; /* Adjust bottom position for mobile */
   }
 }
-
+body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
+    h2 { color:#2196f3; }
+    form, .panel { max-width:400px; margin:auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+    form input, form select, form button, .panel button { width:100%; padding:10px; margin:8px 0; border-radius:5px; border:1px solid #ccc; }
+    form button, .panel button { background:#4CAF50; color:white; border:none; cursor:pointer; }
+    form button:hover, .panel button:hover { background:#45a049; }
+    .ride-card { margin:10px auto; padding:15px; max-width:500px; background:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+    nav { background:#333; padding:10px; }
+    nav a { color:white; margin:0 10px; text-decoration:none; font-weight:bold; }
+    nav a:hover { text-decoration:underline; }
+    #rideSystem { display:none; padding:40px; }
+    #map { height: 300px; margin:20px auto; border-radius:8px; }
 </style>
 </head>
 <body>
@@ -2365,14 +2379,12 @@ body.theme20 {
   <!-- Left Image -->
   <img src="https://i.imgur.com/pdTgJX3.jpeg" alt="Left Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
 
-<!-- Header Content -->
-<div style="flex-grow: 1; text-align: center;">
-  <h1 style="color: white; font-weight: bold; display: flex; align-items: center; gap: 10px; justify-content: center; background-color: #ffeb3b; padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); color: #000;">
-    <i class="fas fa-star" style="color:#fbc02d;"></i>
-    Nyota Mtaani – Teacher Swaps & Daily Hustles
-  </h1>
-
-
+  <!-- Header Content -->
+  <div style="flex-grow: 1; text-align: center;">
+    <h1 style="color: white; font-weight: bold; display: flex; align-items: center; gap: 10px; justify-content: center;">
+      <i class="fas fa-star"></i>
+      Nyota Mtaani – Teacher Swaps & Daily Hustles
+    </h1>
 
 <!-- Display logged-in user and logout button inside the header -->
 <div id="loggedInUser" style="text-align:center; color: white; margin-top: 10px; font-family: Arial, sans-serif;">
@@ -2428,7 +2440,7 @@ body.theme20 {
 <ul>
   <!-- Core Navigation -->
   <li><a class="menu-box" href="#" onclick="showPage('home')">
-    <img src="https://i.imgur.com/C0YbfdS.png" alt="Home">
+    <img src="https://i.imgur.com/lek58ah.jpeg" alt="Home">
     <span>Home</span></a>
 
 <li>
@@ -2445,14 +2457,9 @@ body.theme20 {
   </a>
 </li>
 <!-- Toggle Button to open theme customization panel -->
-<button id="themeCustomizeToggle" 
-        style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; 
-               border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold;
-               display: flex; align-items: center; gap: 6px; cursor: pointer;">
-  <i class="fas fa-paint-brush"></i>
+<button id="themeCustomizeToggle" style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px;">
   Customize Theme
 </button>
-
 
   <li><a class="menu-box" href="#" onclick="showPage('usageHelp')">
     <img src="https://i.imgur.com/tHuRu3z.jpeg" alt="How to Use">
@@ -2466,7 +2473,7 @@ body.theme20 {
   </li>
 <li>
   <a class="menu-box" href="#" onclick="showPage('swaps'); resetSwapBadge();">
-    <img src="https://i.imgur.com/06vC7BG.png" alt="Swaps">
+    <img src="https://i.imgur.com/iqBwsWm.png" alt="Swaps">
     <span>View Swaps</span>
     <span id="swapBadge" style="
       display:none;
@@ -2482,25 +2489,26 @@ body.theme20 {
   </a>
 </li>
 
-  <li><a class="menu-box" href="#" onclick="showPage('seekingServices')">
-    <img src="https://i.imgur.com/TwUIUZb.png" alt="Services">
-    <span>Services</span></a>
+  <li>
+    <a class="menu-box" href="#" onclick="toggleRideSystem()">
+      <img src="https://i.imgur.com/fdmtzu1.jpeg" alt="Ride System" style="width:70px;height:70px;border-radius:8px;">
+      <span>Book Ride</span>
+    </a>
   </li>
 
+
+
   <li><a class="menu-box" href="#" onclick="showPage('market')">
-    <img src="https://i.imgur.com/jLNUgQI.png" alt="Market">
+    <img src="https://i.imgur.com/P1MIsGM.jpeg" alt="Market">
     <span>Market</span></a>
   </li>
 <!-- ✅ Price Scanner Button (hidden by default) -->
 <button id="scanPricesBtn" 
-        style="display:none; position:fixed; bottom:65px; right:100px; z-index:9999;
+        style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;
                background:#007bff; color:white; border:none; padding:10px 15px; 
-               border-radius:6px; cursor:pointer; font-size:14px; display:flex; align-items:center; gap:6px;">
-  <i class="fas fa-search"></i>
+               border-radius:6px; cursor:pointer; font-size:14px;">
   Scan Prices
 </button>
-
-</li>
 
 <!-- 🔘 Button to load payments (Admins Only) -->
 <li id="viewPaymentsBtn" style="display:none;">
@@ -2535,7 +2543,7 @@ body.theme20 {
 
 
   <li><a class="menu-box" href="#" onclick="showPage('resources')">
-    <img src="https://i.imgur.com/kf09Nvb.png" alt="Resources">
+    <img src="https://i.imgur.com/GavIBlL.jpeg" alt="Resources">
     <span>Resources</span></a>
   </li>
 
@@ -2609,8 +2617,6 @@ body.theme20 {
 
 
 </header>
-
-
 
 
 <!-- Loading Spinner Container -->
@@ -2731,6 +2737,82 @@ body.theme20 {
   </button>
 
     </div>
+  </div>
+</div>
+<!-- ✅ Ride System -->
+<div id="rideSystem">
+  <h2>🚖 Nyota Ride System</h2>
+
+  <!-- Choose Role -->
+  <div class="panel" id="rolePanel">
+    <button onclick="showRider()">I am a Rider</button>
+    <button onclick="showDriverLogin()">I am a Driver</button>
+    <button onclick="showDriverRegister()">Register as Driver</button>
+  </div>
+
+  <!-- Rider Form -->
+  <div id="riderPanel" style="display:none; margin-top:20px;">
+    <h3>📍 Book a Ride</h3>
+    <form id="rideForm">
+      <label>Pickup Location</label>
+      <input type="text" id="pickup" required>
+      <label>Destination</label>
+      <input type="text" id="destination" required>
+      <label>Choose Ride</label>
+      <select id="rideType">
+        <option value="car">Car</option>
+        <option value="bike">Motorbike</option>
+      </select>
+      <button type="submit">Find Nearby Rides</button>
+    </form>
+
+    <div id="map"></div>
+    <div id="rideResults" style="margin-top:20px;"></div>
+  </div>
+
+  <!-- Driver Registration -->
+  <div id="driverRegister" style="display:none; margin-top:20px;">
+    <h3>📝 Register as a Driver</h3>
+    <form id="driverRegisterForm">
+      <label>Full Name</label>
+      <input type="text" id="driverName" required>
+      <label>Email</label>
+      <input type="email" id="driverEmail" required>
+      <label>Password</label>
+      <input type="password" id="driverPassword" required>
+      <label>Phone</label>
+      <input type="text" id="driverPhone" required>
+      <label>Vehicle Type</label>
+      <select id="driverVehicle">
+        <option value="car">Car</option>
+        <option value="bike">Motorbike</option>
+      </select>
+      <label>Vehicle Plate</label>
+      <input type="text" id="driverPlate" required>
+      <label>Cost Per Km (KES)</label>
+      <input type="number" id="driverCost" required>
+      <button type="submit">Register Driver</button>
+    </form>
+    <p>Already registered? <a href="#" onclick="showDriverLogin()">Login here</a></p>
+  </div>
+
+  <!-- Driver Login -->
+  <div id="driverLogin" style="display:none; margin-top:20px;">
+    <h3>🔑 Driver Login</h3>
+    <form id="driverLoginForm">
+      <label>Email</label>
+      <input type="email" id="loginEmail" required>
+      <label>Password</label>
+      <input type="password" id="loginPassword" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Driver Panel -->
+  <div id="driverPanel" style="display:none; margin-top:20px;">
+    <h3>🚕 Driver Panel</h3>
+    <p id="driverInfo"></p>
+    <div id="pendingRides"></div>
   </div>
 </div>
 
@@ -14325,6 +14407,313 @@ document.getElementById("closeThemePanel").addEventListener("click", function() 
   customizationPanel.style.display = "none"; // Hide the panel
 });
 
+let currentDriver = null;
+let pickupLocation = null;
+
+let pickupMarker, destMarker;
+let driverMarkers = {};
+
+/* ===================== 🔹 Section Toggle ===================== */
+function toggleRideSystem() {
+  let section = document.getElementById("rideSystem");
+  section.style.display = (section.style.display === "none") ? "block" : "none";
+}
+function showRider() { hideAll(); document.getElementById("riderPanel").style.display = "block"; showAllAvailableDrivers(); }
+function showDriverRegister() { hideAll(); document.getElementById("driverRegister").style.display = "block"; }
+function showDriverLogin() { hideAll(); document.getElementById("driverLogin").style.display = "block"; }
+function showDriverPanel() { hideAll(); document.getElementById("driverPanel").style.display = "block"; }
+function hideAll() {
+  ["riderPanel","driverRegister","driverLogin","driverPanel"].forEach(id=>document.getElementById(id).style.display="none");
+}
+
+/* ===================== 🔹 Leaflet Map Init ===================== */
+let map = L.map('map').setView([-1.2921, 36.8219], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+/* ===================== 🔹 Helper Functions ===================== */
+function moveMarker(marker, newLat, newLng, duration = 1000) {
+  if (!marker) return;
+  let startLatLng = marker.getLatLng();
+  let startTime = null;
+  function animate(timestamp) {
+    if (!startTime) startTime = timestamp;
+    let progress = (timestamp - startTime) / duration;
+    if (progress > 1) progress = 1;
+    let lat = startLatLng.lat + (newLat - startLatLng.lat) * progress;
+    let lng = startLatLng.lng + (newLng - startLatLng.lng) * progress;
+    marker.setLatLng([lat, lng]);
+    if (progress < 1) requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+}
+
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // km
+  const dLat = (lat2 - lat1) * Math.PI/180;
+  const dLng = (lng2 - lng1) * Math.PI/180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; // in km
+}
+
+// Function to get rider's current location
+function getRiderLocation(callback) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      riderLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      callback();
+    }, err => {
+      alert("Could not get your location: " + err.message);
+    });
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
+}
+
+// Haversine formula to calculate distance in km
+function distanceInKm(lat1, lng1, lat2, lng2) {
+  const R = 6371; // Radius of Earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+async function getPlaceName(lat, lng) {
+  try {
+    let url = `https://api.openrouteservice.org/geocode/reverse?api_key=${ORS_API_KEY}&point=${lat},${lng}&size=1`;
+    let res = await fetch(url);
+    let data = await res.json();
+    if (data.features && data.features.length > 0 && data.features[0].properties && data.features[0].properties.label) {
+      return data.features[0].properties.label;
+    } else {
+      return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+  } catch (err) {
+    console.error("Reverse geocode error:", err);
+    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  }
+}
+
+
+// Show all available vehicles with distance from rider and exact location
+async function showAllAvailableDrivers() {
+  getRiderLocation(async () => {
+    db.collection("drivers").onSnapshot(async snapshot => {
+      let html = `<h3>🚗🚲 All Available Vehicles</h3>`;
+      let latLngs = [];
+
+      for (const doc of snapshot.docs) {
+        let d = doc.data();
+        let id = doc.id;
+
+        if (d.available) {
+          // Update or add marker
+          if (driverMarkers[id]) {
+            driverMarkers[id].setLatLng([d.lat, d.lng]);
+          } else {
+            driverMarkers[id] = L.marker([d.lat, d.lng], {
+              icon: L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/61/61168.png", iconSize:[30,30] })
+            }).addTo(map).bindPopup(`${d.name} (${d.vehicle})`);
+          }
+
+          latLngs.push([d.lat, d.lng]);
+
+          // Distance from rider
+          let distKm = distanceInKm(riderLocation.lat, riderLocation.lng, d.lat, d.lng);
+
+          // Human-readable location
+          let placeName = await getPlaceName(d.lat, d.lng);
+
+          html += `<div class="ride-card">
+            <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+            <p>📞 ${d.phone}</p>
+            <p>💲 Cost per Km: ${d.costPerKm} KES</p>
+            <p>📍 Distance: ${distKm.toFixed(2)} km</p>
+            <p>📌 Location: ${placeName}</p>
+            <button onclick="confirmRide('${pickupMarker ? pickupMarker.getLatLng() : ''}','${destMarker ? destMarker.getLatLng() : ''}','standard','${id}','${d.name}','${d.plate}','0')">Book with ${d.name}</button>
+          </div>`;
+        } else {
+          if (driverMarkers[id]) {
+            map.removeLayer(driverMarkers[id]);
+            delete driverMarkers[id];
+          }
+        }
+      }
+
+      if (latLngs.length > 0) {
+        let group = L.featureGroup(latLngs.map(latlng => L.marker(latlng)));
+        map.fitBounds(group.getBounds().pad(0.2));
+      }
+
+      document.getElementById("rideResults").innerHTML = html || "<p>No available vehicles nearby.</p>";
+    });
+  });
+}
+
+
+
+/* ===================== 🔹 Geocoding & Routing ===================== */
+async function geocode(address) {
+  let url = `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(address)}`;
+  let res = await fetch(url);
+  let data = await res.json();
+  if (data.features.length>0) return {lat:data.features[0].geometry.coordinates[1], lng:data.features[0].geometry.coordinates[0]};
+  throw new Error("Address not found: "+address);
+}
+
+async function getRoute(pickup,destination){
+  let url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${pickup.lng},${pickup.lat}&end=${destination.lng},${destination.lat}`;
+  let res = await fetch(url); let data = await res.json();
+  let distKm = data.features[0].properties.segments[0].distance/1000;
+  let durMin = data.features[0].properties.segments[0].duration/60;
+  return {distance:distKm,duration:durMin};
+}
+
+/* ===================== 🔹 Rider Booking ===================== */
+document.getElementById("rideForm").addEventListener("submit",async function(e){
+  e.preventDefault();
+  let pickupAddr=document.getElementById("pickup").value;
+  let destAddr=document.getElementById("destination").value;
+  let rideType=document.getElementById("rideType").value;
+  try {
+    let pickup=await geocode(pickupAddr);
+    let destination=await geocode(destAddr);
+    pickupLocation = pickup;
+    let route=await getRoute(pickup,destination);
+
+    if(pickupMarker) map.removeLayer(pickupMarker);
+    if(destMarker) map.removeLayer(destMarker);
+    pickupMarker=L.marker([pickup.lat,pickup.lng]).addTo(map).bindPopup("Pickup").openPopup();
+    destMarker=L.marker([destination.lat,destination.lng]).addTo(map).bindPopup("Destination");
+    map.fitBounds(L.featureGroup([pickupMarker,destMarker]).getBounds());
+
+    showAvailableDrivers(route.distance,route.duration,pickupAddr,destAddr,rideType);
+    showAllAvailableDrivers();
+  } catch(err){ alert("Error: "+err.message); }
+});
+
+function showAvailableDrivers(distanceKm, durationMin, pickup, destination, rideType) {
+  db.collection("drivers").get().then(snapshot => {
+    let html = `<h3>🚗 Available Drivers</h3><p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>`;
+    snapshot.forEach(doc => {
+      let d = doc.data();
+      if(d.available){
+        let estCost = distanceKm*d.costPerKm;
+        html += `<div class="ride-card">
+          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+          <p>📞 ${d.phone}</p>
+          <p>💲 Cost per Km: ${d.costPerKm} KES</p>
+          <p>💵 Estimated Fare: ${estCost.toFixed(2)} KES</p>
+          <button onclick="confirmRide('${pickup}','${destination}','${rideType}','${doc.id}','${d.name}','${d.plate}','${estCost.toFixed(2)}')">Book with ${d.name}</button>
+        </div>`;
+      }
+    });
+    document.getElementById("rideResults").innerHTML = html;
+  });
+}
+
+function confirmRide(pickup, destination, rideType, driverId, driverName, plate, estCost) {
+  const riderId = firebase.auth().currentUser.uid;
+  db.collection("rides").add({pickup,destination,rideType,status:"pending",driverId,driverName,plate,estCost,riderId,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
+  .then(docRef => { alert(`✅ Ride booked with ${driverName} for ${estCost} KES`); trackRideStatus(docRef.id); })
+  .catch(err=>{alert("Failed to book ride: "+err.message);});
+}
+
+function trackRideStatus(rideId) {
+  db.collection("rides").doc(rideId).onSnapshot(doc=>{
+    let ride = doc.data(); if(!ride) return;
+    let statusText = "Waiting for driver..."; let cancelButton="";
+    if(ride.status==="accepted"){ statusText=`🚖 Driver ${ride.driverName} is on the way!`; cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`; }
+    else if(ride.status==="completed") statusText="✅ Ride Completed!";
+    else if(ride.status.startsWith("cancelled")) statusText="❌ Ride Cancelled!";
+    else cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`;
+    document.getElementById("rideResults").innerHTML = `<div class="ride-card">
+      <p><strong>Pickup:</strong> ${ride.pickup}</p>
+      <p><strong>Destination:</strong> ${ride.destination}</p>
+      <p><strong>Ride Type:</strong> ${ride.rideType}</p>
+      <p><strong>Fare:</strong> ${ride.estCost} KES</p>
+      <p id="rideStatus-${rideId}" style="color:blue; font-weight:bold;">${statusText}</p>
+      ${cancelButton}
+    </div>`;
+  });
+}
+
+function cancelRide(rideId,cancelledBy){
+  let reason = cancelledBy==="rider"?"cancelled_by_rider":"cancelled_by_driver";
+  db.collection("rides").doc(rideId).update({status:reason}).then(()=>{alert("❌ Ride cancelled");});
+}
+
+/* ===================== 🔹 Driver Registration ===================== */
+document.getElementById("driverRegisterForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  let name=document.getElementById("driverName").value;
+  let email=document.getElementById("driverEmail").value;
+  let password=document.getElementById("driverPassword").value;
+  let phone=document.getElementById("driverPhone").value;
+  let vehicle=document.getElementById("driverVehicle").value;
+  let plate=document.getElementById("driverPlate").value;
+  let costPerKm=parseFloat(document.getElementById("driverCost").value);
+
+  firebase.auth().createUserWithEmailAndPassword(email,password).then(userCredential=>{
+    let uid=userCredential.user.uid;
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(pos=>{
+        let lat=pos.coords.latitude; let lng=pos.coords.longitude;
+        db.collection("drivers").doc(uid).set({name,email,phone,vehicle,plate,available:true,lat,lng,costPerKm});
+        alert("Driver registered successfully ✅");
+        showDriverLogin();
+      });
+    }
+  }).catch(error=>{alert("Error: "+error.message);});
+});
+
+/* ===================== 🔹 Driver Login + Live GPS ===================== */
+document.getElementById("driverLoginForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  let email=document.getElementById("loginEmail").value;
+  let password=document.getElementById("loginPassword").value;
+  firebase.auth().signInWithEmailAndPassword(email,password).then(userCredential=>{
+    currentDriver=userCredential.user;
+    db.collection("drivers").doc(currentDriver.uid).get().then(doc=>{
+      let d=doc.data();
+      document.getElementById("driverInfo").innerHTML=`<p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+        <p>📞 ${d.phone}</p><p>💲 Cost per Km: ${d.costPerKm} KES</p>
+        <p>Status: ${d.available?"✅ Online":"❌ Offline"}</p>`;
+    });
+
+    if(navigator.geolocation){
+      navigator.geolocation.watchPosition(pos=>{
+        let lat=pos.coords.latitude; let lng=pos.coords.longitude;
+        db.collection("drivers").doc(currentDriver.uid).update({lat,lng,available:true});
+      });
+    }
+
+    db.collection("rides").onSnapshot(snapshot=>{
+      let html="";
+      snapshot.forEach(doc=>{
+        let ride=doc.data(); let id=doc.id;
+        if(ride.driverId===currentDriver.uid){
+          if(ride.status==="pending") html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p>Fare: ${ride.estCost} KES</p><button onclick="acceptRide('${id}')">✅ Accept Ride</button><button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button></div>`;
+          else if(ride.status==="accepted") html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p style="color:green;">Accepted by you</p><button onclick="completeRide('${id}')">🏁 Complete Ride</button><button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button></div>`;
+          else if(ride.status.startsWith("cancelled")) html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p style="color:red;">❌ Ride Cancelled</p></div>`;
+          else if(ride.status==="completed") html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p style="color:blue;">✅ Ride Completed</p></div>`;
+        }
+      });
+      document.getElementById("pendingRides").innerHTML=html||"<p>No assigned rides right now.</p>";
+    });
+
+    showDriverPanel();
+  }).catch(error=>{alert("Login failed: "+error.message);});
+});
+
+/* ===================== 🔹 Accept & Complete Ride ===================== */
+function acceptRide(rideId){ db.collection("rides").doc(rideId).update({status:"accepted"}).then(()=>{alert("Ride accepted 🚖");}); }
+function completeRide(rideId){ db.collection("rides").doc(rideId).update({status:"completed"}).then(()=>{alert("Ride completed 🏁");}); }
+</script>
 
 
 </script>
