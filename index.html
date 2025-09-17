@@ -12860,14 +12860,14 @@ function resetMarketFilters() {
 // ✅ Set your backend URL here (update when ngrok changes)
 const BACKEND_URL = "https://acbb5b1736bc.ngrok-free.app";
 
-// ✅ Show Payment Modal
-function showPaymentModalFor(type, amount, itemId, itemName) {
+function showPaymentModalFor(type, amount, itemId, itemName, prefilledPhone = "") {
   let titleText = "Pay to Unlock";
   const normalizedType = type.toLowerCase();
 
   if (normalizedType === "boost") titleText = "Pay to Boost";
   else if (normalizedType === "unlock") titleText = "Pay to Unlock Contacts";
   else if (normalizedType.endsWith("verification")) titleText = "Pay for Verification";
+  else if (normalizedType === "driver_registration") titleText = "Pay to Register"; // ✅ driver registration
 
   // Remove existing modal
   const existingModal = document.getElementById("universalPayModal");
@@ -12883,7 +12883,8 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
            width:80%; max-width:400px; border-radius:10px; text-align:center;">
         <h3 style="color:#2c3e50;">${titleText}: <span style="color:#4CAF50;">${itemName}</span></h3>
         <p style="font-size:16px;">Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong></p>
-        <input type="tel" id="universalPhone" placeholder="Enter your MPESA number (e.g. 0712345678)"
+        <input type="tel" id="universalPhone" value="${prefilledPhone}"
+               placeholder="Enter your MPESA number (e.g. 0712345678)"
                style="padding:10px; width:100%; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;" />
         <button onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
                 style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:6px; font-weight:bold;">
@@ -12901,7 +12902,7 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
   `;
   document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-  // Countdown timer 2 minutes
+  // Countdown timer (2 minutes)
   let countdown = 120;
   const countdownEl = document.getElementById("universalCountdown");
   const interval = setInterval(() => {
@@ -12915,6 +12916,7 @@ function showPaymentModalFor(type, amount, itemId, itemName) {
     }
   }, 1000);
 }
+
 
 // ✅ Close modal
 function closeUniversalModal() {
@@ -14426,7 +14428,6 @@ document.getElementById("closeThemePanel").addEventListener("click", function() 
 });
 
 
-
 /* ===================== 🔹 ORS API Key ===================== */ 
 const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjRkMGJhODVhZTY0ZDQ4NGM5YmU2ODY4NjBkNDk1ZWU2IiwiaCI6Im11cm11cjY0In0=";
 
@@ -14436,6 +14437,7 @@ let pickupLocation = null;
 let pickupMarker, destMarker;
 let driverMarkers = {};
 let riderLocation = null;
+let activeDriverId = null; // ✅ highlight booked driver
 
 /* ===================== 🔹 Section Toggle ===================== */
 function toggleRideSystem() {
@@ -14455,6 +14457,24 @@ let map = L.map('map').setView([-1.2921, 36.8219], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
+
+/* ===================== 🔹 Custom Icons ===================== */
+const pickupIcon = L.icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190411.png", // 🟢 green pin
+  iconSize: [35, 35],
+  iconAnchor: [17, 34],
+  popupAnchor: [0, -28]
+});
+
+const destIcon = L.icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190406.png", // 🔴 red pin
+  iconSize: [35, 35],
+  iconAnchor: [17, 34],
+  popupAnchor: [0, -28]
+});
+
+const normalDriverIcon = "https://cdn-icons-png.flaticon.com/512/61/61168.png";   // grey car
+const bookedDriverIcon = "https://cdn-icons-png.flaticon.com/512/854/854894.png"; // blue car
 
 /* ===================== 🔹 Helper Functions ===================== */
 function moveMarker(marker, newLat, newLng, duration = 1000) {
@@ -14497,7 +14517,6 @@ function getRiderLocation(callback) {
 
 async function getPlaceName(lat, lng) {
   try {
-    // ORS API
     let url = `https://api.openrouteservice.org/geocode/reverse?api_key=${ORS_API_KEY}&point=${lng},${lat}&size=1`;
     let res = await fetch(url);
     let data = await res.json();
@@ -14505,7 +14524,6 @@ async function getPlaceName(lat, lng) {
       let label = data.features[0].properties.label;
       if (label) return label.split(',')[0];
     }
-    // Fallback OSM
     let osmRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
     let osmData = await osmRes.json();
     return osmData.display_name ? osmData.display_name.split(',')[0] : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
@@ -14519,45 +14537,24 @@ function formatKES(amount) {
   return Number(amount).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-/* ===================== 🔹 Show All Available Drivers ===================== */
+/* ===================== 🔹 Show All Available Drivers (map only) ===================== */
 async function showAllAvailableDrivers() {
   getRiderLocation(async () => {
     db.collection("drivers").onSnapshot(async snapshot => {
-      let html = `<h3>🚗🚲 All Available Vehicles</h3>`;
-      let latLngs = [];
-
       for (const doc of snapshot.docs) {
         let d = doc.data();
         let id = doc.id;
 
         if (d.available) {
+          const iconUrl = (id === activeDriverId) ? bookedDriverIcon : normalDriverIcon;
           if (driverMarkers[id]) {
-            driverMarkers[id].setLatLng([d.lat, d.lng]);
+            moveMarker(driverMarkers[id], d.lat, d.lng);
+            driverMarkers[id].setIcon(L.icon({ iconUrl, iconSize:[30,30] }));
           } else {
             driverMarkers[id] = L.marker([d.lat, d.lng], {
-              icon: L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/61/61168.png", iconSize:[30,30] })
+              icon: L.icon({ iconUrl, iconSize:[30,30] })
             }).addTo(map).bindPopup(`${d.name} (${d.vehicle})`);
           }
-
-          latLngs.push([d.lat, d.lng]);
-
-          let distKm = distanceInKm(riderLocation.lat, riderLocation.lng, d.lat, d.lng);
-          let estCost = distKm * d.costPerKm;
-          let placeName = await getPlaceName(d.lat, d.lng);
-
-          let statusBadge = d.available ? `<span style="color:green;font-weight:bold;">🟢 Online</span>` : `<span style="color:gray;">⚪ Offline</span>`;
-
-          html += `<div class="ride-card">
-            <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}) ${statusBadge}</p>
-            <p>📞 ${d.phone}</p>
-            <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
-            <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
-            <p>📍 Distance: ${distKm.toFixed(2)} km</p>
-            <p>📌 Location: ${placeName}</p>
-            <button onclick="confirmRide(pickupMarker.getLatLng(), destMarker.getLatLng(), 'standard', '${id}','${d.name}','${d.plate}','${formatKES(estCost)}')">
-              Book with ${d.name}
-            </button>
-          </div>`;
         } else {
           if (driverMarkers[id]) {
             map.removeLayer(driverMarkers[id]);
@@ -14565,13 +14562,6 @@ async function showAllAvailableDrivers() {
           }
         }
       }
-
-      if (latLngs.length > 0) {
-        let group = L.featureGroup(latLngs.map(latlng => L.marker(latlng)));
-        map.fitBounds(group.getBounds().pad(0.2));
-      }
-
-      document.getElementById("rideResults").innerHTML = html || "<p>No available vehicles nearby.</p>";
     });
   });
 }
@@ -14581,7 +14571,6 @@ async function geocode(address) {
   let url = `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(address)}`;
   let res = await fetch(url);
   let data = await res.json();
-
   if (data && data.features && data.features.length > 0) {
     return {
       lat: data.features[0].geometry.coordinates[1],
@@ -14595,7 +14584,6 @@ async function getRoute(pickup, destination) {
   let url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${pickup.lng},${pickup.lat}&end=${destination.lng},${destination.lat}`;
   let res = await fetch(url);
   let data = await res.json();
-
   if (data && data.features && data.features.length > 0) {
     let distKm = data.features[0].properties.segments[0].distance / 1000;
     let durMin = data.features[0].properties.segments[0].duration / 60;
@@ -14625,19 +14613,19 @@ document.getElementById("rideForm").addEventListener("submit", async function(e)
 
     if (pickupMarker) map.removeLayer(pickupMarker);
     if (destMarker) map.removeLayer(destMarker);
-    pickupMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Pickup").openPopup();
-    destMarker = L.marker([destination.lat, destination.lng]).addTo(map).bindPopup("Destination");
+
+    pickupMarker = L.marker([pickup.lat, pickup.lng], { icon: pickupIcon }).addTo(map).bindPopup("📍 Pickup").openPopup();
+    destMarker = L.marker([destination.lat, destination.lng], { icon: destIcon }).addTo(map).bindPopup("🏁 Destination");
+
     map.fitBounds(L.featureGroup([pickupMarker, destMarker]).getBounds());
 
     showAvailableDrivers(route.distance, route.duration, pickupAddr, destAddr, rideType);
-    showAllAvailableDrivers();
   } catch (err) { 
     alert("Error: " + err.message); 
   } finally {
     hideSpinner();
   }
 });
-
 
 function showAvailableDrivers(distanceKm, durationMin, pickup, destination, rideType) {
   db.collection("drivers").get().then(snapshot => {
@@ -14646,9 +14634,8 @@ function showAvailableDrivers(distanceKm, durationMin, pickup, destination, ride
       let d = doc.data();
       if(d.available){
         let estCost = distanceKm*d.costPerKm;
-        let statusBadge = d.available ? `<span style="color:green;font-weight:bold;">🟢 Online</span>` : `<span style="color:gray;">⚪ Offline</span>`;
         html += `<div class="ride-card">
-          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}) ${statusBadge}</p>
+          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}) 🟢 Online</p>
           <p>📞 ${d.phone}</p>
           <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
           <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
@@ -14664,12 +14651,11 @@ function showAvailableDrivers(distanceKm, durationMin, pickup, destination, ride
 
 async function confirmRide(pickup, destination, rideType, driverId, driverName, plate, estCost) {
   const riderId = firebase.auth().currentUser.uid;
+  activeDriverId = driverId; // ✅ highlight this driver
 
-  // Use typed address directly (fast) and save coordinates for later use
   let pickupText = pickup.lat ? `${pickup.lat.toFixed(5)}, ${pickup.lng.toFixed(5)}` : pickup;
   let destText = destination.lat ? `${destination.lat.toFixed(5)}, ${destination.lng.toFixed(5)}` : destination;
 
-  // ✅ Save instantly
   let rideRef = await db.collection("rides").add({
     pickup: pickupText,
     pickupCoords: pickup.lat ? { lat: pickup.lat, lng: pickup.lng } : null,
@@ -14685,11 +14671,9 @@ async function confirmRide(pickup, destination, rideType, driverId, driverName, 
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  // Show confirmation instantly 🚀
   alert(`✅ Ride booked with ${driverName} for ${estCost} KES`);
   trackRideStatus(rideRef.id);
 
-  // 🔹 Run reverse geocoding in background and update Firestore (non-blocking)
   if (pickup.lat && destination.lat) {
     getPlaceName(pickup.lat, pickup.lng).then(place => {
       db.collection("rides").doc(rideRef.id).update({ pickup: place });
@@ -14733,8 +14717,9 @@ function cancelRide(rideId,cancelledBy){
 }
 
 /* ===================== 🔹 Driver Registration ===================== */
-document.getElementById("driverRegisterForm").addEventListener("submit", function(e){
+document.getElementById("driverRegisterForm").addEventListener("submit", async function(e){
   e.preventDefault();
+
   let name=document.getElementById("driverName").value;
   let email=document.getElementById("driverEmail").value;
   let password=document.getElementById("driverPassword").value;
@@ -14743,17 +14728,51 @@ document.getElementById("driverRegisterForm").addEventListener("submit", functio
   let plate=document.getElementById("driverPlate").value;
   let costPerKm=parseFloat(document.getElementById("driverCost").value);
 
-  firebase.auth().createUserWithEmailAndPassword(email,password).then(userCredential=>{
-    let uid=userCredential.user.uid;
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(pos=>{
-        let lat=pos.coords.latitude; let lng=pos.coords.longitude;
-        db.collection("drivers").doc(uid).set({name,email,phone,vehicle,plate,available:false,lat,lng,costPerKm});
-        alert("Driver registered successfully ✅");
-        showDriverLogin();
-      });
+  try {
+    const adminDoc = await db.collection("admins").doc(email).get();
+    if (adminDoc.exists) {
+      alert("👑 Admin detected. You can register as a driver for free.");
+      let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password);
+      let uid = userCredential.user.uid;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async pos=>{
+          let lat=pos.coords.latitude, lng=pos.coords.longitude;
+          await db.collection("drivers").doc(uid).set({
+            name,email,phone,vehicle,plate,
+            available:true,lat,lng,costPerKm,
+            registrationFeePaid:false, amountPaid:0, isAdminDriver:true
+          });
+          alert("✅ Admin driver registered successfully!");
+          showDriverLogin();
+        });
+      }
+    } else {
+      showPaymentModalFor("driver_registration", 500, email, name, phone);
+      window.handlePaymentSuccess = async function(type, itemId, itemName, userId) {
+        if (type === "driver_registration") {
+          try {
+            let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password);
+            let uid = userCredential.user.uid;
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(async pos=>{
+                let lat=pos.coords.latitude, lng=pos.coords.longitude;
+                await db.collection("drivers").doc(uid).set({
+                  name,email,phone,vehicle,plate,
+                  available:true,lat,lng,costPerKm,
+                  registrationFeePaid:true, amountPaid:500,
+                  paymentRef: itemId, paymentPhone: phone
+                });
+                alert("✅ Driver registered successfully after payment!");
+                showDriverLogin();
+              });
+            }
+          } catch(err){ alert("Registration failed: " + err.message); }
+        }
+      };
     }
-  }).catch(error=>{alert("Error: "+error.message);});
+  } catch (err) {
+    alert("Error checking admin status: " + err.message);
+  }
 });
 
 /* ===================== 🔹 Driver Login + Live GPS ===================== */
@@ -14763,11 +14782,8 @@ document.getElementById("driverLoginForm").addEventListener("submit", function(e
   let password = document.getElementById("loginPassword").value;
 
   showSpinner("Logging in...");
-
   firebase.auth().signInWithEmailAndPassword(email, password).then(userCredential => {
     currentDriver = userCredential.user;
-
-    // ✅ Mark online
     return db.collection("drivers").doc(currentDriver.uid).update({ available: true }).then(() => {
       return db.collection("drivers").doc(currentDriver.uid).get();
     }).then(doc => {
@@ -14777,75 +14793,55 @@ document.getElementById("driverLoginForm").addEventListener("submit", function(e
         <p>📞 ${d.phone}</p>
         <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
         <p>Status: ${d.available ? "✅ Online" : "❌ Offline"}</p>`;
-
       if (navigator.geolocation) {
         navigator.geolocation.watchPosition(pos => {
-          let lat = pos.coords.latitude;
-          let lng = pos.coords.longitude;
+          let lat = pos.coords.latitude, lng = pos.coords.longitude;
           db.collection("drivers").doc(currentDriver.uid).update({ lat, lng, available: true });
         });
       }
-
-      // ✅ Mark driver offline when tab closes
       window.addEventListener("beforeunload", () => {
         db.collection("drivers").doc(currentDriver.uid).update({ available: false });
       });
-
-      // ✅ Listen for rides
       db.collection("rides").onSnapshot(snapshot => {
         let html = "";
         snapshot.forEach(doc => {
-          let ride = doc.data(); 
-          let id = doc.id;
+          let ride = doc.data(), id = doc.id;
           if (ride.driverId === currentDriver.uid) {
             if (ride.status === "pending") {
               html += `<div class="ride-card">
                 <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
-                <p>Type: ${ride.rideType}</p>
-                <p>Fare: ${ride.estCost} KES</p>
+                <p>Type: ${ride.rideType}</p><p>Fare: ${ride.estCost} KES</p>
                 <button onclick="acceptRide('${id}')">✅ Accept Ride</button>
                 <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
               </div>`;
             } else if (ride.status === "accepted") {
               html += `<div class="ride-card">
                 <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
-                <p>Type: ${ride.rideType}</p>
-                <p style="color:green;">Accepted by you</p>
+                <p>Type: ${ride.rideType}</p><p style="color:green;">Accepted by you</p>
                 <button onclick="completeRide('${id}')">🏁 Complete Ride</button>
                 <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
               </div>`;
             } else if (ride.status.startsWith("cancelled")) {
-              html += `<div class="ride-card">
-                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
-                <p>Type: ${ride.rideType}</p>
-                <p style="color:red;">❌ Ride Cancelled</p>
-              </div>`;
+              html += `<div class="ride-card"><p>❌ Ride Cancelled</p></div>`;
             } else if (ride.status === "completed") {
-              html += `<div class="ride-card">
-                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
-                <p>Type: ${ride.rideType}</p>
-                <p style="color:blue;">✅ Ride Completed</p>
-              </div>`;
+              html += `<div class="ride-card"><p>✅ Ride Completed</p></div>`;
             }
           }
         });
         document.getElementById("pendingRides").innerHTML = html || "<p>No assigned rides right now.</p>";
       });
-
       showDriverPanel();
     });
   }).catch(error => {
     alert("Login failed: " + error.message);
-  }).finally(() => {
-    hideSpinner();
-  });
+  }).finally(() => { hideSpinner(); });
 });
-
 
 /* ===================== 🔹 Accept & Complete Ride ===================== */
 function acceptRide(rideId){ db.collection("rides").doc(rideId).update({status:"accepted"}).then(()=>{alert("Ride accepted 🚖");}); }
 function completeRide(rideId){ db.collection("rides").doc(rideId).update({status:"completed"}).then(()=>{alert("Ride completed 🏁");}); }
 
+/* ===================== 🔹 Spinner ===================== */
 function showSpinner(message="Please wait...") {
   let spinner = document.getElementById("loadingSpinner");
   if (spinner) {
@@ -14857,16 +14853,4 @@ function hideSpinner() {
   let spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "none";
 }
-
-/* ===================== 🔹 Wrap Async Functions ===================== */
-async function withSpinner(message, fn) {
-  try {
-    showSpinner(message);
-    return await fn();
-  } finally {
-    hideSpinner();
-  }
-}
 </script>
-
-
