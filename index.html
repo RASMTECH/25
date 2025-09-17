@@ -2788,31 +2788,55 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     <div id="rideResults" style="margin-top:20px;"></div>
   </div>
 
-  <!-- Driver Registration -->
-  <div id="driverRegister" style="display:none; margin-top:20px;">
-    <h3>📝 Register as a Driver</h3>
-    <form id="driverRegisterForm">
-      <label>Full Name</label>
-      <input type="text" id="driverName" required>
-      <label>Email</label>
-      <input type="email" id="driverEmail" required>
-      <label>Password</label>
-      <input type="password" id="driverPassword" required>
-      <label>Phone</label>
-      <input type="text" id="driverPhone" required>
-      <label>Vehicle Type</label>
-      <select id="driverVehicle">
-        <option value="car">Car</option>
-        <option value="bike">Motorbike</option>
-      </select>
-      <label>Vehicle Plate</label>
-      <input type="text" id="driverPlate" required>
-      <label>Cost Per Km (KES)</label>
-      <input type="number" id="driverCost" required>
-      <button type="submit">Register Driver</button>
-    </form>
+  <div id="driverRegister" style="display:none;">
+  <h2>🚘 Driver Registration</h2>
+  <form id="driverRegisterForm">
+    <label>Full Name</label>
+    <input type="text" id="driverName" required>
+
+    <label>Email</label>
+    <input type="email" id="driverEmail" required>
+
+    <label>Password</label>
+    <input type="password" id="driverPassword" required>
+
+    <label>Phone Number</label>
+    <input type="tel" id="driverPhone" required placeholder="07XXXXXXXX">
+
+    <label>Vehicle Model</label>
+    <input type="text" id="driverVehicle" required>
+
+    <label>Plate Number</label>
+    <input type="text" id="driverPlate" required>
+
+    <label>Engine Capacity (CC)</label>
+    <select id="driverEngine" required>
+      <option value="1300cc">1300cc</option>
+      <option value="1400cc">1400cc</option>
+      <option value="1500cc">1500cc</option>
+      <option value="1800cc">1800cc</option>
+      <option value="2000cc">2000cc</option>
+    </select>
+
+    <label>Cost per Km (KES)</label>
+    <input type="number" id="driverCost" step="1" required>
+
+    <button type="submit">Register as Driver</button>
+  </form>
     <p>Already registered? <a href="#" onclick="showDriverLogin()">Login here</a></p>
   </div>
+<!-- 🔹 Global Loading Spinner -->
+<div id="loadingSpinner" style="
+  display:none; 
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.6); 
+  justify-content:center; align-items:center;
+  z-index:10000;
+">
+  <div style="background:#fff; padding:20px 30px; border-radius:10px; font-size:18px; font-weight:bold; color:#333;">
+    ⏳ Loading...
+  </div>
+</div>
 
   <!-- Driver Login -->
   <div id="driverLogin" style="display:none; margin-top:20px;">
@@ -14439,6 +14463,24 @@ let driverMarkers = {};
 let riderLocation = null;
 let activeDriverId = null; // ✅ highlight booked driver
 
+/* ===================== 🔹 Fuel Settings ===================== */
+const fuelRates = {
+  "1300cc": 6.5,
+  "1400cc": 7.0,
+  "1500cc": 7.5,
+  "1800cc": 8.5,
+  "2000cc": 9.5,
+  "default": 7.5
+};
+const FUEL_PRICE_PER_LITER = 190; // KES
+
+function estimateFuel(distanceKm, engineCc) {
+  let rate = fuelRates[engineCc] || fuelRates["default"];
+  let liters = (distanceKm * rate) / 100;
+  let cost = liters * FUEL_PRICE_PER_LITER;
+  return { liters, cost };
+}
+
 /* ===================== 🔹 Section Toggle ===================== */
 function toggleRideSystem() {
   let section = document.getElementById("rideSystem");
@@ -14460,21 +14502,19 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 /* ===================== 🔹 Custom Icons ===================== */
 const pickupIcon = L.icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190411.png", // 🟢 green pin
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190411.png",
   iconSize: [35, 35],
   iconAnchor: [17, 34],
   popupAnchor: [0, -28]
 });
-
 const destIcon = L.icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190406.png", // 🔴 red pin
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190406.png",
   iconSize: [35, 35],
   iconAnchor: [17, 34],
   popupAnchor: [0, -28]
 });
-
-const normalDriverIcon = "https://cdn-icons-png.flaticon.com/512/61/61168.png";   // grey car
-const bookedDriverIcon = "https://cdn-icons-png.flaticon.com/512/854/854894.png"; // blue car
+const normalDriverIcon = "https://cdn-icons-png.flaticon.com/512/61/61168.png";
+const bookedDriverIcon = "https://cdn-icons-png.flaticon.com/512/854/854894.png";
 
 /* ===================== 🔹 Helper Functions ===================== */
 function moveMarker(marker, newLat, newLng, duration = 1000) {
@@ -14492,29 +14532,24 @@ function moveMarker(marker, newLat, newLng, duration = 1000) {
   }
   requestAnimationFrame(animate);
 }
-
 function distanceInKm(lat1, lng1, lat2, lng2) {
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const dLng = (lat2 - lat1) * Math.PI / 180;
   const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c;
 }
-
 function getRiderLocation(callback) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       riderLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       callback();
-    }, err => {
-      alert("Could not get your location: " + err.message);
-    });
+    }, err => { alert("Could not get your location: " + err.message); });
   } else {
     alert("Geolocation is not supported by your browser.");
   }
 }
-
 async function getPlaceName(lat, lng) {
   try {
     let url = `https://api.openrouteservice.org/geocode/reverse?api_key=${ORS_API_KEY}&point=${lng},${lat}&size=1`;
@@ -14532,7 +14567,6 @@ async function getPlaceName(lat, lng) {
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   }
 }
-
 function formatKES(amount) {
   return Number(amount).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -14544,7 +14578,6 @@ async function showAllAvailableDrivers() {
       for (const doc of snapshot.docs) {
         let d = doc.data();
         let id = doc.id;
-
         if (d.available) {
           const iconUrl = (id === activeDriverId) ? bookedDriverIcon : normalDriverIcon;
           if (driverMarkers[id]) {
@@ -14566,31 +14599,94 @@ async function showAllAvailableDrivers() {
   });
 }
 
-/* ===================== 🔹 Geocode & Route ===================== */
+/* ===================== 🔹 Geocode & Route (Kenya-optimized with fallback) ===================== */
 async function geocode(address) {
-  let url = `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(address)}`;
-  let res = await fetch(url);
-  let data = await res.json();
-  if (data && data.features && data.features.length > 0) {
-    return {
-      lat: data.features[0].geometry.coordinates[1],
-      lng: data.features[0].geometry.coordinates[0]
-    };
+  try {
+    // ✅ Ensure Kenya context
+    let query = address.trim();
+    if (!/kenya/i.test(query)) {
+      query += ", Kenya";
+    }
+
+    // 🌍 Try ORS first
+    let url = `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=1`;
+    let res = await fetch(url);
+    let data = await res.json();
+
+    if (data && data.features && data.features.length > 0) {
+      return {
+        lat: data.features[0].geometry.coordinates[1],
+        lng: data.features[0].geometry.coordinates[0]
+      };
+    }
+
+    // ⚠️ If ORS fails, use Nominatim
+    let osmRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`);
+    let osmData = await osmRes.json();
+
+    if (osmData && osmData.length > 0) {
+      return {
+        lat: parseFloat(osmData[0].lat),
+        lng: parseFloat(osmData[0].lon)
+      };
+    }
+
+    throw new Error("⚠️ Address not found: " + address);
+  } catch (err) {
+    console.error("Geocode error:", err);
+    throw new Error("⚠️ Could not fetch location for " + address);
   }
-  throw new Error("⚠️ Address not found: " + address);
 }
 
+let routeLine = null; // keep reference so we can clear old routes
+
 async function getRoute(pickup, destination) {
-  let url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${pickup.lng},${pickup.lat}&end=${destination.lng},${destination.lat}`;
-  let res = await fetch(url);
-  let data = await res.json();
-  if (data && data.features && data.features.length > 0) {
-    let distKm = data.features[0].properties.segments[0].distance / 1000;
-    let durMin = data.features[0].properties.segments[0].duration / 60;
-    return { distance: distKm, duration: durMin };
+  try {
+    // 🌍 Try ORS directions first
+    let url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${pickup.lng},${pickup.lat}&end=${destination.lng},${destination.lat}`;
+    let res = await fetch(url);
+    let data = await res.json();
+
+    if (data && data.features && data.features.length > 0) {
+      let distKm = data.features[0].properties.segments[0].distance / 1000;
+      let durMin = data.features[0].properties.segments[0].duration / 60;
+
+      // ✅ Decode ORS geometry
+      let coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+
+      // Remove old route if exists
+      if (routeLine) map.removeLayer(routeLine);
+
+      // Draw new route polyline
+      routeLine = L.polyline(coords, { color: "blue", weight: 5 }).addTo(map);
+
+      return { distance: distKm, duration: durMin };
+    }
+
+    // ⚠️ Fallback: straight line if ORS fails
+    let distKm = distanceInKm(pickup.lat, pickup.lng, destination.lat, destination.lng);
+    let avgSpeedKmH = 60;
+    let durMin = (distKm / avgSpeedKmH) * 60;
+
+    if (routeLine) map.removeLayer(routeLine);
+    routeLine = L.polyline([[pickup.lat, pickup.lng], [destination.lat, destination.lng]], { color: "red", dashArray: "5,10" }).addTo(map);
+
+    return { distance: distKm, duration: durMin, fallback: true };
+  } catch (err) {
+    console.error("Route error:", err);
+
+    // Last fallback
+    let distKm = distanceInKm(pickup.lat, pickup.lng, destination.lat, destination.lng);
+    let avgSpeedKmH = 60;
+    let durMin = (distKm / avgSpeedKmH) * 60;
+
+    if (routeLine) map.removeLayer(routeLine);
+    routeLine = L.polyline([[pickup.lat, pickup.lng], [destination.lat, destination.lng]], { color: "red", dashArray: "5,10" }).addTo(map);
+
+    return { distance: distKm, duration: durMin, fallback: true };
   }
-  throw new Error("⚠️ Could not fetch route from ORS");
 }
+
 
 /* ===================== 🔹 Rider Booking ===================== */
 document.getElementById("rideForm").addEventListener("submit", async function(e) {
@@ -14602,43 +14698,38 @@ document.getElementById("rideForm").addEventListener("submit", async function(e)
   try {
     showSpinner("Finding pickup location...");
     let pickup = await geocode(pickupAddr);
-
     showSpinner("Finding destination...");
     let destination = await geocode(destAddr);
-
     pickupLocation = pickup;
-
     showSpinner("Calculating route...");
     let route = await getRoute(pickup, destination);
 
     if (pickupMarker) map.removeLayer(pickupMarker);
     if (destMarker) map.removeLayer(destMarker);
-
     pickupMarker = L.marker([pickup.lat, pickup.lng], { icon: pickupIcon }).addTo(map).bindPopup("📍 Pickup").openPopup();
     destMarker = L.marker([destination.lat, destination.lng], { icon: destIcon }).addTo(map).bindPopup("🏁 Destination");
-
     map.fitBounds(L.featureGroup([pickupMarker, destMarker]).getBounds());
 
     showAvailableDrivers(route.distance, route.duration, pickupAddr, destAddr, rideType);
-  } catch (err) { 
-    alert("Error: " + err.message); 
-  } finally {
-    hideSpinner();
-  }
+  } catch (err) { alert("Error: " + err.message); } 
+  finally { hideSpinner(); }
 });
 
 function showAvailableDrivers(distanceKm, durationMin, pickup, destination, rideType) {
   db.collection("drivers").get().then(snapshot => {
-    let html = `<h3>🚗 Available Drivers</h3><p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>`;
+    let html = `<h3>🚗 Available Drivers</h3>
+                <p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>`;
     snapshot.forEach(doc => {
       let d = doc.data();
       if(d.available){
         let estCost = distanceKm*d.costPerKm;
+        let fuel = estimateFuel(distanceKm, d.engineCc || "default");
         html += `<div class="ride-card">
-          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}) 🟢 Online</p>
+          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}, ${d.engineCc || "N/A"}) 🟢 Online</p>
           <p>📞 ${d.phone}</p>
           <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
           <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
+          <p>⛽ Fuel: ${fuel.liters.toFixed(2)} L (~${formatKES(fuel.cost)} KES)</p>
           <button onclick="confirmRide(pickupMarker.getLatLng(), destMarker.getLatLng(), '${rideType}','${doc.id}','${d.name}','${d.plate}','${formatKES(estCost)}')">
             Book with ${d.name}
           </button>
@@ -14649,9 +14740,10 @@ function showAvailableDrivers(distanceKm, durationMin, pickup, destination, ride
   });
 }
 
+/* ===================== 🔹 confirmRide ===================== */
 async function confirmRide(pickup, destination, rideType, driverId, driverName, plate, estCost) {
   const riderId = firebase.auth().currentUser.uid;
-  activeDriverId = driverId; // ✅ highlight this driver
+  activeDriverId = driverId;
 
   let pickupText = pickup.lat ? `${pickup.lat.toFixed(5)}, ${pickup.lng.toFixed(5)}` : pickup;
   let destText = destination.lat ? `${destination.lat.toFixed(5)}, ${destination.lng.toFixed(5)}` : destination;
@@ -14710,7 +14802,6 @@ function trackRideStatus(rideId) {
     </div>`;
   });
 }
-
 function cancelRide(rideId,cancelledBy){
   let reason = cancelledBy==="rider"?"cancelled_by_rider":"cancelled_by_driver";
   db.collection("rides").doc(rideId).update({status:reason}).then(()=>{alert("❌ Ride cancelled");});
@@ -14726,6 +14817,7 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
   let phone=document.getElementById("driverPhone").value;
   let vehicle=document.getElementById("driverVehicle").value;
   let plate=document.getElementById("driverPlate").value;
+  let engineCc=document.getElementById("driverEngine").value; // ✅ engine cc
   let costPerKm=parseFloat(document.getElementById("driverCost").value);
 
   try {
@@ -14738,7 +14830,7 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
         navigator.geolocation.getCurrentPosition(async pos=>{
           let lat=pos.coords.latitude, lng=pos.coords.longitude;
           await db.collection("drivers").doc(uid).set({
-            name,email,phone,vehicle,plate,
+            name,email,phone,vehicle,plate,engineCc,
             available:true,lat,lng,costPerKm,
             registrationFeePaid:false, amountPaid:0, isAdminDriver:true
           });
@@ -14757,7 +14849,7 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
               navigator.geolocation.getCurrentPosition(async pos=>{
                 let lat=pos.coords.latitude, lng=pos.coords.longitude;
                 await db.collection("drivers").doc(uid).set({
-                  name,email,phone,vehicle,plate,
+                  name,email,phone,vehicle,plate,engineCc,
                   available:true,lat,lng,costPerKm,
                   registrationFeePaid:true, amountPaid:500,
                   paymentRef: itemId, paymentPhone: phone
@@ -14785,63 +14877,21 @@ document.getElementById("driverLoginForm").addEventListener("submit", function(e
   firebase.auth().signInWithEmailAndPassword(email, password).then(userCredential => {
     currentDriver = userCredential.user;
     return db.collection("drivers").doc(currentDriver.uid).update({ available: true }).then(() => {
-      return db.collection("drivers").doc(currentDriver.uid).get();
-    }).then(doc => {
-      let d = doc.data();
-      document.getElementById("driverInfo").innerHTML = `
-        <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
-        <p>📞 ${d.phone}</p>
-        <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
-        <p>Status: ${d.available ? "✅ Online" : "❌ Offline"}</p>`;
+      hideSpinner();
+      alert("✅ Driver logged in successfully!");
+      showDriverPanel();
       if (navigator.geolocation) {
         navigator.geolocation.watchPosition(pos => {
-          let lat = pos.coords.latitude, lng = pos.coords.longitude;
-          db.collection("drivers").doc(currentDriver.uid).update({ lat, lng, available: true });
+          db.collection("drivers").doc(currentDriver.uid).update({
+            lat: pos.coords.latitude, lng: pos.coords.longitude
+          });
         });
       }
-      window.addEventListener("beforeunload", () => {
-        db.collection("drivers").doc(currentDriver.uid).update({ available: false });
-      });
-      db.collection("rides").onSnapshot(snapshot => {
-        let html = "";
-        snapshot.forEach(doc => {
-          let ride = doc.data(), id = doc.id;
-          if (ride.driverId === currentDriver.uid) {
-            if (ride.status === "pending") {
-              html += `<div class="ride-card">
-                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
-                <p>Type: ${ride.rideType}</p><p>Fare: ${ride.estCost} KES</p>
-                <button onclick="acceptRide('${id}')">✅ Accept Ride</button>
-                <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
-              </div>`;
-            } else if (ride.status === "accepted") {
-              html += `<div class="ride-card">
-                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
-                <p>Type: ${ride.rideType}</p><p style="color:green;">Accepted by you</p>
-                <button onclick="completeRide('${id}')">🏁 Complete Ride</button>
-                <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
-              </div>`;
-            } else if (ride.status.startsWith("cancelled")) {
-              html += `<div class="ride-card"><p>❌ Ride Cancelled</p></div>`;
-            } else if (ride.status === "completed") {
-              html += `<div class="ride-card"><p>✅ Ride Completed</p></div>`;
-            }
-          }
-        });
-        document.getElementById("pendingRides").innerHTML = html || "<p>No assigned rides right now.</p>";
-      });
-      showDriverPanel();
     });
-  }).catch(error => {
-    alert("Login failed: " + error.message);
-  }).finally(() => { hideSpinner(); });
+  }).catch(err => { hideSpinner(); alert("❌ Login failed: " + err.message); });
 });
+function logoutDriver(){ if(currentDriver){ db.collection("drivers").doc(currentDriver.uid).update({available:false}); firebase.auth().signOut(); alert("🚪 Driver logged out!"); showDriverLogin(); } }
 
-/* ===================== 🔹 Accept & Complete Ride ===================== */
-function acceptRide(rideId){ db.collection("rides").doc(rideId).update({status:"accepted"}).then(()=>{alert("Ride accepted 🚖");}); }
-function completeRide(rideId){ db.collection("rides").doc(rideId).update({status:"completed"}).then(()=>{alert("Ride completed 🏁");}); }
-
-/* ===================== 🔹 Spinner ===================== */
 function showSpinner(message="Please wait...") {
   let spinner = document.getElementById("loadingSpinner");
   if (spinner) {
@@ -14852,5 +14902,15 @@ function showSpinner(message="Please wait...") {
 function hideSpinner() {
   let spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "none";
+}
+
+/* ===================== 🔹 Wrap Async Functions ===================== */
+async function withSpinner(message, fn) {
+  try {
+    showSpinner(message);
+    return await fn();
+  } finally {
+    hideSpinner();
+  }
 }
 </script>
