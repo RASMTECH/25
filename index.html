@@ -2371,6 +2371,28 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     nav a:hover { text-decoration:underline; }
     #rideSystem { display:none; padding:40px; }
     #map { height: 300px; margin:20px auto; border-radius:8px; }
+.menu-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 8px;   /* reduced padding */
+    margin: 6px 0;
+  }
+
+  .menu-box img {
+    width: 60px;    /* same size */
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 5px;
+  }
+
+  .menu-box span {
+    font-size: 14px;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -2442,24 +2464,26 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
   <li><a class="menu-box" href="#" onclick="showPage('home')">
     <img src="https://i.imgur.com/lek58ah.jpeg" alt="Home">
     <span>Home</span></a>
+  </li>
 
-<li>
-  <a class="menu-box" href="#" onclick="openModal('registerModal')">
-    <img src="https://i.imgur.com/jKZaOkH.jpeg" alt="Register">
-    <span>Register</span>
-  </a>
-</li>
+  <li>
+    <a class="menu-box" href="#" onclick="openModal('registerModal')">
+      <img src="https://i.imgur.com/jKZaOkH.jpeg" alt="Register">
+      <span>Register</span>
+    </a>
+  </li>
 
-<li>
-  <a class="menu-box" href="#" onclick="openModal('loginModal')">
-    <img src="https://i.imgur.com/TsXskJc.jpeg" alt="Login">
-    <span>Login</span>
-  </a>
-</li>
-<!-- Toggle Button to open theme customization panel -->
-<button id="themeCustomizeToggle" style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px;">
-  Customize Theme
-</button>
+  <li>
+    <a class="menu-box" href="#" onclick="openModal('loginModal')">
+      <img src="https://i.imgur.com/TsXskJc.jpeg" alt="Login">
+      <span>Login</span>
+    </a>
+  </li>
+
+  <!-- Toggle Button to open theme customization panel -->
+  <button id="themeCustomizeToggle" style="position: fixed; bottom: 20px; right: 20px; background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px;">
+    Customize Theme
+  </button>
 
   <li><a class="menu-box" href="#" onclick="showPage('usageHelp')">
     <img src="https://i.imgur.com/tHuRu3z.jpeg" alt="How to Use">
@@ -2471,83 +2495,79 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     <img src="https://i.imgur.com/8KM6Rib.jpeg" alt="Jobs">
     <span>My Jobs</span></a>
   </li>
-<li>
-  <a class="menu-box" href="#" onclick="showPage('swaps'); resetSwapBadge();">
-    <img src="https://i.imgur.com/iqBwsWm.png" alt="Swaps">
-    <span>View Swaps</span>
-    <span id="swapBadge" style="
-      display:none;
-      background:red;
-      color:white;
-      font-size:12px;
-      font-weight:bold;
-      padding:2px 6px;
-      border-radius:12px;
-      margin-left:6px;
-      vertical-align:top;
-    ">0</span>
-  </a>
-</li>
 
   <li>
-    <a class="menu-box" href="#" onclick="toggleRideSystem()">
-      <img src="https://i.imgur.com/fdmtzu1.jpeg" alt="Ride System" style="width:70px;height:70px;border-radius:8px;">
-      <span>Book Ride</span>
+    <a class="menu-box" href="#" onclick="showPage('swaps'); resetSwapBadge();">
+      <img src="https://i.imgur.com/iqBwsWm.png" alt="Swaps">
+      <span>View Swaps</span>
+      <span id="swapBadge" style="
+        display:none;
+        background:red;
+        color:white;
+        font-size:12px;
+        font-weight:bold;
+        padding:2px 6px;
+        border-radius:12px;
+        margin-left:6px;
+        vertical-align:top;
+      ">0</span>
     </a>
   </li>
 
-
+  <li>
+    <a class="menu-box" href="#" onclick="toggleRideSystem()">
+      <img src="https://i.imgur.com/fdmtzu1.jpeg" alt="Ride System">
+      <span>Book Ride</span>
+    </a>
+  </li>
 
   <li><a class="menu-box" href="#" onclick="showPage('market')">
     <img src="https://i.imgur.com/P1MIsGM.jpeg" alt="Market">
     <span>Market</span></a>
   </li>
-<!-- ✅ Price Scanner Button (hidden by default) -->
-<button id="scanPricesBtn" 
-        style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;
-               background:#007bff; color:white; border:none; padding:10px 15px; 
-               border-radius:6px; cursor:pointer; font-size:14px;">
-  Scan Prices
-</button>
 
-<!-- 🔘 Button to load payments (Admins Only) -->
-<li id="viewPaymentsBtn" style="display:none;">
-  <a class="menu-box" href="#" onclick="showPage('payments')">
-    <img src="https://i.imgur.com/t0TUHfP.png" alt="Payments">
-    <span>💳 View Payments</span>
-  </a>
-</li>
+  <!-- ✅ Price Scanner Button (hidden by default) -->
+  <button id="scanPricesBtn" 
+          style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;
+                 background:#007bff; color:white; border:none; padding:10px 15px; 
+                 border-radius:6px; cursor:pointer; font-size:14px;">
+    Scan Prices
+  </button>
 
+  <!-- 🔘 Button to load payments (Admins Only) -->
+  <li id="viewPaymentsBtn" style="display:none;">
+    <a class="menu-box" href="#" onclick="showPage('payments')">
+      <img src="https://i.imgur.com/t0TUHfP.png" alt="Payments">
+      <span>💳 View Payments</span>
+    </a>
+  </li>
 
   <li style="position: relative;">
-  <a class="menu-box" href="#" onclick="showPage('soulmates'); resetSoulmateBadge();">
-    <img src="https://i.imgur.com/JulT2Na.png" alt="Soulmate">
-    <span>Soulmate</span>
-    <!-- Badge for new profiles -->
-    <span id="soulmateBadge" style="
-      display: none;
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: red;
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 2px 6px;
-      border-radius: 12px;
-      transform: translate(50%, -50%);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    ">0</span>
-  </a>
-</li>
-
+    <a class="menu-box" href="#" onclick="showPage('soulmates'); resetSoulmateBadge();">
+      <img src="https://i.imgur.com/JulT2Na.png" alt="Soulmate">
+      <span>Soulmate</span>
+      <span id="soulmateBadge" style="
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 12px;
+        transform: translate(50%, -50%);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      ">0</span>
+    </a>
+  </li>
 
   <li><a class="menu-box" href="#" onclick="showPage('resources')">
     <img src="https://i.imgur.com/GavIBlL.jpeg" alt="Resources">
     <span>Resources</span></a>
   </li>
 
-<!-- Admin-Only Notifications (Visible only to admins) -->
   <li id="adminNotifBtn" style="display:none;">
     <a class="menu-box" href="#" onclick="showPage('notifications')" style="position: relative;">
       <img src="https://i.imgur.com/PtqAWTY.png" alt="Notifications">
@@ -2555,27 +2575,27 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
       <span id="notifBadge">0</span>
     </a>
   </li>
-<li>
-  <a class="menu-box" href="#" onclick="openMyChats()" style="position:relative;">
-    <img src="https://i.imgur.com/9OvoTnl.jpeg" alt="My Chats">
-    <span>My Chats</span>
-    <span id="myChatsUnreadBadge" style="
-      display:none;
-      background:#f44336;
-      color:white;
-      font-size:12px;
-      padding:2px 6px;
-      border-radius:50%;
-      position:absolute;
-      top:0;
-      right:0;
-      font-weight:bold;
-      min-width:18px;
-      text-align:center;
-    ">0</span>
-  </a>
-</li>
 
+  <li>
+    <a class="menu-box" href="#" onclick="openMyChats()" style="position:relative;">
+      <img src="https://i.imgur.com/9OvoTnl.jpeg" alt="My Chats">
+      <span>My Chats</span>
+      <span id="myChatsUnreadBadge" style="
+        display:none;
+        background:#f44336;
+        color:white;
+        font-size:12px;
+        padding:2px 6px;
+        border-radius:50%;
+        position:absolute;
+        top:0;
+        right:0;
+        font-weight:bold;
+        min-width:18px;
+        text-align:center;
+      ">0</span>
+    </a>
+  </li>
 
   <li>
     <a class="menu-box" href="#" onclick="loadAlerts()" style="position: relative;">
@@ -2598,19 +2618,17 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </a>
   </li>
 
-  <!-- Trending & Chat -->
   <li><a class="menu-box" href="#" onclick="showPage('trendingSection'); loadTrendingItems();">
     <img src="https://i.imgur.com/SjtDlJi.jpeg" alt="Trending">
     <span>Trending</span></a>
   </li>
 
-
-  <!-- Help & Contact -->
   <li><a class="menu-box" href="#" onclick="showPage('contact')">
     <img src="https://i.imgur.com/SPqGvz9.jpeg" alt="Contact">
     <span>Contact Us</span></a>
   </li>
 </ul>
+
 
 
 </nav>
@@ -14407,11 +14425,17 @@ document.getElementById("closeThemePanel").addEventListener("click", function() 
   customizationPanel.style.display = "none"; // Hide the panel
 });
 
+
+
+/* ===================== 🔹 ORS API Key ===================== */ 
+const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjRkMGJhODVhZTY0ZDQ4NGM5YmU2ODY4NjBkNDk1ZWU2IiwiaCI6Im11cm11cjY0In0=";
+
+/* ===================== 🔹 Globals ===================== */
 let currentDriver = null;
 let pickupLocation = null;
-
 let pickupMarker, destMarker;
 let driverMarkers = {};
+let riderLocation = null;
 
 /* ===================== 🔹 Section Toggle ===================== */
 function toggleRideSystem() {
@@ -14449,16 +14473,15 @@ function moveMarker(marker, newLat, newLng, duration = 1000) {
   requestAnimationFrame(animate);
 }
 
-function getDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371; // km
-  const dLat = (lat2 - lat1) * Math.PI/180;
-  const dLng = (lng2 - lng1) * Math.PI/180;
-  const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+function distanceInKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c; // in km
+  return R * c;
 }
 
-// Function to get rider's current location
 function getRiderLocation(callback) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
@@ -14472,34 +14495,31 @@ function getRiderLocation(callback) {
   }
 }
 
-// Haversine formula to calculate distance in km
-function distanceInKm(lat1, lng1, lat2, lng2) {
-  const R = 6371; // Radius of Earth in km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
-
 async function getPlaceName(lat, lng) {
   try {
-    let url = `https://api.openrouteservice.org/geocode/reverse?api_key=${ORS_API_KEY}&point=${lat},${lng}&size=1`;
+    // ORS API
+    let url = `https://api.openrouteservice.org/geocode/reverse?api_key=${ORS_API_KEY}&point=${lng},${lat}&size=1`;
     let res = await fetch(url);
     let data = await res.json();
-    if (data.features && data.features.length > 0 && data.features[0].properties && data.features[0].properties.label) {
-      return data.features[0].properties.label;
-    } else {
-      return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    if (data.features && data.features.length > 0 && data.features[0].properties) {
+      let label = data.features[0].properties.label;
+      if (label) return label.split(',')[0];
     }
+    // Fallback OSM
+    let osmRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    let osmData = await osmRes.json();
+    return osmData.display_name ? osmData.display_name.split(',')[0] : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   } catch (err) {
     console.error("Reverse geocode error:", err);
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   }
 }
 
+function formatKES(amount) {
+  return Number(amount).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
-// Show all available vehicles with distance from rider and exact location
+/* ===================== 🔹 Show All Available Drivers ===================== */
 async function showAllAvailableDrivers() {
   getRiderLocation(async () => {
     db.collection("drivers").onSnapshot(async snapshot => {
@@ -14511,7 +14531,6 @@ async function showAllAvailableDrivers() {
         let id = doc.id;
 
         if (d.available) {
-          // Update or add marker
           if (driverMarkers[id]) {
             driverMarkers[id].setLatLng([d.lat, d.lng]);
           } else {
@@ -14522,19 +14541,22 @@ async function showAllAvailableDrivers() {
 
           latLngs.push([d.lat, d.lng]);
 
-          // Distance from rider
           let distKm = distanceInKm(riderLocation.lat, riderLocation.lng, d.lat, d.lng);
-
-          // Human-readable location
+          let estCost = distKm * d.costPerKm;
           let placeName = await getPlaceName(d.lat, d.lng);
 
+          let statusBadge = d.available ? `<span style="color:green;font-weight:bold;">🟢 Online</span>` : `<span style="color:gray;">⚪ Offline</span>`;
+
           html += `<div class="ride-card">
-            <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+            <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}) ${statusBadge}</p>
             <p>📞 ${d.phone}</p>
-            <p>💲 Cost per Km: ${d.costPerKm} KES</p>
+            <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
+            <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
             <p>📍 Distance: ${distKm.toFixed(2)} km</p>
             <p>📌 Location: ${placeName}</p>
-            <button onclick="confirmRide('${pickupMarker ? pickupMarker.getLatLng() : ''}','${destMarker ? destMarker.getLatLng() : ''}','standard','${id}','${d.name}','${d.plate}','0')">Book with ${d.name}</button>
+            <button onclick="confirmRide(pickupMarker.getLatLng(), destMarker.getLatLng(), 'standard', '${id}','${d.name}','${d.plate}','${formatKES(estCost)}')">
+              Book with ${d.name}
+            </button>
           </div>`;
         } else {
           if (driverMarkers[id]) {
@@ -14554,47 +14576,68 @@ async function showAllAvailableDrivers() {
   });
 }
 
-
-
-/* ===================== 🔹 Geocoding & Routing ===================== */
+/* ===================== 🔹 Geocode & Route ===================== */
 async function geocode(address) {
   let url = `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(address)}`;
   let res = await fetch(url);
   let data = await res.json();
-  if (data.features.length>0) return {lat:data.features[0].geometry.coordinates[1], lng:data.features[0].geometry.coordinates[0]};
-  throw new Error("Address not found: "+address);
+
+  if (data && data.features && data.features.length > 0) {
+    return {
+      lat: data.features[0].geometry.coordinates[1],
+      lng: data.features[0].geometry.coordinates[0]
+    };
+  }
+  throw new Error("⚠️ Address not found: " + address);
 }
 
-async function getRoute(pickup,destination){
+async function getRoute(pickup, destination) {
   let url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${pickup.lng},${pickup.lat}&end=${destination.lng},${destination.lat}`;
-  let res = await fetch(url); let data = await res.json();
-  let distKm = data.features[0].properties.segments[0].distance/1000;
-  let durMin = data.features[0].properties.segments[0].duration/60;
-  return {distance:distKm,duration:durMin};
+  let res = await fetch(url);
+  let data = await res.json();
+
+  if (data && data.features && data.features.length > 0) {
+    let distKm = data.features[0].properties.segments[0].distance / 1000;
+    let durMin = data.features[0].properties.segments[0].duration / 60;
+    return { distance: distKm, duration: durMin };
+  }
+  throw new Error("⚠️ Could not fetch route from ORS");
 }
 
 /* ===================== 🔹 Rider Booking ===================== */
-document.getElementById("rideForm").addEventListener("submit",async function(e){
+document.getElementById("rideForm").addEventListener("submit", async function(e) {
   e.preventDefault();
-  let pickupAddr=document.getElementById("pickup").value;
-  let destAddr=document.getElementById("destination").value;
-  let rideType=document.getElementById("rideType").value;
+  let pickupAddr = document.getElementById("pickup").value;
+  let destAddr = document.getElementById("destination").value;
+  let rideType = document.getElementById("rideType").value;
+  
   try {
-    let pickup=await geocode(pickupAddr);
-    let destination=await geocode(destAddr);
+    showSpinner("Finding pickup location...");
+    let pickup = await geocode(pickupAddr);
+
+    showSpinner("Finding destination...");
+    let destination = await geocode(destAddr);
+
     pickupLocation = pickup;
-    let route=await getRoute(pickup,destination);
 
-    if(pickupMarker) map.removeLayer(pickupMarker);
-    if(destMarker) map.removeLayer(destMarker);
-    pickupMarker=L.marker([pickup.lat,pickup.lng]).addTo(map).bindPopup("Pickup").openPopup();
-    destMarker=L.marker([destination.lat,destination.lng]).addTo(map).bindPopup("Destination");
-    map.fitBounds(L.featureGroup([pickupMarker,destMarker]).getBounds());
+    showSpinner("Calculating route...");
+    let route = await getRoute(pickup, destination);
 
-    showAvailableDrivers(route.distance,route.duration,pickupAddr,destAddr,rideType);
+    if (pickupMarker) map.removeLayer(pickupMarker);
+    if (destMarker) map.removeLayer(destMarker);
+    pickupMarker = L.marker([pickup.lat, pickup.lng]).addTo(map).bindPopup("Pickup").openPopup();
+    destMarker = L.marker([destination.lat, destination.lng]).addTo(map).bindPopup("Destination");
+    map.fitBounds(L.featureGroup([pickupMarker, destMarker]).getBounds());
+
+    showAvailableDrivers(route.distance, route.duration, pickupAddr, destAddr, rideType);
     showAllAvailableDrivers();
-  } catch(err){ alert("Error: "+err.message); }
+  } catch (err) { 
+    alert("Error: " + err.message); 
+  } finally {
+    hideSpinner();
+  }
 });
+
 
 function showAvailableDrivers(distanceKm, durationMin, pickup, destination, rideType) {
   db.collection("drivers").get().then(snapshot => {
@@ -14603,12 +14646,15 @@ function showAvailableDrivers(distanceKm, durationMin, pickup, destination, ride
       let d = doc.data();
       if(d.available){
         let estCost = distanceKm*d.costPerKm;
+        let statusBadge = d.available ? `<span style="color:green;font-weight:bold;">🟢 Online</span>` : `<span style="color:gray;">⚪ Offline</span>`;
         html += `<div class="ride-card">
-          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}) ${statusBadge}</p>
           <p>📞 ${d.phone}</p>
-          <p>💲 Cost per Km: ${d.costPerKm} KES</p>
-          <p>💵 Estimated Fare: ${estCost.toFixed(2)} KES</p>
-          <button onclick="confirmRide('${pickup}','${destination}','${rideType}','${doc.id}','${d.name}','${d.plate}','${estCost.toFixed(2)}')">Book with ${d.name}</button>
+          <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
+          <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
+          <button onclick="confirmRide(pickupMarker.getLatLng(), destMarker.getLatLng(), '${rideType}','${doc.id}','${d.name}','${d.plate}','${formatKES(estCost)}')">
+            Book with ${d.name}
+          </button>
         </div>`;
       }
     });
@@ -14616,24 +14662,63 @@ function showAvailableDrivers(distanceKm, durationMin, pickup, destination, ride
   });
 }
 
-function confirmRide(pickup, destination, rideType, driverId, driverName, plate, estCost) {
+async function confirmRide(pickup, destination, rideType, driverId, driverName, plate, estCost) {
   const riderId = firebase.auth().currentUser.uid;
-  db.collection("rides").add({pickup,destination,rideType,status:"pending",driverId,driverName,plate,estCost,riderId,timestamp:firebase.firestore.FieldValue.serverTimestamp()})
-  .then(docRef => { alert(`✅ Ride booked with ${driverName} for ${estCost} KES`); trackRideStatus(docRef.id); })
-  .catch(err=>{alert("Failed to book ride: "+err.message);});
+
+  // Use typed address directly (fast) and save coordinates for later use
+  let pickupText = pickup.lat ? `${pickup.lat.toFixed(5)}, ${pickup.lng.toFixed(5)}` : pickup;
+  let destText = destination.lat ? `${destination.lat.toFixed(5)}, ${destination.lng.toFixed(5)}` : destination;
+
+  // ✅ Save instantly
+  let rideRef = await db.collection("rides").add({
+    pickup: pickupText,
+    pickupCoords: pickup.lat ? { lat: pickup.lat, lng: pickup.lng } : null,
+    destination: destText,
+    destCoords: destination.lat ? { lat: destination.lat, lng: destination.lng } : null,
+    rideType,
+    status: "pending",
+    driverId,
+    driverName,
+    plate,
+    estCost,
+    riderId,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Show confirmation instantly 🚀
+  alert(`✅ Ride booked with ${driverName} for ${estCost} KES`);
+  trackRideStatus(rideRef.id);
+
+  // 🔹 Run reverse geocoding in background and update Firestore (non-blocking)
+  if (pickup.lat && destination.lat) {
+    getPlaceName(pickup.lat, pickup.lng).then(place => {
+      db.collection("rides").doc(rideRef.id).update({ pickup: place });
+    });
+    getPlaceName(destination.lat, destination.lng).then(place => {
+      db.collection("rides").doc(rideRef.id).update({ destination: place });
+    });
+  }
 }
 
+/* ===================== 🔹 Ride Status Tracking ===================== */
 function trackRideStatus(rideId) {
-  db.collection("rides").doc(rideId).onSnapshot(doc=>{
+  db.collection("rides").doc(rideId).onSnapshot(async doc=>{
     let ride = doc.data(); if(!ride) return;
-    let statusText = "Waiting for driver..."; let cancelButton="";
-    if(ride.status==="accepted"){ statusText=`🚖 Driver ${ride.driverName} is on the way!`; cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`; }
+    let pickupText = ride.pickup.lat ? await getPlaceName(ride.pickup.lat, ride.pickup.lng) : ride.pickup;
+    let destText = ride.destination.lat ? await getPlaceName(ride.destination.lat, ride.destination.lng) : ride.destination;
+    let statusText = "Waiting for driver..."; 
+    let cancelButton="";
+    if(ride.status==="accepted"){ 
+      statusText=`🚖 Driver ${ride.driverName} is on the way!`; 
+      cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`; 
+    }
     else if(ride.status==="completed") statusText="✅ Ride Completed!";
     else if(ride.status.startsWith("cancelled")) statusText="❌ Ride Cancelled!";
     else cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`;
+
     document.getElementById("rideResults").innerHTML = `<div class="ride-card">
-      <p><strong>Pickup:</strong> ${ride.pickup}</p>
-      <p><strong>Destination:</strong> ${ride.destination}</p>
+      <p><strong>Pickup:</strong> ${pickupText}</p>
+      <p><strong>Destination:</strong> ${destText}</p>
       <p><strong>Ride Type:</strong> ${ride.rideType}</p>
       <p><strong>Fare:</strong> ${ride.estCost} KES</p>
       <p id="rideStatus-${rideId}" style="color:blue; font-weight:bold;">${statusText}</p>
@@ -14663,7 +14748,7 @@ document.getElementById("driverRegisterForm").addEventListener("submit", functio
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(pos=>{
         let lat=pos.coords.latitude; let lng=pos.coords.longitude;
-        db.collection("drivers").doc(uid).set({name,email,phone,vehicle,plate,available:true,lat,lng,costPerKm});
+        db.collection("drivers").doc(uid).set({name,email,phone,vehicle,plate,available:false,lat,lng,costPerKm});
         alert("Driver registered successfully ✅");
         showDriverLogin();
       });
@@ -14674,51 +14759,114 @@ document.getElementById("driverRegisterForm").addEventListener("submit", functio
 /* ===================== 🔹 Driver Login + Live GPS ===================== */
 document.getElementById("driverLoginForm").addEventListener("submit", function(e){
   e.preventDefault();
-  let email=document.getElementById("loginEmail").value;
-  let password=document.getElementById("loginPassword").value;
-  firebase.auth().signInWithEmailAndPassword(email,password).then(userCredential=>{
-    currentDriver=userCredential.user;
-    db.collection("drivers").doc(currentDriver.uid).get().then(doc=>{
-      let d=doc.data();
-      document.getElementById("driverInfo").innerHTML=`<p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
-        <p>📞 ${d.phone}</p><p>💲 Cost per Km: ${d.costPerKm} KES</p>
-        <p>Status: ${d.available?"✅ Online":"❌ Offline"}</p>`;
-    });
+  let email = document.getElementById("loginEmail").value;
+  let password = document.getElementById("loginPassword").value;
 
-    if(navigator.geolocation){
-      navigator.geolocation.watchPosition(pos=>{
-        let lat=pos.coords.latitude; let lng=pos.coords.longitude;
-        db.collection("drivers").doc(currentDriver.uid).update({lat,lng,available:true});
+  showSpinner("Logging in...");
+
+  firebase.auth().signInWithEmailAndPassword(email, password).then(userCredential => {
+    currentDriver = userCredential.user;
+
+    // ✅ Mark online
+    return db.collection("drivers").doc(currentDriver.uid).update({ available: true }).then(() => {
+      return db.collection("drivers").doc(currentDriver.uid).get();
+    }).then(doc => {
+      let d = doc.data();
+      document.getElementById("driverInfo").innerHTML = `
+        <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+        <p>📞 ${d.phone}</p>
+        <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
+        <p>Status: ${d.available ? "✅ Online" : "❌ Offline"}</p>`;
+
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(pos => {
+          let lat = pos.coords.latitude;
+          let lng = pos.coords.longitude;
+          db.collection("drivers").doc(currentDriver.uid).update({ lat, lng, available: true });
+        });
+      }
+
+      // ✅ Mark driver offline when tab closes
+      window.addEventListener("beforeunload", () => {
+        db.collection("drivers").doc(currentDriver.uid).update({ available: false });
       });
-    }
 
-    db.collection("rides").onSnapshot(snapshot=>{
-      let html="";
-      snapshot.forEach(doc=>{
-        let ride=doc.data(); let id=doc.id;
-        if(ride.driverId===currentDriver.uid){
-          if(ride.status==="pending") html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p>Fare: ${ride.estCost} KES</p><button onclick="acceptRide('${id}')">✅ Accept Ride</button><button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button></div>`;
-          else if(ride.status==="accepted") html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p style="color:green;">Accepted by you</p><button onclick="completeRide('${id}')">🏁 Complete Ride</button><button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button></div>`;
-          else if(ride.status.startsWith("cancelled")) html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p style="color:red;">❌ Ride Cancelled</p></div>`;
-          else if(ride.status==="completed") html+=`<div class="ride-card"><p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p><p>Type: ${ride.rideType}</p><p style="color:blue;">✅ Ride Completed</p></div>`;
-        }
+      // ✅ Listen for rides
+      db.collection("rides").onSnapshot(snapshot => {
+        let html = "";
+        snapshot.forEach(doc => {
+          let ride = doc.data(); 
+          let id = doc.id;
+          if (ride.driverId === currentDriver.uid) {
+            if (ride.status === "pending") {
+              html += `<div class="ride-card">
+                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                <p>Type: ${ride.rideType}</p>
+                <p>Fare: ${ride.estCost} KES</p>
+                <button onclick="acceptRide('${id}')">✅ Accept Ride</button>
+                <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
+              </div>`;
+            } else if (ride.status === "accepted") {
+              html += `<div class="ride-card">
+                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                <p>Type: ${ride.rideType}</p>
+                <p style="color:green;">Accepted by you</p>
+                <button onclick="completeRide('${id}')">🏁 Complete Ride</button>
+                <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
+              </div>`;
+            } else if (ride.status.startsWith("cancelled")) {
+              html += `<div class="ride-card">
+                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                <p>Type: ${ride.rideType}</p>
+                <p style="color:red;">❌ Ride Cancelled</p>
+              </div>`;
+            } else if (ride.status === "completed") {
+              html += `<div class="ride-card">
+                <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                <p>Type: ${ride.rideType}</p>
+                <p style="color:blue;">✅ Ride Completed</p>
+              </div>`;
+            }
+          }
+        });
+        document.getElementById("pendingRides").innerHTML = html || "<p>No assigned rides right now.</p>";
       });
-      document.getElementById("pendingRides").innerHTML=html||"<p>No assigned rides right now.</p>";
-    });
 
-    showDriverPanel();
-  }).catch(error=>{alert("Login failed: "+error.message);});
+      showDriverPanel();
+    });
+  }).catch(error => {
+    alert("Login failed: " + error.message);
+  }).finally(() => {
+    hideSpinner();
+  });
 });
+
 
 /* ===================== 🔹 Accept & Complete Ride ===================== */
 function acceptRide(rideId){ db.collection("rides").doc(rideId).update({status:"accepted"}).then(()=>{alert("Ride accepted 🚖");}); }
 function completeRide(rideId){ db.collection("rides").doc(rideId).update({status:"completed"}).then(()=>{alert("Ride completed 🏁");}); }
+
+function showSpinner(message="Please wait...") {
+  let spinner = document.getElementById("loadingSpinner");
+  if (spinner) {
+    spinner.querySelector("div").innerText = "⏳ " + message;
+    spinner.style.display = "flex";
+  }
+}
+function hideSpinner() {
+  let spinner = document.getElementById("loadingSpinner");
+  if (spinner) spinner.style.display = "none";
+}
+
+/* ===================== 🔹 Wrap Async Functions ===================== */
+async function withSpinner(message, fn) {
+  try {
+    showSpinner(message);
+    return await fn();
+  } finally {
+    hideSpinner();
+  }
+}
 </script>
-
-
-</script>
-
-</body>
-</html>
 
 
