@@ -14716,42 +14716,47 @@ document.getElementById("rideForm").addEventListener("submit", async function(e)
 });
 
 async function showAvailableDrivers(distanceKm, durationMin, pickup, destination, rideType) {
-  let snapshot = await db.collection("drivers").get();
-  let html = `<h3>🚗 Available Drivers</h3>
-              <p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>`;
+  try {
+    let snapshot = await db.collection("drivers").get();
+    let html = `<h3>🚗 Available Drivers</h3>
+                <p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>`;
 
-  for (let doc of snapshot.docs) {
-    let d = doc.data();
-    if (d.available) {
-      let estCost = distanceKm * d.costPerKm;
-      let fuel = estimateFuel(distanceKm, d.engineCc || "default");
+    for (let doc of snapshot.docs) {
+      let d = doc.data();
+      if (d.available) {
+        let estCost = distanceKm * d.costPerKm;
+        let fuel = estimateFuel(distanceKm, d.engineCc || "default");
 
-      // ✅ Get human-readable location
-      let placeName = await getPlaceName(d.lat, d.lng);
+        // ✅ Get exact human-readable location of the driver
+        let placeName = await getPlaceName(d.lat, d.lng);
 
-      html += `<div class="ride-card">
-        <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}, ${d.engineCc || "N/A"}) 🟢 Online</p>
-        <p>📞 ${d.phone}</p>
-        <p>📍 Location: <strong>${placeName}</strong></p>
-        <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
-        <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
-        <p>⛽ Fuel: ${fuel.liters.toFixed(2)} L (~${formatKES(fuel.cost)} KES)</p>
-        <button onclick="confirmRide(
-            pickupMarker.getLatLng(),
-            destMarker.getLatLng(),
-            '${rideType}',
-            '${doc.id}',
-            '${d.name}',
-            '${d.plate}',
-            '${formatKES(estCost)}'
-        )">
-          Book with ${d.name}
-        </button>
-      </div>`;
+        html += `<div class="ride-card">
+          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}, ${d.engineCc || "N/A"}) 🟢 Online</p>
+          <p>📞 ${d.phone}</p>
+          <p>📍 Location: <strong>${placeName}</strong></p>
+          <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
+          <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
+          <p>⛽ Fuel: ${fuel.liters.toFixed(2)} L (~${formatKES(fuel.cost)} KES)</p>
+          <button onclick="confirmRide(
+              pickupMarker.getLatLng(),
+              destMarker.getLatLng(),
+              '${rideType}',
+              '${doc.id}',
+              '${d.name}',
+              '${d.plate}',
+              '${formatKES(estCost)}'
+          )">
+            Book with ${d.name}
+          </button>
+        </div>`;
+      }
     }
-  }
 
-  document.getElementById("rideResults").innerHTML = html;
+    document.getElementById("rideResults").innerHTML = html;
+  } catch (err) {
+    console.error("Error showing available drivers:", err);
+    document.getElementById("rideResults").innerHTML = "<p>⚠️ Could not load drivers. Please try again.</p>";
+  }
 }
 
 
