@@ -2359,6 +2359,50 @@ body.theme20 {
     bottom: 30px; /* Adjust bottom position for mobile */
   }
 }
+  /* 🎨 Ride Card Styles */
+  .ride-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 5px solid #007bff; /* default blue stripe */
+  }
+
+  .ride-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+
+  /* Status colors */
+  .ride-pending { border-left-color: #ffc107; }
+  .ride-accepted { border-left-color: #28a745; }
+  .ride-cancelled { border-left-color: #dc3545; }
+  .ride-completed { border-left-color: #17a2b8; }
+
+  /* Buttons */
+  .ride-card button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 5px 6px 0 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+  .ride-card button:hover { background: #0056b3; }
+
+  .ride-card button.cancel {
+    background: #dc3545;
+  }
+  .ride-card button.cancel:hover {
+    background: #a71d2a;
+  }
 body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
     h2 { color:#2196f3; }
     form, .panel { max-width:400px; margin:auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
@@ -2918,14 +2962,73 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </button>
   </form>
 </div>
-
-<!-- Driver Panel -->
+<!-- 🚖 Driver Panel -->
 <div id="driverPanel" style="display:none; margin-top:20px;">
-  <h3>🚕 Driver Panel</h3>
-  <p id="driverInfo"></p>
-  <div id="pendingRides"></div>
+
+  <div style="
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    padding: 24px;
+    max-width: 650px;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+  ">
+    
+    <!-- Header with Profile Image -->
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <h2 style="margin: 0; font-size: 1.6rem; color: #222;">🚕 Driver Panel</h2>
+        <span style="
+          font-size: 0.9rem; 
+          color: #28a745; 
+          font-weight: bold;
+          background: #e9f9ef; 
+          padding: 4px 10px; 
+          border-radius: 12px;
+        ">✅ Online</span>
+      </div>
+
+      <!-- Constant Profile Image -->
+      <img src="https://i.imgur.com/k3kH1Li.png" alt="Driver Profile" style="
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+      ">
+    </div>
+
+    <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+    
+    <!-- Driver Info -->
+    <div id="driverInfo" style="
+      background: linear-gradient(135deg, #f8f9fa, #f1f3f6);
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.5;
+      border-left: 5px solid #007bff;
+    "></div>
+
+    <!-- Rides Section -->
+    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #444;">📌 Assigned Rides</h3>
+    <div id="pendingRides" style="
+      display: grid;
+      gap: 18px;
+    ">
+      <!-- Ride cards will load here -->
+    </div>
+  </div>
 </div>
-</div>
+
+    
+  
+
+
+
 
 <!-- Triangular Swap Modal (v3: with paywall/blur UI + navigation) --> 
 <div id="triangularSwapModal" style="
@@ -15010,36 +15113,118 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
 });
 
 /* ===================== 🔹 Driver Login + Live GPS ===================== */
-document.getElementById("driverLoginForm").addEventListener("submit", function(e){
+document.getElementById("driverLoginForm").addEventListener("submit", function(e) {
   e.preventDefault();
+
   let email = document.getElementById("driverLoginEmail").value.trim();
   let password = document.getElementById("driverLoginPassword").value;
 
+  // ✅ Basic validation
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+  if (!password || password.length < 6) {
+    alert("Password must be at least 6 characters long.");
+    return;
+  }
+
   showSpinner("Logging in...");
+
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then(userCredential => {
       currentDriver = userCredential.user;
+
+      // ✅ Mark driver online
       return db.collection("drivers").doc(currentDriver.uid).update({ available: true })
-        .then(() => {
-          hideSpinner();
-          showAlert("✅ Driver logged in successfully!", "success");
-          showDriverPanel();
+        .then(() => db.collection("drivers").doc(currentDriver.uid).get())
+        .then(doc => {
+          let d = doc.data();
+          document.getElementById("driverInfo").innerHTML = `
+            <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
+            <p>📞 ${d.phone}</p>
+            <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
+            <p>Status: ${d.available ? "✅ Online" : "❌ Offline"}</p>`;
+
+          // ✅ Live GPS tracking
           if (navigator.geolocation) {
             navigator.geolocation.watchPosition(pos => {
               db.collection("drivers").doc(currentDriver.uid).update({
                 lat: pos.coords.latitude,
-                lng: pos.coords.longitude
+                lng: pos.coords.longitude,
+                available: true
               });
             });
           }
+
+          // ✅ Mark driver offline when tab closes
+          window.addEventListener("beforeunload", () => {
+            db.collection("drivers").doc(currentDriver.uid).update({ available: false });
+          });
+
+          // ✅ Listen for rides assigned to this driver
+          db.collection("rides").onSnapshot(snapshot => {
+            let html = "";
+            snapshot.forEach(doc => {
+              let ride = doc.data();
+              let id = doc.id;
+
+              if (ride.driverId === currentDriver.uid) {
+                if (ride.status === "pending") {
+                  html += `<div class="ride-card">
+                    <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                    <p>Type: ${ride.rideType}</p>
+                    <p>Fare: ${ride.estCost} KES</p>
+                    <button onclick="acceptRide('${id}')">✅ Accept Ride</button>
+                    <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
+                  </div>`;
+                } else if (ride.status === "accepted") {
+                  html += `<div class="ride-card">
+                    <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                    <p>Type: ${ride.rideType}</p>
+                    <p style="color:green;">Accepted by you</p>
+                    <button onclick="completeRide('${id}')">🏁 Complete Ride</button>
+                    <button onclick="cancelRide('${id}','driver')">❌ Cancel Ride</button>
+                  </div>`;
+                } else if (ride.status.startsWith("cancelled")) {
+                  html += `<div class="ride-card">
+                    <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                    <p>Type: ${ride.rideType}</p>
+                    <p style="color:red;">❌ Ride Cancelled</p>
+                  </div>`;
+                } else if (ride.status === "completed") {
+                  html += `<div class="ride-card">
+                    <p><strong>${ride.pickup}</strong> ➡️ <strong>${ride.destination}</strong></p>
+                    <p>Type: ${ride.rideType}</p>
+                    <p style="color:blue;">✅ Ride Completed</p>
+                  </div>`;
+                }
+              }
+            });
+            document.getElementById("pendingRides").innerHTML = html || "<p>No assigned rides right now.</p>";
+          });
+
+          showDriverPanel();
         });
     })
-    .catch(err => {
+    .catch(error => {
+      alert("❌ Login failed: " + error.message);
+    })
+    .finally(() => {
       hideSpinner();
-      showAlert("❌ Login failed: " + err.message, "error");
     });
-
 });
+
+/* ===================== 🔹 Accept & Complete Ride ===================== */
+function acceptRide(rideId) {
+  db.collection("rides").doc(rideId).update({ status: "accepted" })
+    .then(() => { alert("Ride accepted 🚖"); });
+}
+function completeRide(rideId) {
+  db.collection("rides").doc(rideId).update({ status: "completed" })
+    .then(() => { alert("Ride completed 🏁"); });
+}
+
 function logoutDriver() { 
   if (currentDriver) { 
     db.collection("drivers").doc(currentDriver.uid).update({ available: false }); 
