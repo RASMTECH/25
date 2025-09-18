@@ -3030,61 +3030,6 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
   </div>
 </div>
 
-<!-- Fancy Disclaimer Modal -->
-<div id="disclaimerModal" style="
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.35); /* lighter overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-">
-  <div style="
-    background: #fff8e1;
-    padding: 18px 20px;
-    border-radius: 10px;
-    max-width: 340px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    font-family: Arial, sans-serif;
-    position: relative;
-  ">
-    <h2 style="color: #d32f2f; margin-bottom: 10px; font-size: 18px;">
-      ⚠️ Disclaimer
-    </h2>
-    <p style="color: #333; font-size: 13px; margin-bottom: 15px; line-height: 1.4;">
-      We share information as received, but we cannot guarantee 100% accuracy.  
-      Please double-check details before making decisions.  
-      <br><br>Your trust means everything to us.
-    </p>
-    
-    <div style="margin-bottom: 12px; font-size: 12px;">
-      <input type="checkbox" id="dontShowAgain" style="margin-right:6px;">
-      <label for="dontShowAgain" style="color: #555;">Do not show this again</label>
-    </div>
-    
-    <button onclick="closeDisclaimerFancy()" style="
-      background: #1976d2;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-    ">I Understand</button>
-    
-    <span onclick="closeDisclaimerFancy()" style="
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #d32f2f;
-    ">&times;</span>
-  </div>
-</div>
 
 <!-- Thank You Alert -->
 <div id="thankYouAlert" style="
@@ -14823,11 +14768,11 @@ async function showAvailableDrivers(distanceKm, durationMin, pickup, destination
       let driverCardId = `driver-${d.id}`;
 
       // 🚘 Vehicle type icon
-      let vehicleIcon = "https://cdn-icons-png.flaticon.com/512/61/61168.png"; // default car
+      let vehicleIcon = "https://i.imgur.com/k3kH1Li.png"; // default car
       if (/bike|motor/i.test(d.vehicle)) {
-        vehicleIcon = "https://cdn-icons-png.flaticon.com/512/2972/2972185.png"; // motorbike
+        vehicleIcon = "https://i.imgur.com/Y52y7SB.jpeg"; // motorbike
       } else if (/van/i.test(d.vehicle)) {
-        vehicleIcon = "https://cdn-icons-png.flaticon.com/512/296/296216.png"; // van
+        vehicleIcon = "https://i.imgur.com/yQOp2aB.jpeg"; // van
       } else if (/bus/i.test(d.vehicle)) {
         vehicleIcon = "https://cdn-icons-png.flaticon.com/512/296/296223.png"; // bus
       }
