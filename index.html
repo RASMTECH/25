@@ -14946,13 +14946,19 @@ async function confirmRide(pickup, destination, rideType, driverId, driverName, 
   const riderId = firebase.auth().currentUser.uid;
   activeDriverId = driverId;
 
+  // Show quick fallback (coords or raw text)
   let pickupText = pickup.lat ? `${pickup.lat.toFixed(5)}, ${pickup.lng.toFixed(5)}` : pickup;
-  let destText = destination.lat ? `${destination.lat.toFixed(5)}, ${destination.lng.toFixed(5)}` : destination;
+  let destText   = destination.lat ? `${destination.lat.toFixed(5)}, ${destination.lng.toFixed(5)}` : destination;
 
+  // Try to resolve names before saving (faster user experience)
+  let pickupName = pickup.lat ? await getPlaceName(pickup.lat, pickup.lng).catch(() => pickupText) : pickupText;
+  let destName   = destination.lat ? await getPlaceName(destination.lat, destination.lng).catch(() => destText) : destText;
+
+  // Save ride with names (or coords if lookup failed)
   let rideRef = await db.collection("rides").add({
-    pickup: pickupText,
+    pickup: pickupName,
     pickupCoords: pickup.lat ? { lat: pickup.lat, lng: pickup.lng } : null,
-    destination: destText,
+    destination: destName,
     destCoords: destination.lat ? { lat: destination.lat, lng: destination.lng } : null,
     rideType,
     status: "pending",
@@ -14966,15 +14972,6 @@ async function confirmRide(pickup, destination, rideType, driverId, driverName, 
 
   showAlert(`✅ Ride booked with ${driverName} for ${estCost} KES`, "success");
   trackRideStatus(rideRef.id);
-
-  if (pickup.lat && destination.lat) {
-    getPlaceName(pickup.lat, pickup.lng).then(place => {
-      db.collection("rides").doc(rideRef.id).update({ pickup: place });
-    });
-    getPlaceName(destination.lat, destination.lng).then(place => {
-      db.collection("rides").doc(rideRef.id).update({ destination: place });
-    });
-  }
 }
 
 /* ===================== 🔹 Ride Status Tracking (Instant) ===================== */
@@ -14983,10 +14980,24 @@ function trackRideStatus(rideId) {
     let ride = doc.data();
     if (!ride) return;
 
-    // Show immediate placeholders
-    let pickupText = ride.pickup.lat ? `${ride.pickup.lat.toFixed(5)}, ${ride.pickup.lng.toFixed(5)}` : ride.pickup;
-    let destText = ride.destination.lat ? `${ride.destination.lat.toFixed(5)}, ${ride.destination.lng.toFixed(5)}` : ride.destination;
+    // ✅ Always show something immediately
+    let pickupText = ride.pickupCoords
+      ? `${ride.pickupCoords.lat.toFixed(5)}, ${ride.pickupCoords.lng.toFixed(5)} (loading...)`
+      : ride.pickup || "Unknown pickup";
 
+    let destText = ride.destCoords
+      ? `${ride.destCoords.lat.toFixed(5)}, ${ride.destCoords.lng.toFixed(5)} (loading...)`
+      : ride.destination || "Unknown destination";
+
+    // ✅ If Firestore already has names (from confirmRide), prefer them
+    if (ride.pickup && !ride.pickup.includes(",")) {
+      pickupText = ride.pickup;
+    }
+    if (ride.destination && !ride.destination.includes(",")) {
+      destText = ride.destination;
+    }
+
+    // Status handling
     let statusText = "Waiting for driver..."; 
     let cancelButton = "";
 
@@ -15012,30 +15023,38 @@ function trackRideStatus(rideId) {
         ${cancelButton}
       </div>`;
 
-    // 🔄 Background update for pickup
-    if (ride.pickup.lat) {
-      getPlaceName(ride.pickup.lat, ride.pickup.lng).then(place => {
+    // 🔄 Background reverse geocode only if still coords
+    if (ride.pickupCoords && (!ride.pickup || ride.pickup.includes(","))) {
+      getPlaceName(ride.pickupCoords.lat, ride.pickupCoords.lng).then(place => {
+        db.collection("rides").doc(rideId).update({ pickup: place });
         let el = document.querySelector(`#ride-${rideId} .pickup-text`);
         if (el) el.innerText = place;
       });
     }
 
-    // 🔄 Background update for destination
-    if (ride.destination.lat) {
-      getPlaceName(ride.destination.lat, ride.destination.lng).then(place => {
+    if (ride.destCoords && (!ride.destination || ride.destination.includes(","))) {
+      getPlaceName(ride.destCoords.lat, ride.destCoords.lng).then(place => {
+        db.collection("rides").doc(rideId).update({ destination: place });
         let el = document.querySelector(`#ride-${rideId} .dest-text`);
         if (el) el.innerText = place;
       });
     }
   });
 }
-/* ===================== 🔹 cancelRide ===================== */
-function cancelRide(rideId,cancelledBy){
-  let reason = cancelledBy==="rider"?"cancelled_by_rider":"cancelled_by_driver";
-  db.collection("rides").doc(rideId).update({status:reason}).then(()=>{
+function cancelRide(rideId, cancelledBy) {
+  let reason = cancelledBy === "rider" ? "cancelled_by_rider" : "cancelled_by_driver";
+  
+  db.collection("rides").doc(rideId).update({ status: reason }).then(() => {
     showAlert("❌ Ride cancelled", "warning");
+
+    // ✅ Reset booked driver highlight
+    activeDriverId = null;
+
+    // ✅ Show rider panel again with available drivers
+    showRider(); // this already calls showAllAvailableDrivers() + autoFillPickup()
   });
 }
+
 
 /* ===================== 🔹 Driver Registration ===================== */
 document.getElementById("driverRegisterForm").addEventListener("submit", async function(e){
@@ -15193,16 +15212,19 @@ function showAlert(message, type = "info") {
   box.id = "customAlert";
   box.style.cssText = `
     position: fixed;
-    top: 20px; right: 20px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
     background: ${bg};
     color: #fff;
-    padding: 14px 20px;
-    border-radius: 8px;
+    padding: 16px 24px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 500;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
     z-index: 99999;
     animation: fadeIn 0.3s ease-out;
+    text-align: center;
+    max-width: 80%;
   `;
   box.innerHTML = message;
 
@@ -15218,8 +15240,14 @@ function showAlert(message, type = "info") {
 // Alert animations
 const style = document.createElement("style");
 style.innerHTML = `
-@keyframes fadeIn { from {opacity:0; transform: translateY(-10px);} to {opacity:1; transform: translateY(0);} }
-@keyframes fadeOut { from {opacity:1; transform: translateY(0);} to {opacity:0; transform: translateY(-10px);} }
+@keyframes fadeIn { 
+  from {opacity:0; transform: translate(-50%, -60%);} 
+  to {opacity:1; transform: translate(-50%, -50%);} 
+}
+@keyframes fadeOut { 
+  from {opacity:1; transform: translate(-50%, -50%);} 
+  to {opacity:0; transform: translate(-50%, -40%);} 
+}
 `;
 document.head.appendChild(style);
 
