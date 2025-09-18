@@ -2462,7 +2462,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
 <ul>
   <!-- Core Navigation -->
   <li><a class="menu-box" href="#" onclick="showPage('home')">
-    <img src="https://i.imgur.com/lek58ah.jpeg" alt="Home">
+    <img src="https://i.imgur.com/0V3g8Ur.png" alt="Home">
     <span>Home</span></a>
   </li>
 
@@ -2486,19 +2486,19 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
   </button>
 
   <li><a class="menu-box" href="#" onclick="showPage('usageHelp')">
-    <img src="https://i.imgur.com/tHuRu3z.jpeg" alt="How to Use">
+    <img src="https://i.imgur.com/JUXFrkV.png" alt="How to Use">
     <span>📘 How to Use</span></a>
   </li>
 
   <!-- Main Features -->
   <li><a class="menu-box" href="#" onclick="showPage('bomJobs')">
-    <img src="https://i.imgur.com/8KM6Rib.jpeg" alt="Jobs">
+    <img src="https://i.imgur.com/qdgoH1P.jpeg" alt="Jobs">
     <span>My Jobs</span></a>
   </li>
 
   <li>
     <a class="menu-box" href="#" onclick="showPage('swaps'); resetSwapBadge();">
-      <img src="https://i.imgur.com/iqBwsWm.png" alt="Swaps">
+      <img src="https://i.imgur.com/EH75psB.png" alt="Swaps">
       <span>View Swaps</span>
       <span id="swapBadge" style="
         display:none;
@@ -2516,7 +2516,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
 
  <li>
   <a class="menu-box" href="#" onclick="showPage('rideSystem')">
-    <img src="https://i.imgur.com/fdmtzu1.jpeg" alt="Ride System">
+    <img src="https://i.imgur.com/k3kH1Li.png" alt="Ride System">
     <span>Book Ride</span>
   </a>
 </li>
@@ -2524,7 +2524,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
 
 
   <li><a class="menu-box" href="#" onclick="showPage('market')">
-    <img src="https://i.imgur.com/P1MIsGM.jpeg" alt="Market">
+    <img src="https://i.imgur.com/L1yWLoN.png" alt="Market">
     <span>Market</span></a>
   </li>
 
@@ -2566,7 +2566,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
   </li>
 
   <li><a class="menu-box" href="#" onclick="showPage('resources')">
-    <img src="https://i.imgur.com/GavIBlL.jpeg" alt="Resources">
+    <img src="https://i.imgur.com/wuYiPr5.png" alt="Resources">
     <span>Resources</span></a>
   </li>
 
@@ -5686,91 +5686,81 @@ const countySubCountyPairs = [
 countySubCountyPairs.forEach(pair => populateCounties(pair.county, pair.subCounty));
 
 
+/* ===================== 🔹 Section Navigation ===================== */
 async function showPage(pageId) {
-  // Ensure the user is logged in before accessing certain pages
-  if (pageId === "swaps" && !isLoggedIn) {
-    showCustomAlert("You must be logged in to view swaps.", "error");
+  // 🔹 Login protection for sensitive pages
+  const loginRequiredPages = [
+    "swaps", "resources", "messages", "soulmates",
+    "seekingServices", "trending", "alerts", "market"
+  ];
+
+  if (loginRequiredPages.includes(pageId) && !isLoggedIn) {
+    showCustomAlert("Please login to access this section.", "error");
     showPage("login");
     return;
   }
 
-  if (pageId === "resources" && !isLoggedIn) {
-    showCustomAlert("Please login to view resources.", "error");
-    showPage("login");
-    return;
-  }
+  // 🔹 Hide ALL sections
+  document.querySelectorAll(".page, .page-section").forEach(sec => {
+    sec.style.display = "none";
+  });
 
-  if (pageId === "messages" && !isLoggedIn) {
-    showCustomAlert("Please login to access your messages.", "error");
-    showPage("login");
-    return;
-  }
+  // 🔹 Hide ride panels if leaving ride system
+  hideRidePanels();
 
-  if (pageId === "soulmates" && !isLoggedIn) {
-    showCustomAlert("Please login to view or post soulmate profiles.", "error");
-    showPage("login");
-    return;
-  }
-
-  if (pageId === "seekingServices" && !isLoggedIn) {
-    showCustomAlert("Please login to view or post services.", "error");
-    showPage("login");
-    return;
-  }
-
-  if (pageId === "trending" && !isLoggedIn) {
-    showCustomAlert("You must be logged in to view trending content.", "error");
-    showPage("login");
-    return;
-  }
-
-
-  if (pageId === "alerts" && !isLoggedIn) {
-    showCustomAlert("You must be logged in to view alerts.", "error");
-    showPage("login");
-    return;
-  }
-
-  if (pageId === "market" && !isLoggedIn) {
-    showCustomAlert("Please login to view or post market items.", "error");
-    showPage("login");
-    return;
-  }
-
-  // Hide all pages
-  document.querySelectorAll(".page").forEach(p => p.style.display = "none");
-
-  // Show requested page
+  // 🔹 Show requested section
   const page = document.getElementById(pageId);
   if (page) page.style.display = "block";
 
-  // Page-specific logic
+  // 🔹 Page-specific logic
   if (pageId === "swaps" && isLoggedIn) loadSwaps();
   if (pageId === "bomJobs") loadBOMJobs();
-  if (pageId === "resources") {
+  if (pageId === "resources" && isLoggedIn) {
     await checkPaymentStatus();
     loadResources();
   }
-  if (pageId === "soulmates") loadSoulmates();
-  if (pageId === "seekingServices") loadServices();
-
-  if (pageId === "trending" && isLoggedIn) {
-    loadTrendingItems();
-  }
-
-  if (pageId === "alerts" && isLoggedIn) {
-    loadAlerts();
-  }
-
+  if (pageId === "soulmates" && isLoggedIn) loadSoulmates();
+  if (pageId === "seekingServices" && isLoggedIn) loadServices();
+  if (pageId === "trending" && isLoggedIn) loadTrendingItems();
+  if (pageId === "alerts" && isLoggedIn) loadAlerts();
   if (pageId === "notifications" && isAdmin) {
     loadAdminNotifications();
     updateAdminNotifBadge();
   }
-
   if (pageId === "market" && isLoggedIn) {
     populateCounties("itemCounty", "itemSubcounty");
     loadMarketItems();
   }
+}
+
+/* ===================== 🔹 Ride System Sub-Panels ===================== */
+function showRider() {
+  hideRidePanels();
+  document.getElementById("riderPanel").style.display = "block";
+  showAllAvailableDrivers();
+  autoFillPickup(); // ✅ Auto-detect pickup station
+}
+
+function showDriverRegister() {
+  hideRidePanels();
+  document.getElementById("driverRegister").style.display = "block";
+}
+
+function showDriverLogin() {
+  hideRidePanels();
+  document.getElementById("driverLogin").style.display = "block";
+}
+
+function showDriverPanel() {
+  hideRidePanels();
+  document.getElementById("driverPanel").style.display = "block";
+}
+
+function hideRidePanels() {
+  ["riderPanel", "driverRegister", "driverLogin", "driverPanel"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
 }
 
 // ✅ Helper: Spinner control
@@ -14526,50 +14516,6 @@ function estimateFuel(distanceKm, engineCc) {
   return { liters, cost };
 }
 
-/* ===================== 🔹 Section Navigation ===================== */
-function showPage(pageId) {
-  // 🔹 Hide ALL top-level sections (dashboard pages)
-  document.querySelectorAll(".page-section").forEach(sec => {
-    sec.style.display = "none";
-  });
-
-  // 🔹 Also hide ride system sub-panels when leaving rideSystem
-  hideRidePanels();
-
-  // 🔹 Show the requested page
-  const page = document.getElementById(pageId);
-  if (page) page.style.display = "block";
-}
-
-/* ===================== 🔹 Ride System Sub-Panels ===================== */
-function showRider() {
-  hideRidePanels();
-  document.getElementById("riderPanel").style.display = "block";
-  showAllAvailableDrivers();
-  autoFillPickup(); // ✅ Auto-detect pickup station
-}
-
-function showDriverRegister() {
-  hideRidePanels();
-  document.getElementById("driverRegister").style.display = "block";
-}
-
-function showDriverLogin() {
-  hideRidePanels();
-  document.getElementById("driverLogin").style.display = "block";
-}
-
-function showDriverPanel() {
-  hideRidePanels();
-  document.getElementById("driverPanel").style.display = "block";
-}
-
-function hideRidePanels() {
-  ["riderPanel", "driverRegister", "driverLogin", "driverPanel"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-  });
-}
 
 /* ===================== 🔹 Leaflet Map Init ===================== */
 let map = L.map('map').setView([-1.2921, 36.8219], 13);
