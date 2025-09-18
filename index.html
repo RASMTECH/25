@@ -2514,12 +2514,14 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </a>
   </li>
 
-  <li>
-    <a class="menu-box" href="#" onclick="toggleRideSystem()">
-      <img src="https://i.imgur.com/fdmtzu1.jpeg" alt="Ride System">
-      <span>Book Ride</span>
-    </a>
-  </li>
+ <li>
+  <a class="menu-box" href="#" onclick="showPage('rideSystem')">
+    <img src="https://i.imgur.com/fdmtzu1.jpeg" alt="Ride System">
+    <span>Book Ride</span>
+  </a>
+</li>
+
+
 
   <li><a class="menu-box" href="#" onclick="showPage('market')">
     <img src="https://i.imgur.com/P1MIsGM.jpeg" alt="Market">
@@ -2758,59 +2760,103 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
   </div>
 </div>
 <!-- ✅ Ride System -->
-<div id="rideSystem">
+<div id="rideSystem" class="page-section" style="display:none;">
   <h2>🚖 Nyota Ride System</h2>
 
   <!-- Choose Role -->
-  <div class="panel" id="rolePanel">
-    <button onclick="showRider()">I am a Rider</button>
-    <button onclick="showDriverLogin()">I am a Driver</button>
-    <button onclick="showDriverRegister()">Register as Driver</button>
+  <div class="panel" id="rolePanel" style="
+    background:url('https://i.imgur.com/C7Rb7LA.jpeg') no-repeat center center/cover;
+    padding:30px; 
+    border-radius:12px; 
+    display:flex; 
+    flex-direction:column; 
+    gap:15px; 
+    align-items:center;
+  ">
+    <button onclick="showRider()" style="
+      width:80%; padding:12px; background:#4caf50; color:#fff; font-weight:bold;
+      border:none; border-radius:8px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    ">
+      <i class="fas fa-user"></i> I am a Rider
+    </button>
+
+    <button onclick="showDriverLogin()" style="
+      width:80%; padding:12px; background:#2196f3; color:#fff; font-weight:bold;
+      border:none; border-radius:8px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    ">
+      <i class="fas fa-car"></i> I am a Driver
+    </button>
+
+    <button onclick="showDriverRegister()" style="
+      width:80%; padding:12px; background:#ff9800; color:#fff; font-weight:bold;
+      border:none; border-radius:8px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    ">
+      <i class="fas fa-id-card"></i> Register as Driver
+    </button>
   </div>
 
   <!-- Rider Form -->
-  <div id="riderPanel" style="display:none; margin-top:20px;">
+  <div id="riderPanel" style="
+    display:none; margin-top:20px; padding:20px; border-radius:10px;
+    background:url('https://i.imgur.com/C7Rb7LA.jpeg') no-repeat center center/cover;
+    color:#fff;
+  ">
     <h3>📍 Book a Ride</h3>
-    <form id="rideForm">
+    <form id="rideForm" style="background:rgba(0,0,0,0.6); padding:15px; border-radius:10px;">
       <label>Pickup Location</label>
-      <input type="text" id="pickup" required>
+      <input type="text" id="pickup" required style="width:100%; padding:8px; margin:5px 0;">
+
       <label>Destination</label>
-      <input type="text" id="destination" required>
+      <input type="text" id="destination" required style="width:100%; padding:8px; margin:5px 0;">
+
       <label>Choose Ride</label>
-      <select id="rideType">
+      <select id="rideType" style="width:100%; padding:8px; margin:5px 0;">
         <option value="car">Car</option>
         <option value="bike">Motorbike</option>
       </select>
-      <button type="submit">Find Nearby Rides</button>
-    </form>
 
-    <div id="map"></div>
-    <div id="rideResults" style="margin-top:20px;"></div>
+      <button type="submit" style="
+        width:100%; padding:10px; background:#ff9800; border:none; border-radius:5px; 
+        color:#fff; font-weight:bold; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;
+      ">
+        <i class="fas fa-search-location"></i> Find Nearby Rides
+      </button>
+    </form>
   </div>
 
-  <div id="driverRegister" style="display:none;">
-  <h2>🚘 Driver Registration</h2>
-  <form id="driverRegisterForm">
+  <div id="map"></div>
+  <div id="rideResults" style="margin-top:20px;"></div>
+</div>
+
+<!-- Driver Registration -->
+<div id="driverRegister" style="
+  display:none; margin-top:20px; padding:20px; border-radius:10px;
+  background:url('https://i.imgur.com/v298Kg2.jpeg') no-repeat center center/cover;
+  color:#fff;
+">
+  <h2 style="text-align:center; margin-bottom:20px;">🚘 Driver Registration</h2>
+
+  <form id="driverRegisterForm" style="background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; display:flex; flex-direction:column; gap:10px;">
     <label>Full Name</label>
-    <input type="text" id="driverName" required>
+    <input type="text" id="driverName" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
     <label>Email</label>
-    <input type="email" id="driverEmail" required>
+    <input type="email" id="driverEmail" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
     <label>Password</label>
-    <input type="password" id="driverPassword" required>
+    <input type="password" id="driverPassword" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
     <label>Phone Number</label>
-    <input type="tel" id="driverPhone" required placeholder="07XXXXXXXX">
+    <input type="tel" id="driverPhone" required placeholder="07XXXXXXXX" style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
     <label>Vehicle Model</label>
-    <input type="text" id="driverVehicle" required>
+    <input type="text" id="driverVehicle" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
     <label>Plate Number</label>
-    <input type="text" id="driverPlate" required>
+    <input type="text" id="driverPlate" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
     <label>Engine Capacity (CC)</label>
-    <select id="driverEngine" required>
+    <select id="driverEngine" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
       <option value="1300cc">1300cc</option>
       <option value="1400cc">1400cc</option>
       <option value="1500cc">1500cc</option>
@@ -2819,18 +2865,28 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </select>
 
     <label>Cost per Km (KES)</label>
-    <input type="number" id="driverCost" step="1" required>
+    <input type="number" id="driverCost" step="1" required style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;">
 
-    <button type="submit">Register as Driver</button>
+    <button type="submit" style="
+      width:100%; padding:10px; background:#4CAF50; border:none; border-radius:5px; 
+      color:#fff; font-weight:bold; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;
+    ">
+      <i class="fas fa-user-plus"></i> Register as Driver
+    </button>
   </form>
-    <p>Already registered? <a href="#" onclick="showDriverLogin()">Login here</a></p>
-  </div>
+
+  <p style="margin-top:15px; text-align:center;">
+    Already registered? 
+    <a href="#" onclick="showDriverLogin()" style="color:#ffd700; font-weight:bold;">
+      <i class="fas fa-sign-in-alt"></i> Login here
+    </a>
+  </p>
+</div>
+
 <!-- 🔹 Global Loading Spinner -->
 <div id="loadingSpinner" style="
-  display:none; 
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.6); 
-  justify-content:center; align-items:center;
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.6); justify-content:center; align-items:center;
   z-index:10000;
 ">
   <div style="background:#fff; padding:20px 30px; border-radius:10px; font-size:18px; font-weight:bold; color:#333;">
@@ -2838,26 +2894,38 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
   </div>
 </div>
 
-  <!-- Driver Login -->
-  <div id="driverLogin" style="display:none; margin-top:20px;">
-    <h3>🔑 Driver Login</h3>
-    <form id="driverLoginForm">
-      <label>Email</label>
-      <input type="email" id="loginEmail" required>
-      <label>Password</label>
-      <input type="password" id="loginPassword" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
+<!-- Driver Login -->
+<div id="driverLogin" style="
+  display:none; background:url('https://i.imgur.com/v298Kg2.jpeg') no-repeat center center/cover;
+  padding:30px; border-radius:12px; color:#fff; max-width:400px; margin:20px auto; box-shadow:0 4px 12px rgba(0,0,0,0.3);
+">
+  <h3 style="text-align:center; margin-bottom:20px;">🔑 Driver Login</h3>
+  
+  <form id="driverLoginForm" style="
+    background:rgba(0,0,0,0.6); padding:20px; border-radius:10px; display:flex; flex-direction:column; gap:12px;
+  ">
+    <label>Email</label>
+    <input type="email" id="driverLoginEmail" required style="padding:10px; border-radius:6px; border:none;">
 
-  <!-- Driver Panel -->
-  <div id="driverPanel" style="display:none; margin-top:20px;">
-    <h3>🚕 Driver Panel</h3>
-    <p id="driverInfo"></p>
-    <div id="pendingRides"></div>
-  </div>
+    <label>Password</label>
+    <input type="password" id="driverLoginPassword" required style="padding:10px; border-radius:6px; border:none;">
+
+    <button type="submit" style="
+      background:#2196f3; color:white; padding:12px; font-weight:bold; font-size:16px; border:none; 
+      border-radius:8px; cursor:pointer; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;
+    ">
+      <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+  </form>
 </div>
 
+<!-- Driver Panel -->
+<div id="driverPanel" style="display:none; margin-top:20px;">
+  <h3>🚕 Driver Panel</h3>
+  <p id="driverInfo"></p>
+  <div id="pendingRides"></div>
+</div>
+</div>
 
 <!-- Triangular Swap Modal (v3: with paywall/blur UI + navigation) --> 
 <div id="triangularSwapModal" style="
@@ -3905,201 +3973,65 @@ Trending
 </div>
 </div>
 
-<div id="resources" class="page" style="display:none;">
-<h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: #000; display: inline-block;">
-  <i class="fas fa-upload" style="color:#4CAF50; margin-right: 8px;"></i>
-  Teaching Resources
-</h2>
+<div id="resources" class="page-section" style="display:none;">
+  <h2 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 20px; color: #000; display: inline-block;">
+    <i class="fas fa-upload" style="color:#4CAF50; margin-right: 8px;"></i>
+    Teaching Resources
+  </h2>
 
-<!-- Filters Section with Action Box -->
-<div id="filters" style="background-image: url('https://i.imgur.com/h5MhbFN.jpeg'); background-size: cover; padding: 20px; border-radius: 8px; color: white;">
-  <h3>Filter Resources</h3>
-  
-  <div class="action-box">
-    <label for="resourceCategory">Category:</label>
-    <select id="resourceCategory" required>
-      <option value="">Select Category</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="environmental-activities">Environmental Activities</option>
-    <option value="creative-arts">Creative Arts</option>
-    <option value="religious-education">Religious Education</option>
-    <option value="physical-education">Physical Education</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="science">Science</option>
-    <option value="social-studies">Social Studies</option>
-    <option value="religious-education">Religious Education</option>
-    <option value="creative-arts">Creative Arts</option>
-    <option value="health-education">Health Education</option>
-    <option value="agriculture">Agriculture</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="integrated-science">Integrated Science</option>
-    <option value="pre-technical-studies">Pre-Technical Studies</option>
-    <option value="social-studies">Social Studies</option>
-    <option value="religious-education">Religious Education</option>
-    <option value="agriculture">Agriculture</option>
-    <option value="creative-arts-and-sports">Creative Arts and Sports</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="biology">Biology</option>
-    <option value="chemistry">Chemistry</option>
-    <option value="physics">Physics</option>
-    <option value="history">History</option>
-    <option value="geography">Geography</option>
-    <option value="cre">Religious Education (CRE)</option>
-    <option value="agriculture">Agriculture</option>
-    <option value="business-studies">Business Studies</option>
-    <option value="computer-studies">Computer Studies / ICT</option>
-    <option value="home-science">Home Science</option>
-    <option value="art-and-design">Art and Design</option>
-    <option value="music">Music</option>
-    <option value="sports">Sports</option>
-    <option value="french">French</option>
-    <option value="german">German</option>
-    <option value="arabic">Arabic</option>
-    <option value="technical-drawing">Technical Drawing</option>
-    <option value="engineering">Engineering</option>
-    <option value="commerce">Commerce</option>
-    <option value="psychology">Psychology</option>
-    <option value="sociology">Sociology</option>
-    <option value="law">Law</option>
-    <option value="philosophy">Philosophy</option>
-    <option value="economics">Economics</option>
-    <option value="entrepreneurship">Entrepreneurship</option>
-
-    </select>
-
-    <label for="searchResources">Search Resources:</label>
-    <input type="text" id="searchResources" placeholder="Search by title or keyword">
-
-    <label for="resourceGrade">Grade:</label>
-    <select id="resourceGrade" required>
-      <option value="">Select Grade</option>
-      <option value="grade1">Grade 1</option>
-      <option value="grade2">Grade 2</option>
-      <option value="grade3">Grade 3</option>
-      <option value="grade4">Grade 4</option>
-      <option value="grade5">Grade 5</option>
-      <option value="grade6">Grade 6</option>
-      <option value="grade7">Grade 7</option>
-      <option value="grade8">Grade 8</option>
-      <option value="grade9">Grade 9</option>
-      <option value="grade10">Grade 10</option>
-      <option value="grade11">Grade 11</option>
-      <option value="grade12">Grade 12</option>
-    </select>
-
-    <label for="resourceLevel">Level:</label>
-    <select id="resourceLevel">
-      <option value="">All Levels</option>
-      <option value="primary">Primary School</option>
-      <option value="juniorSecondary">Junior Secondary</option>
-      <option value="seniorSecondary">Senior Secondary</option>
-    </select>
-
-    <!-- New Term filter -->
-    <label for="resourceTerm">Term:</label>
-    <select id="resourceTerm">
-      <option value="">All Terms</option>
-      <option value="term1">Term 1</option>
-      <option value="term2">Term 2</option>
-      <option value="term3">Term 3</option>
-    </select>
-
-    <!-- New Strand filter -->
-    <label for="resourceStrand">Strand:</label>
-    <input type="text" id="resourceStrand" placeholder="Search by Strand">
-  </div>
-</div>
-
-<!-- Admin only view --><div id="adminUploadForm" style="display:none;">
-  <div class="form-container">
-    <img src="https://i.imgur.com/x9v3Czl.jpeg" alt="Left Side" class="side-image" />
-
-    <form id="resourceForm" style="
-      background-image: url('https://i.imgur.com/hrktUII.jpeg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      padding: 25px;
-      border-radius: 12px;
-      color: #fff;
-    ">
-      <label for="uploadTitle">Title:</label>
-      <input type="text" id="uploadTitle" />
-
-      <label for="uploadPrice">Price (Ksh):</label>
-      <input type="number" id="uploadPrice" />
-<label for="uploadCategory">Category:</label>
-      <select id="uploadCategory">
-       
-<option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="environmental-activities">Environmental Activities</option>
-    <option value="creative-arts">Creative Arts</option>
-    <option value="religious-education">Religious Education</option>
-    <option value="physical-education">Physical Education</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="science">Science</option>
-    <option value="social-studies">Social Studies</option>
-    <option value="religious-education">Religious Education</option>
-    <option value="creative-arts">Creative Arts</option>
-    <option value="health-education">Health Education</option>
-    <option value="agriculture">Agriculture</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="integrated-science">Integrated Science</option>
-    <option value="pre-technical-studies">Pre-Technical Studies</option>
-    <option value="social-studies">Social Studies</option>
-    <option value="religious-education">Religious Education</option>
-    <option value="agriculture">Agriculture</option>
-    <option value="creative-arts-and-sports">Creative Arts and Sports</option>
-    <option value="english">English</option>
-    <option value="kiswahili">Kiswahili</option>
-    <option value="mathematics">Mathematics</option>
-    <option value="biology">Biology</option>
-    <option value="chemistry">Chemistry</option>
-    <option value="physics">Physics</option>
-    <option value="history">History</option>
-    <option value="geography">Geography</option>
-    <option value="cre">Religious Education (CRE)</option>
-    <option value="agriculture">Agriculture</option>
-    <option value="business-studies">Business Studies</option>
-    <option value="computer-studies">Computer Studies / ICT</option>
-    <option value="home-science">Home Science</option>
-    <option value="art-and-design">Art and Design</option>
-    <option value="music">Music</option>
-    <option value="sports">Sports</option>
-    <option value="french">French</option>
-    <option value="german">German</option>
-    <option value="arabic">Arabic</option>
-    <option value="technical-drawing">Technical Drawing</option>
-    <option value="engineering">Engineering</option>
-    <option value="commerce">Commerce</option>
-    <option value="psychology">Psychology</option>
-    <option value="sociology">Sociology</option>
-    <option value="law">Law</option>
-    <option value="philosophy">Philosophy</option>
-    <option value="economics">Economics</option>
-    <option value="entrepreneurship">Entrepreneurship</option>
-
-
+  <!-- Filters Section with Action Box -->
+  <div id="filters" style="background-image: url('https://i.imgur.com/h5MhbFN.jpeg'); background-size: cover; padding: 20px; border-radius: 8px; color: white;">
+    <h3>Filter Resources</h3>
+    
+    <div class="action-box">
+      <label for="resourceCategory">Category:</label>
+      <select id="resourceCategory" required>
+        <option value="">Select Category</option>
+        <option value="english">English</option>
+        <option value="kiswahili">Kiswahili</option>
+        <option value="mathematics">Mathematics</option>
+        <option value="environmental-activities">Environmental Activities</option>
+        <option value="creative-arts">Creative Arts</option>
+        <option value="religious-education">Religious Education</option>
+        <option value="physical-education">Physical Education</option>
+        <option value="science">Science</option>
+        <option value="social-studies">Social Studies</option>
+        <option value="health-education">Health Education</option>
+        <option value="agriculture">Agriculture</option>
+        <option value="integrated-science">Integrated Science</option>
+        <option value="pre-technical-studies">Pre-Technical Studies</option>
+        <option value="creative-arts-and-sports">Creative Arts and Sports</option>
+        <option value="biology">Biology</option>
+        <option value="chemistry">Chemistry</option>
+        <option value="physics">Physics</option>
+        <option value="history">History</option>
+        <option value="geography">Geography</option>
+        <option value="cre">Religious Education (CRE)</option>
+        <option value="business-studies">Business Studies</option>
+        <option value="computer-studies">Computer Studies / ICT</option>
+        <option value="home-science">Home Science</option>
+        <option value="art-and-design">Art and Design</option>
+        <option value="music">Music</option>
+        <option value="sports">Sports</option>
+        <option value="french">French</option>
+        <option value="german">German</option>
+        <option value="arabic">Arabic</option>
+        <option value="technical-drawing">Technical Drawing</option>
+        <option value="engineering">Engineering</option>
+        <option value="commerce">Commerce</option>
+        <option value="psychology">Psychology</option>
+        <option value="sociology">Sociology</option>
+        <option value="law">Law</option>
+        <option value="philosophy">Philosophy</option>
+        <option value="economics">Economics</option>
+        <option value="entrepreneurship">Entrepreneurship</option>
       </select>
 
+      <label for="searchResources">Search Resources:</label>
+      <input type="text" id="searchResources" placeholder="Search by title or keyword">
 
-
-      <label for="uploadGrade">Grade:</label>
-      <select id="uploadGrade">
+      <label for="resourceGrade">Grade:</label>
+      <select id="resourceGrade" required>
         <option value="">Select Grade</option>
         <option value="grade1">Grade 1</option>
         <option value="grade2">Grade 2</option>
@@ -4115,61 +4047,158 @@ Trending
         <option value="grade12">Grade 12</option>
       </select>
 
-      <label for="uploadLevel">Level:</label>
-      <select id="uploadLevel">
-        <option value="">Select Level</option>
+      <label for="resourceLevel">Level:</label>
+      <select id="resourceLevel">
+        <option value="">All Levels</option>
         <option value="primary">Primary School</option>
         <option value="juniorSecondary">Junior Secondary</option>
         <option value="seniorSecondary">Senior Secondary</option>
       </select>
 
-      <label for="uploadTerm">Term:</label>
-      <select id="uploadTerm">
-        <option value="">Select Term</option>
+      <!-- New Term filter -->
+      <label for="resourceTerm">Term:</label>
+      <select id="resourceTerm">
+        <option value="">All Terms</option>
         <option value="term1">Term 1</option>
         <option value="term2">Term 2</option>
         <option value="term3">Term 3</option>
       </select>
 
-      <label for="uploadStrand">Strand:</label>
-      <input type="text" id="uploadStrand" placeholder="Enter Strand" />
-
-      <label for="uploadFile">Upload File (optional):</label>
-      <input type="file" id="uploadFile" accept=".pdf,.doc,.docx,.ppt,.pptx" />
-
-      <button type="submit">
-        <i class="fas fa-upload"></i> Upload Resource
-      </button>
-    </form>
-
-    <img src="https://i.imgur.com/ytrul2r.jpeg" alt="Right Side" class="side-image" />
+      <!-- New Strand filter -->
+      <label for="resourceStrand">Strand:</label>
+      <input type="text" id="resourceStrand" placeholder="Search by Strand">
+    </div>
   </div>
-</div>
 
+  <!-- Admin only view -->
+  <div id="adminUploadForm" style="display:none;">
+    <div class="form-container">
+      <img src="https://i.imgur.com/x9v3Czl.jpeg" alt="Left Side" class="side-image" />
 
-<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
-  <i class="fas fa-book-open" style="color:#3f51b5; margin-right: 8px;"></i>
-  Available Resources
-</h3>
+      <form id="resourceForm" style="
+        background-image: url('https://i.imgur.com/hrktUII.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 25px;
+        border-radius: 12px;
+        color: #fff;
+      ">
+        <label for="uploadTitle">Title:</label>
+        <input type="text" id="uploadTitle" />
 
+        <label for="uploadPrice">Price (Ksh):</label>
+        <input type="number" id="uploadPrice" />
 
-<table id="resourcesTable">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Price (Ksh)</th>
-      <th>Category</th>
-      <th>Grade</th>
-      <th>Level</th>
-      <th>Term</th>       <!-- New column -->
-      <th>Strand</th>     <!-- New column -->
-      <th>Download</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+        <label for="uploadCategory">Category:</label>
+        <select id="uploadCategory">
+          <option value="english">English</option>
+          <option value="kiswahili">Kiswahili</option>
+          <option value="mathematics">Mathematics</option>
+          <option value="science">Science</option>
+          <option value="social-studies">Social Studies</option>
+          <option value="creative-arts">Creative Arts</option>
+          <option value="religious-education">Religious Education</option>
+          <option value="health-education">Health Education</option>
+          <option value="agriculture">Agriculture</option>
+          <option value="integrated-science">Integrated Science</option>
+          <option value="pre-technical-studies">Pre-Technical Studies</option>
+          <option value="creative-arts-and-sports">Creative Arts and Sports</option>
+          <option value="biology">Biology</option>
+          <option value="chemistry">Chemistry</option>
+          <option value="physics">Physics</option>
+          <option value="history">History</option>
+          <option value="geography">Geography</option>
+          <option value="cre">Religious Education (CRE)</option>
+          <option value="business-studies">Business Studies</option>
+          <option value="computer-studies">Computer Studies / ICT</option>
+          <option value="home-science">Home Science</option>
+          <option value="art-and-design">Art and Design</option>
+          <option value="music">Music</option>
+          <option value="sports">Sports</option>
+          <option value="french">French</option>
+          <option value="german">German</option>
+          <option value="arabic">Arabic</option>
+          <option value="technical-drawing">Technical Drawing</option>
+          <option value="engineering">Engineering</option>
+          <option value="commerce">Commerce</option>
+          <option value="psychology">Psychology</option>
+          <option value="sociology">Sociology</option>
+          <option value="law">Law</option>
+          <option value="philosophy">Philosophy</option>
+          <option value="economics">Economics</option>
+          <option value="entrepreneurship">Entrepreneurship</option>
+        </select>
 
+        <label for="uploadGrade">Grade:</label>
+        <select id="uploadGrade">
+          <option value="">Select Grade</option>
+          <option value="grade1">Grade 1</option>
+          <option value="grade2">Grade 2</option>
+          <option value="grade3">Grade 3</option>
+          <option value="grade4">Grade 4</option>
+          <option value="grade5">Grade 5</option>
+          <option value="grade6">Grade 6</option>
+          <option value="grade7">Grade 7</option>
+          <option value="grade8">Grade 8</option>
+          <option value="grade9">Grade 9</option>
+          <option value="grade10">Grade 10</option>
+          <option value="grade11">Grade 11</option>
+          <option value="grade12">Grade 12</option>
+        </select>
+
+        <label for="uploadLevel">Level:</label>
+        <select id="uploadLevel">
+          <option value="">Select Level</option>
+          <option value="primary">Primary School</option>
+          <option value="juniorSecondary">Junior Secondary</option>
+          <option value="seniorSecondary">Senior Secondary</option>
+        </select>
+
+        <label for="uploadTerm">Term:</label>
+        <select id="uploadTerm">
+          <option value="">Select Term</option>
+          <option value="term1">Term 1</option>
+          <option value="term2">Term 2</option>
+          <option value="term3">Term 3</option>
+        </select>
+
+        <label for="uploadStrand">Strand:</label>
+        <input type="text" id="uploadStrand" placeholder="Enter Strand" />
+
+        <label for="uploadFile">Upload File (optional):</label>
+        <input type="file" id="uploadFile" accept=".pdf,.doc,.docx,.ppt,.pptx" />
+
+        <button type="submit">
+          <i class="fas fa-upload"></i> Upload Resource
+        </button>
+      </form>
+
+      <img src="https://i.imgur.com/ytrul2r.jpeg" alt="Right Side" class="side-image" />
+    </div>
+  </div>
+
+  <h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
+    <i class="fas fa-book-open" style="color:#3f51b5; margin-right: 8px;"></i>
+    Available Resources
+  </h3>
+
+  <table id="resourcesTable">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Price (Ksh)</th>
+        <th>Category</th>
+        <th>Grade</th>
+        <th>Level</th>
+        <th>Term</th>
+        <th>Strand</th>
+        <th>Download</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 
@@ -4886,7 +4915,7 @@ My Chats
 <div class="market-action-wrapper" style="margin-top: 40px;">
   <div style="
       border: 2px solid #cfd8dc; 
-      background-image: url('https://i.imgur.com/opNvQte.png');
+      background-image: url('https://i.imgur.com/67LD3Dq.jpeg');
       background-size: cover; 
       background-position: center;
       padding: 16px 20px; 
@@ -5796,12 +5825,12 @@ async function sendRegistrationAdminNotification(user) {
   console.log("Admin notification sent for new user registration.");
 }
 
-// ✅ Login
+/* ===================== 🔹 Main User Login ===================== */
 document.getElementById("loginForm").addEventListener("submit", async e => {
   e.preventDefault();
   showLoadingSpinner();
 
-  const email = document.getElementById("loginEmail").value.trim();
+  const email = document.getElementById("loginEmail").value.trim();  // ✅ Trim input
   const password = document.getElementById("loginPassword").value;
 
   try {
@@ -6273,8 +6302,14 @@ async function loadSwaps() {
             <p style="margin:4px 0;color:#3e2723;"><strong>Category:</strong> ${s.category || '-'}</p>
             <p style="margin:4px 0;color:#d81b60;"><strong>Hardship:</strong> ${s.hardship || '-'}</p>
             <div style="margin-top:6px;">${s.isClosed && !isPoster && !isAdminUser ? closedContactHTML : (blur ? blurredContactHTML : contactHTML)}</div>
-            <div style="margin-top:6px;"><strong>Rating: </strong><span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span><span style="color:red; font-weight:bold; margin-left:4px;">(${rating}/5)</span></div>
-            <p id="follower-count-${s.id}" style="font-size:0.9em; color:#ff4081;" onclick="showFollowers('${s.id}')">${followerCount} people following</p>
+           <div style="margin-top:6px;">
+  <strong>Rating: </strong>
+  <span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span>
+  <span style="color:red; font-weight:bold; margin-left:4px;">
+    (${rating}/5)
+  </span>
+</div>
+ <p id="follower-count-${s.id}" style="font-size:0.9em; color:#ff4081;" onclick="showFollowers('${s.id}')">${followerCount} people following</p>
             ${actionButtonHTML}`;
 
           container.appendChild(card);
@@ -6472,10 +6507,22 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
   }
 
   try {
-    // Display the "Searching" message while the swaps are being searched
+    // ✅ Show spinner while searching
     document.getElementById("triangularSwapModal").style.display = "flex";
     document.getElementById("triangularSwapNotice").style.display = "block";
-    document.getElementById("triangularSwapNotice").innerHTML = `<p style="color:blue;">Searching triangular swaps...</p>`;
+    document.getElementById("triangularSwapNotice").innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; color:blue;">
+        <div class="spinner" style="
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid blue;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          animation: spin 1s linear infinite;
+        "></div>
+        <span>Searching triangular swaps...</span>
+      </div>
+    `;
 
     const snapshot = await db.collection("teacherSwaps").get();
     const swaps = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -6508,7 +6555,7 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
       });
     });
 
-    // Hide the "Searching" message once the search is completed
+    // ✅ Hide spinner after search
     document.getElementById("triangularSwapNotice").style.display = "none";
 
     // If swaps are found, display them, otherwise show a no swap message
@@ -6520,14 +6567,12 @@ document.getElementById("findTriangularSwapBtn").addEventListener("click", async
     }
 
   } catch (err) {
-    // Handle error and hide the "Searching" message
     console.error("Error:", err);
     document.getElementById("triangularSwapModalContent").innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
     document.getElementById("triangularSwapPaywall").style.display = "none";
     document.getElementById("triangularSwapNotice").style.display = "none";
   }
 });
-
 // Function to show MPESA payment modal above the swap modal
 function showPaymentModalFor(type, amount, teacherId, description) {
   const mpesaModal = document.getElementById("mpesaPaymentModal");
@@ -14481,17 +14526,49 @@ function estimateFuel(distanceKm, engineCc) {
   return { liters, cost };
 }
 
-/* ===================== 🔹 Section Toggle ===================== */
-function toggleRideSystem() {
-  let section = document.getElementById("rideSystem");
-  section.style.display = (section.style.display === "none") ? "block" : "none";
+/* ===================== 🔹 Section Navigation ===================== */
+function showPage(pageId) {
+  // 🔹 Hide ALL top-level sections (dashboard pages)
+  document.querySelectorAll(".page-section").forEach(sec => {
+    sec.style.display = "none";
+  });
+
+  // 🔹 Also hide ride system sub-panels when leaving rideSystem
+  hideRidePanels();
+
+  // 🔹 Show the requested page
+  const page = document.getElementById(pageId);
+  if (page) page.style.display = "block";
 }
-function showRider() { hideAll(); document.getElementById("riderPanel").style.display = "block"; showAllAvailableDrivers(); }
-function showDriverRegister() { hideAll(); document.getElementById("driverRegister").style.display = "block"; }
-function showDriverLogin() { hideAll(); document.getElementById("driverLogin").style.display = "block"; }
-function showDriverPanel() { hideAll(); document.getElementById("driverPanel").style.display = "block"; }
-function hideAll() {
-  ["riderPanel","driverRegister","driverLogin","driverPanel"].forEach(id=>document.getElementById(id).style.display="none");
+
+/* ===================== 🔹 Ride System Sub-Panels ===================== */
+function showRider() {
+  hideRidePanels();
+  document.getElementById("riderPanel").style.display = "block";
+  showAllAvailableDrivers();
+  autoFillPickup(); // ✅ Auto-detect pickup station
+}
+
+function showDriverRegister() {
+  hideRidePanels();
+  document.getElementById("driverRegister").style.display = "block";
+}
+
+function showDriverLogin() {
+  hideRidePanels();
+  document.getElementById("driverLogin").style.display = "block";
+}
+
+function showDriverPanel() {
+  hideRidePanels();
+  document.getElementById("driverPanel").style.display = "block";
+}
+
+function hideRidePanels() {
+  ["riderPanel", "driverRegister", "driverLogin", "driverPanel"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
 }
 
 /* ===================== 🔹 Leaflet Map Init ===================== */
@@ -14545,28 +14622,46 @@ function getRiderLocation(callback) {
     navigator.geolocation.getCurrentPosition(pos => {
       riderLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       callback();
-    }, err => { alert("Could not get your location: " + err.message); });
+    }, err => { 
+      showAlert("❌ Could not get your location: " + err.message, "error"); 
+    });
   } else {
-    alert("Geolocation is not supported by your browser.");
+    showAlert("⚠️ Geolocation is not supported by your browser.", "warning");
   }
 }
+
 async function getPlaceName(lat, lng) {
   try {
+    // 🌍 First try ORS
     let url = `https://api.openrouteservice.org/geocode/reverse?api_key=${ORS_API_KEY}&point=${lng},${lat}&size=1`;
     let res = await fetch(url);
     let data = await res.json();
-    if (data.features && data.features.length > 0 && data.features[0].properties) {
-      let label = data.features[0].properties.label;
-      if (label) return label.split(',')[0];
+
+    if (data.features && data.features.length > 0) {
+      let props = data.features[0].properties;
+      if (props.locality) return props.locality; // ✅ town/village
+      if (props.county) return props.county;     // ✅ fallback to county
+      if (props.label) return props.label.split(',')[0]; // last resort
     }
+
+    // ⚠️ If ORS fails or vague → fallback to Nominatim
     let osmRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
     let osmData = await osmRes.json();
+
+    if (osmData.address) {
+      if (osmData.village) return osmData.village;
+      if (osmData.town) return osmData.town;
+      if (osmData.suburb) return osmData.suburb;
+      if (osmData.county) return osmData.county;
+    }
+
     return osmData.display_name ? osmData.display_name.split(',')[0] : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   } catch (err) {
     console.error("Reverse geocode error:", err);
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   }
 }
+
 function formatKES(amount) {
   return Number(amount).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -14688,69 +14783,156 @@ async function getRoute(pickup, destination) {
 }
 
 
-/* ===================== 🔹 Rider Booking ===================== */
 document.getElementById("rideForm").addEventListener("submit", async function(e) {
   e.preventDefault();
-  let pickupAddr = document.getElementById("pickup").value;
+
+  let pickupAddr = document.getElementById("pickup").value.trim();
   let destAddr = document.getElementById("destination").value;
   let rideType = document.getElementById("rideType").value;
-  
+
   try {
     showSpinner("Finding pickup location...");
-    let pickup = await geocode(pickupAddr);
+
+    let pickup;
+    if (pickupAddr) {
+      pickup = await geocode(pickupAddr);
+    } else if (riderLocation) {
+      // ✅ fallback: use current GPS
+      pickup = riderLocation;
+      pickupAddr = await getPlaceName(pickup.lat, pickup.lng);
+    } else {
+      throw new Error("Pickup location not available.");
+    }
+
     showSpinner("Finding destination...");
     let destination = await geocode(destAddr);
     pickupLocation = pickup;
+
     showSpinner("Calculating route...");
     let route = await getRoute(pickup, destination);
 
     if (pickupMarker) map.removeLayer(pickupMarker);
     if (destMarker) map.removeLayer(destMarker);
-    pickupMarker = L.marker([pickup.lat, pickup.lng], { icon: pickupIcon }).addTo(map).bindPopup("📍 Pickup").openPopup();
-    destMarker = L.marker([destination.lat, destination.lng], { icon: destIcon }).addTo(map).bindPopup("🏁 Destination");
+
+    pickupMarker = L.marker([pickup.lat, pickup.lng], { icon: pickupIcon })
+      .addTo(map).bindPopup("📍 Pickup").openPopup();
+    destMarker = L.marker([destination.lat, destination.lng], { icon: destIcon })
+      .addTo(map).bindPopup("🏁 Destination");
+
     map.fitBounds(L.featureGroup([pickupMarker, destMarker]).getBounds());
 
     showAvailableDrivers(route.distance, route.duration, pickupAddr, destAddr, rideType);
-  } catch (err) { alert("Error: " + err.message); } 
-  finally { hideSpinner(); }
+  } catch (err) {
+    showAlert("❌ Error: " + err.message, "error");
+  } finally {
+    hideSpinner();
+  }
 });
 
 async function showAvailableDrivers(distanceKm, durationMin, pickup, destination, rideType) {
   try {
     let snapshot = await db.collection("drivers").get();
-    let html = `<h3>🚗 Available Drivers</h3>
-                <p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>`;
+    let drivers = [];
 
+    // Collect drivers with computed cost
     for (let doc of snapshot.docs) {
       let d = doc.data();
       if (d.available) {
         let estCost = distanceKm * d.costPerKm;
         let fuel = estimateFuel(distanceKm, d.engineCc || "default");
-
-        // ✅ Get exact human-readable location of the driver
-        let placeName = await getPlaceName(d.lat, d.lng);
-
-        html += `<div class="ride-card">
-          <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}, ${d.engineCc || "N/A"}) 🟢 Online</p>
-          <p>📞 ${d.phone}</p>
-          <p>📍 Location: <strong>${placeName}</strong></p>
-          <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
-          <p>💵 Estimated Fare: ${formatKES(estCost)} KES</p>
-          <p>⛽ Fuel: ${fuel.liters.toFixed(2)} L (~${formatKES(fuel.cost)} KES)</p>
-          <button onclick="confirmRide(
-              pickupMarker.getLatLng(),
-              destMarker.getLatLng(),
-              '${rideType}',
-              '${doc.id}',
-              '${d.name}',
-              '${d.plate}',
-              '${formatKES(estCost)}'
-          )">
-            Book with ${d.name}
-          </button>
-        </div>`;
+        drivers.push({
+          id: doc.id,
+          ...d,
+          estCost,
+          fuel
+        });
       }
     }
+
+    // ✅ Sort by estimated cost (cheapest → expensive)
+    drivers.sort((a, b) => a.estCost - b.estCost);
+
+    let html = `
+      <h3>🚗 Available Drivers</h3>
+      <p>Trip Distance: ${distanceKm.toFixed(2)} km (~${durationMin.toFixed(0)} min)</p>
+
+      <!-- 🔹 Legend Bar -->
+      <div style="margin:10px 0; padding:8px; background:#f5f5f5; border-radius:6px; font-size:14px;">
+        <span style="display:inline-block; margin-right:15px;">
+          <span style="display:inline-block; width:14px; height:14px; background:#4CAF50; border-radius:50%; margin-right:5px;"></span>
+          Cheapest
+        </span>
+        <span style="display:inline-block; margin-right:15px;">
+          <span style="display:inline-block; width:14px; height:14px; background:#FFD700; border-radius:50%; margin-right:5px;"></span>
+          Mid-range
+        </span>
+        <span style="display:inline-block;">
+          <span style="display:inline-block; width:14px; height:14px; background:#F44336; border-radius:50%; margin-right:5px;"></span>
+          Most Expensive
+        </span>
+      </div>
+    `;
+
+    drivers.forEach((d, index) => {
+      let driverCardId = `driver-${d.id}`;
+
+      // 🚘 Vehicle type icon
+      let vehicleIcon = "https://cdn-icons-png.flaticon.com/512/61/61168.png"; // default car
+      if (/bike|motor/i.test(d.vehicle)) {
+        vehicleIcon = "https://cdn-icons-png.flaticon.com/512/2972/2972185.png"; // motorbike
+      } else if (/van/i.test(d.vehicle)) {
+        vehicleIcon = "https://cdn-icons-png.flaticon.com/512/296/296216.png"; // van
+      } else if (/bus/i.test(d.vehicle)) {
+        vehicleIcon = "https://cdn-icons-png.flaticon.com/512/296/296223.png"; // bus
+      }
+
+      // 🎨 Border & background colors
+      let borderColor = "#FFD700"; // default = yellow
+      let backgroundColor = "white"; // default background
+
+      if (index === 0) {
+        borderColor = "#4CAF50"; // green = cheapest
+        backgroundColor = "#e8f5e9"; // ✅ light green highlight
+      } else if (index === drivers.length - 1) {
+        borderColor = "#F44336"; // red = most expensive
+      }
+
+      html += `
+      <div class="ride-card" id="${driverCardId}" 
+           style="position:relative; padding-right:50px; background:${backgroundColor}; border-left:5px solid ${borderColor};">
+        <div style="position:absolute; top:10px; right:10px; 
+                    width:44px; height:44px; border:3px solid ${borderColor}; 
+                    border-radius:50%; display:flex; align-items:center; justify-content:center;">
+          <img src="${vehicleIcon}" alt="vehicle" style="width:28px; height:28px;">
+        </div>
+        <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate}, ${d.engineCc || "N/A"}) 🟢 Online</p>
+        <p>📞 ${d.phone}</p>
+        <p>📍 Location: <strong>Loading...</strong></p>
+        <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
+        <p>💵 Estimated Fare: ${formatKES(d.estCost)} KES</p>
+        <p>⛽ Fuel: ${d.fuel.liters.toFixed(2)} L (~${formatKES(d.fuel.cost)} KES)</p>
+        <button onclick="confirmRide(
+            pickupMarker.getLatLng(),
+            destMarker.getLatLng(),
+            '${rideType}',
+            '${d.id}',
+            '${d.name}',
+            '${d.plate}',
+            '${formatKES(d.estCost)}'
+        )">
+          Book with ${d.name}
+        </button>
+      </div>`;
+
+      // Background reverse geocode
+      getPlaceName(d.lat, d.lng).then(placeName => {
+        let card = document.getElementById(driverCardId);
+        if (card) {
+          let locationP = card.querySelector("p:nth-of-type(3) strong");
+          if (locationP) locationP.innerText = placeName;
+        }
+      });
+    });
 
     document.getElementById("rideResults").innerHTML = html;
   } catch (err) {
@@ -14758,7 +14940,6 @@ async function showAvailableDrivers(distanceKm, durationMin, pickup, destination
     document.getElementById("rideResults").innerHTML = "<p>⚠️ Could not load drivers. Please try again.</p>";
   }
 }
-
 
 /* ===================== 🔹 confirmRide ===================== */
 async function confirmRide(pickup, destination, rideType, driverId, driverName, plate, estCost) {
@@ -14783,7 +14964,7 @@ async function confirmRide(pickup, destination, rideType, driverId, driverName, 
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  alert(`✅ Ride booked with ${driverName} for ${estCost} KES`);
+  showAlert(`✅ Ride booked with ${driverName} for ${estCost} KES`, "success");
   trackRideStatus(rideRef.id);
 
   if (pickup.lat && destination.lat) {
@@ -14796,35 +14977,64 @@ async function confirmRide(pickup, destination, rideType, driverId, driverName, 
   }
 }
 
-/* ===================== 🔹 Ride Status Tracking ===================== */
+/* ===================== 🔹 Ride Status Tracking (Instant) ===================== */
 function trackRideStatus(rideId) {
-  db.collection("rides").doc(rideId).onSnapshot(async doc=>{
-    let ride = doc.data(); if(!ride) return;
-    let pickupText = ride.pickup.lat ? await getPlaceName(ride.pickup.lat, ride.pickup.lng) : ride.pickup;
-    let destText = ride.destination.lat ? await getPlaceName(ride.destination.lat, ride.destination.lng) : ride.destination;
-    let statusText = "Waiting for driver..."; 
-    let cancelButton="";
-    if(ride.status==="accepted"){ 
-      statusText=`🚖 Driver ${ride.driverName} is on the way!`; 
-      cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`; 
-    }
-    else if(ride.status==="completed") statusText="✅ Ride Completed!";
-    else if(ride.status.startsWith("cancelled")) statusText="❌ Ride Cancelled!";
-    else cancelButton=`<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`;
+  db.collection("rides").doc(rideId).onSnapshot(doc => {
+    let ride = doc.data();
+    if (!ride) return;
 
-    document.getElementById("rideResults").innerHTML = `<div class="ride-card">
-      <p><strong>Pickup:</strong> ${pickupText}</p>
-      <p><strong>Destination:</strong> ${destText}</p>
-      <p><strong>Ride Type:</strong> ${ride.rideType}</p>
-      <p><strong>Fare:</strong> ${ride.estCost} KES</p>
-      <p id="rideStatus-${rideId}" style="color:blue; font-weight:bold;">${statusText}</p>
-      ${cancelButton}
-    </div>`;
+    // Show immediate placeholders
+    let pickupText = ride.pickup.lat ? `${ride.pickup.lat.toFixed(5)}, ${ride.pickup.lng.toFixed(5)}` : ride.pickup;
+    let destText = ride.destination.lat ? `${ride.destination.lat.toFixed(5)}, ${ride.destination.lng.toFixed(5)}` : ride.destination;
+
+    let statusText = "Waiting for driver..."; 
+    let cancelButton = "";
+
+    if (ride.status === "accepted") { 
+      statusText = `🚖 Driver ${ride.driverName} is on the way!`; 
+      cancelButton = `<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`; 
+    } else if (ride.status === "completed") {
+      statusText = "✅ Ride Completed!";
+    } else if (ride.status.startsWith("cancelled")) {
+      statusText = "❌ Ride Cancelled!";
+    } else {
+      cancelButton = `<button onclick="cancelRide('${rideId}','rider')">❌ Cancel Ride</button>`;
+    }
+
+    // Render card immediately
+    document.getElementById("rideResults").innerHTML = `
+      <div class="ride-card" id="ride-${rideId}">
+        <p><strong>Pickup:</strong> <span class="pickup-text">${pickupText}</span></p>
+        <p><strong>Destination:</strong> <span class="dest-text">${destText}</span></p>
+        <p><strong>Ride Type:</strong> ${ride.rideType}</p>
+        <p><strong>Fare:</strong> ${ride.estCost} KES</p>
+        <p id="rideStatus-${rideId}" style="color:blue; font-weight:bold;">${statusText}</p>
+        ${cancelButton}
+      </div>`;
+
+    // 🔄 Background update for pickup
+    if (ride.pickup.lat) {
+      getPlaceName(ride.pickup.lat, ride.pickup.lng).then(place => {
+        let el = document.querySelector(`#ride-${rideId} .pickup-text`);
+        if (el) el.innerText = place;
+      });
+    }
+
+    // 🔄 Background update for destination
+    if (ride.destination.lat) {
+      getPlaceName(ride.destination.lat, ride.destination.lng).then(place => {
+        let el = document.querySelector(`#ride-${rideId} .dest-text`);
+        if (el) el.innerText = place;
+      });
+    }
   });
 }
+/* ===================== 🔹 cancelRide ===================== */
 function cancelRide(rideId,cancelledBy){
   let reason = cancelledBy==="rider"?"cancelled_by_rider":"cancelled_by_driver";
-  db.collection("rides").doc(rideId).update({status:reason}).then(()=>{alert("❌ Ride cancelled");});
+  db.collection("rides").doc(rideId).update({status:reason}).then(()=>{
+    showAlert("❌ Ride cancelled", "warning");
+  });
 }
 
 /* ===================== 🔹 Driver Registration ===================== */
@@ -14837,13 +15047,13 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
   let phone=document.getElementById("driverPhone").value;
   let vehicle=document.getElementById("driverVehicle").value;
   let plate=document.getElementById("driverPlate").value;
-  let engineCc=document.getElementById("driverEngine").value; // ✅ engine cc
+  let engineCc=document.getElementById("driverEngine").value;
   let costPerKm=parseFloat(document.getElementById("driverCost").value);
 
   try {
     const adminDoc = await db.collection("admins").doc(email).get();
     if (adminDoc.exists) {
-      alert("👑 Admin detected. You can register as a driver for free.");
+      showAlert("👑 Admin detected. You can register as a driver for free.", "info");
       let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password);
       let uid = userCredential.user.uid;
       if (navigator.geolocation) {
@@ -14854,7 +15064,7 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
             available:true,lat,lng,costPerKm,
             registrationFeePaid:false, amountPaid:0, isAdminDriver:true
           });
-          alert("✅ Admin driver registered successfully!");
+          showAlert("✅ Admin driver registered successfully!", "success");
           showDriverLogin();
         });
       }
@@ -14874,44 +15084,60 @@ document.getElementById("driverRegisterForm").addEventListener("submit", async f
                   registrationFeePaid:true, amountPaid:500,
                   paymentRef: itemId, paymentPhone: phone
                 });
-                alert("✅ Driver registered successfully after payment!");
+                showAlert("✅ Driver registered successfully after payment!", "success");
                 showDriverLogin();
               });
             }
-          } catch(err){ alert("Registration failed: " + err.message); }
+          } catch(err){ 
+            showAlert("❌ Registration failed: " + err.message, "error"); 
+          }
         }
       };
     }
   } catch (err) {
-    alert("Error checking admin status: " + err.message);
+    showAlert("❌ Error checking admin status: " + err.message, "error");
   }
 });
 
 /* ===================== 🔹 Driver Login + Live GPS ===================== */
 document.getElementById("driverLoginForm").addEventListener("submit", function(e){
   e.preventDefault();
-  let email = document.getElementById("loginEmail").value;
-  let password = document.getElementById("loginPassword").value;
+  let email = document.getElementById("driverLoginEmail").value.trim();
+  let password = document.getElementById("driverLoginPassword").value;
 
   showSpinner("Logging in...");
-  firebase.auth().signInWithEmailAndPassword(email, password).then(userCredential => {
-    currentDriver = userCredential.user;
-    return db.collection("drivers").doc(currentDriver.uid).update({ available: true }).then(() => {
-      hideSpinner();
-      alert("✅ Driver logged in successfully!");
-      showDriverPanel();
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(pos => {
-          db.collection("drivers").doc(currentDriver.uid).update({
-            lat: pos.coords.latitude, lng: pos.coords.longitude
-          });
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      currentDriver = userCredential.user;
+      return db.collection("drivers").doc(currentDriver.uid).update({ available: true })
+        .then(() => {
+          hideSpinner();
+          showAlert("✅ Driver logged in successfully!", "success");
+          showDriverPanel();
+          if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(pos => {
+              db.collection("drivers").doc(currentDriver.uid).update({
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude
+              });
+            });
+          }
         });
-      }
+    })
+    .catch(err => {
+      hideSpinner();
+      showAlert("❌ Login failed: " + err.message, "error");
     });
-  }).catch(err => { hideSpinner(); alert("❌ Login failed: " + err.message); });
-});
-function logoutDriver(){ if(currentDriver){ db.collection("drivers").doc(currentDriver.uid).update({available:false}); firebase.auth().signOut(); alert("🚪 Driver logged out!"); showDriverLogin(); } }
 
+});
+function logoutDriver() { 
+  if (currentDriver) { 
+    db.collection("drivers").doc(currentDriver.uid).update({ available: false }); 
+    firebase.auth().signOut(); 
+    showAlert("🚪 Driver logged out!", "info"); 
+    showDriverLogin(); 
+  } 
+}
 function showSpinner(message="Please wait...") {
   let spinner = document.getElementById("loadingSpinner");
   if (spinner) {
@@ -14919,6 +15145,7 @@ function showSpinner(message="Please wait...") {
     spinner.style.display = "flex";
   }
 }
+
 function hideSpinner() {
   let spinner = document.getElementById("loadingSpinner");
   if (spinner) spinner.style.display = "none";
@@ -14933,4 +15160,67 @@ async function withSpinner(message, fn) {
     hideSpinner();
   }
 }
+// Auto-detect pickup when Rider panel opens
+function autoFillPickup() {
+  getRiderLocation(async () => {
+    try {
+      let placeName = await getPlaceName(riderLocation.lat, riderLocation.lng);
+      document.getElementById("pickup").value = placeName; // ✅ autofill pickup field
+    } catch (err) {
+      console.error("Pickup autofill error:", err);
+      showAlert("⚠️ Could not detect pickup location automatically.", "warning");
+    }
+  });
+}
+
+/* ===================== 🔹 Custom Alert ===================== */
+function showAlert(message, type = "info") {
+  // Remove existing alert if present
+  let old = document.getElementById("customAlert");
+  if (old) old.remove();
+
+  // Colors based on type
+  let colors = {
+    success: "#4caf50",
+    error: "#f44336",
+    info: "#2196f3",
+    warning: "#ff9800"
+  };
+  let bg = colors[type] || colors.info;
+
+  // Create alert box
+  let box = document.createElement("div");
+  box.id = "customAlert";
+  box.style.cssText = `
+    position: fixed;
+    top: 20px; right: 20px;
+    background: ${bg};
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 99999;
+    animation: fadeIn 0.3s ease-out;
+  `;
+  box.innerHTML = message;
+
+  document.body.appendChild(box);
+
+  // Auto remove after 4s
+  setTimeout(() => {
+    box.style.animation = "fadeOut 0.5s ease-in";
+    setTimeout(() => box.remove(), 500);
+  }, 4000);
+}
+
+// Alert animations
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes fadeIn { from {opacity:0; transform: translateY(-10px);} to {opacity:1; transform: translateY(0);} }
+@keyframes fadeOut { from {opacity:1; transform: translateY(0);} to {opacity:0; transform: translateY(-10px);} }
+`;
+document.head.appendChild(style);
+
 </script>
