@@ -5732,8 +5732,6 @@ const countySubCountyPairs = [
   { county: "smCounty", subCounty: "smSubCounty" }
 ];
 countySubCountyPairs.forEach(pair => populateCounties(pair.county, pair.subCounty));
-
-
 /* ===================== 🔹 Section Navigation ===================== */
 async function showPage(pageId) {
   // 🔹 Login protection for sensitive pages
@@ -5749,12 +5747,7 @@ async function showPage(pageId) {
   }
 
   // 🔹 Hide ALL sections
-  document.querySelectorAll(".page, .page-section").forEach(sec => {
-    sec.style.display = "none";
-  });
-
-  // 🔹 Hide ride panels if leaving ride system
-  hideRidePanels();
+  hideAllSections();
 
   // 🔹 Show requested section
   const page = document.getElementById(pageId);
@@ -5771,6 +5764,7 @@ async function showPage(pageId) {
   if (pageId === "seekingServices" && isLoggedIn) loadServices();
   if (pageId === "trending" && isLoggedIn) loadTrendingItems();
   if (pageId === "alerts" && isLoggedIn) loadAlerts();
+  if (pageId === "messages" && isLoggedIn) loadChat();
   if (pageId === "notifications" && isAdmin) {
     loadAdminNotifications();
     updateAdminNotifBadge();
@@ -5779,6 +5773,36 @@ async function showPage(pageId) {
     populateCounties("itemCounty", "itemSubcounty");
     loadMarketItems();
   }
+}
+
+/* ===================== 🔹 Section Toggles ===================== */
+function showTrending() {
+  hideAllSections();
+  document.getElementById("trending").style.display = "block";
+  loadTrendingItems();
+}
+
+function showAlerts() {
+  hideAllSections();
+  document.getElementById("alerts").style.display = "block";
+  loadAlerts();
+}
+
+function showChat() {
+  hideAllSections();
+  document.getElementById("messages").style.display = "block";
+  loadChat();
+}
+
+/* ===================== 🔹 Hide All Sections ===================== */
+function hideAllSections() {
+  // Hide every page/section
+  document.querySelectorAll(".page, .page-section").forEach(sec => {
+    sec.style.display = "none";
+  });
+
+  // Also hide ride panels
+  hideRidePanels();
 }
 
 /* ===================== 🔹 Ride System Sub-Panels ===================== */
@@ -6302,6 +6326,11 @@ async function loadSwaps() {
           const card = document.createElement("div");
           card.className = "swap-card";
           card.style = `background:#f9f9f9;border-radius:8px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,0.1);margin:8px;width:280px;display:inline-block;vertical-align:top;position:relative;`;
+
+          // 🔹 Add identifiers for unlocking later
+          card.setAttribute("data-swapid", s.id);
+          card.setAttribute("data-phone", s.phone);
+
           card.setAttribute("data-category", s.category || "-");
           card.setAttribute("data-swapcounty", s.swapCounty || "-");
           card.setAttribute("data-swapsubcounty", s.swapSubCounty || "-");
@@ -6339,15 +6368,22 @@ async function loadSwaps() {
             <p style="margin:4px 0;color:#6a1b9a;"><strong>Subjects:</strong> ${s.subjectCombination || '-'}</p>
             <p style="margin:4px 0;color:#3e2723;"><strong>Category:</strong> ${s.category || '-'}</p>
             <p style="margin:4px 0;color:#d81b60;"><strong>Hardship:</strong> ${s.hardship || '-'}</p>
-            <div style="margin-top:6px;">${s.isClosed && !isPoster && !isAdminUser ? closedContactHTML : (blur ? blurredContactHTML : contactHTML)}</div>
-           <div style="margin-top:6px;">
-  <strong>Rating: </strong>
-  <span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span>
-  <span style="color:red; font-weight:bold; margin-left:4px;">
-    (${rating}/5)
-  </span>
-</div>
- <p id="follower-count-${s.id}" style="font-size:0.9em; color:#ff4081;" onclick="showFollowers('${s.id}')">${followerCount} people following</p>
+
+            <!-- 🔹 Contact wrapper -->
+            <div class="contact-container" style="margin-top:6px;">
+              ${s.isClosed && !isPoster && !isAdminUser 
+                ? closedContactHTML 
+                : (blur ? blurredContactHTML : contactHTML)}
+            </div>
+
+            <div style="margin-top:6px;">
+              <strong>Rating: </strong>
+              <span id="rating-stars-${s.id}" style="font-size:16px;">${ratingStars}</span>
+              <span style="color:red; font-weight:bold; margin-left:4px;">
+                (${rating}/5)
+              </span>
+            </div>
+            <p id="follower-count-${s.id}" style="font-size:0.9em; color:#ff4081;" onclick="showFollowers('${s.id}')">${followerCount} people following</p>
             ${actionButtonHTML}`;
 
           container.appendChild(card);
@@ -6384,14 +6420,7 @@ async function loadSwaps() {
           localStorage.setItem("lastSeenSwapTimestamp", lastSeenSwapTimestamp.toISOString());
         }
 
-        if (spinner) spinner.style.display = "none";
-
-        // ✅ Alert user when they scroll to bottom
-        window.onscroll = function () {
-          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-            showCustomAlert("📢 You have reached the end of the list.", "info", true);
-          }
-        };
+             if (spinner) spinner.style.display = "none";
 
       },
       error => {
@@ -6407,6 +6436,8 @@ async function loadSwaps() {
     if (spinner) spinner.style.display = "none";
   }
 }
+
+
 
 // ✅ Reset swap badge
 function resetSwapBadge() {
@@ -7009,13 +7040,13 @@ async function boostSwap(swapId) {
 
     if (isAdminUser) {
       await updateSwapBoostStatus(swapId, true, boostExpiry);
-      updateBoostedBadge(swapId, boostExpiry.toDate());
+      updateBoostedBadge(swapId, 7); // ✅ fixed
       showCustomAlert("✅ The swap has been boosted for free!", "success");
       await sendBoostAdminNotification(swapId, currentUser.uid, "admin");
     } else {
       showPaymentModalFor("swapBoost", 250, swapId, "Boost Swap", async () => {
         await updateSwapBoostStatus(swapId, true, boostExpiry);
-        updateBoostedBadge(swapId, boostExpiry.toDate());
+        updateBoostedBadge(swapId, 7); // ✅ fixed
         showCustomAlert("🚀 Your swap has been boosted for 7 days!", "success");
         await sendBoostAdminNotification(swapId, currentUser.uid, "user");
       });
@@ -7027,8 +7058,6 @@ async function boostSwap(swapId) {
     document.getElementById("loadingSpinner").style.display = "none";
   }
 }
-
-
 // Function to update the swap boost status in Firestore
 async function updateSwapBoostStatus(swapId, isBoosted, boostExpiry) {
   const swapRef = db.collection("teacherSwaps").doc(swapId);
@@ -7383,6 +7412,7 @@ function renderBOMJobs(jobs) {
   });
 
   const fragment = document.createDocumentFragment(); // batch DOM insert
+  window.allBomJobs = jobs; // ✅ make jobs available globally for unblur helper
 
   jobs.forEach(job => {
     const card = document.createElement("div");
@@ -7398,13 +7428,13 @@ function renderBOMJobs(jobs) {
       text-align: center;
     `;
 
-   const isPoster = currentUser && (job.posterUid === currentUser.uid);
-const isAdminUser = !!window.isAdmin; // explicitly grab global
-const isVerified = !!job.verified;
-
+    const isPoster = currentUser && (job.posterUid === currentUser.uid);
+    const isVerified = !!job.verified;
 
     const badge = isVerified ? `<div class="verified-badge"><i class="fas fa-check-circle"></i> Verified</div>` : "";
-    const verifyButton = (!isVerified && isAdmin) ? `<button onclick="adminVerifyItem('job','${job.id}')" style="background:#4CAF50;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">✅ Verify Now (Admin)</button>` : "";
+    const verifyButton = (!isVerified && isAdmin) 
+      ? `<button onclick="adminVerifyItem('job','${job.id}')" style="background:#4CAF50;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">✅ Verify Now (Admin)</button>` 
+      : "";
 
     let boostBadge = "", topCornerTag = "";
     if (job.isBoosted && job.boostExpiry) {
@@ -7417,17 +7447,10 @@ const isVerified = !!job.verified;
     const jobType = job.jobType?.toLowerCase() || "";
     let iconClass = "fa-user-tie", bgColor="#607d8b";
     if (jobType.includes("teacher")) iconClass="fa-chalkboard-teacher", bgColor="#42a5f5";
-
     else if (jobType.includes("developer")) iconClass="fa-laptop-code", bgColor="#42a5f5";
-else if (jobType.includes("developer")) iconClass = "fa-laptop-code", bgColor = "#42a5f5";
-else if (jobType.includes("designer")) iconClass = "fa-paint-brush", bgColor = "#9c27b0";
-else if (jobType.includes("chef")) iconClass = "fa-utensils", bgColor = "#8d6e63";
-else if (jobType.includes("nurse")) iconClass = "fa-user-nurse", bgColor = "#e91e63";
-else if (jobType.includes("doctor")) iconClass = "fa-user-md", bgColor = "#f44336";
-else if (jobType.includes("driver")) iconClass = "fa-truck", bgColor = "#3f51b5";
-else if (jobType.includes("pilot")) iconClass = "fa-plane", bgColor = "#2196f3";
-else if (jobType.includes("mechanic")) iconClass = "fa-tools", bgColor = "#795548";
-else if (jobType.includes("plumber")) iconClass = "fa-wrench", bgColor = "#607d8b";
+    else if (jobType.includes("designer")) iconClass="fa-paint-brush", bgColor="#9c27b0";
+    else if (jobType.includes("chef")) iconClass="fa-utensils", bgColor="#8d6e63";
+    else if (jobType.includes("driver")) iconClass="fa-truck", bgColor="#3f51b5";
 else if (jobType.includes("electrician")) iconClass = "fa-bolt", bgColor = "#ff9800";
 else if (jobType.includes("farmer")) iconClass = "fa-tractor", bgColor = "#4caf50";
 else if (jobType.includes("engineer")) iconClass = "fa-cogs", bgColor = "#607d8b";
@@ -7527,6 +7550,8 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
     else if (jobType.includes("volunteer")) iconClass="fa-hands-helping", bgColor="#43a047";
     else if (jobType.includes("chef")) iconClass="fa-utensils", bgColor="#8d6e63";
 
+   
+
     const iconHTML = `<div style="padding:18px;background:${bgColor};display:inline-flex;justify-content:center;align-items:center;border-radius:8px;">
                         <i class="fas ${iconClass}" style="font-size:50px;color:#fff;"></i>
                       </div>`;
@@ -7537,17 +7562,13 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
     let contactSection = "";
 
     if (isPoster || isAdmin || hasAccess) {
-      if (hasPhone) contactSection = `<p style="color:#009688;margin-bottom:8px;"><strong>Phone:</strong><br><a href="tel:${job.phone}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${job.phone}</a></p>`;
-      else if (hasContact) {
-        contactSection = looksLikePhone(job.contact) ?
-          `<p style="color:#009688;margin-bottom:8px;"><strong>Phone:</strong><br><a href="tel:${job.contact}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${job.contact}</a></p>` :
-          `<p style="color:#009688;margin-bottom:8px;"><strong>Application Link:</strong><br><a href="${job.contact}" target="_blank" style="color:white;background:#2196f3;padding:8px 12px;border-radius:6px;text-decoration:none;">🔗 Open Link</a></p>`;
-      }
+      // Show directly
+      contactSection = renderBomJobContact(job, looksLikePhone);
     } else {
       let amount = hasPhone || looksLikePhone(job.contact) ? 350 : 50;
       let label = hasPhone || looksLikePhone(job.contact) ? "Phone" : "Application link";
-      contactSection = `<div class="blurred"><p style="color:gray;">🔒 ${label} – Pay Ksh ${amount} to unlock</p></div>
-        <button onclick="unlockBomJobs('${job.id}', ${amount})" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;border:none;cursor:pointer;">💳 Unlock ${label} (Ksh ${amount})</button>`;
+      contactSection = `<div id="contact-${job.id}" class="blurred"><p style="color:gray;">🔒 ${label} – Pay Ksh ${amount} to unlock</p>
+        <button onclick="unlockBomJobs('${job.id}', ${amount})" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;border:none;cursor:pointer;">💳 Unlock ${label} (Ksh ${amount})</button></div>`;
     }
 
     const actionButtons = `
@@ -7564,8 +7585,11 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
     window.toggleMoreActions = function(jobId){
       const actionContainer = document.getElementById(`actionButtons-${jobId}`);
       const button = actionContainer.previousElementSibling;
-      if (actionContainer.style.display === 'none' || actionContainer.style.display === '') { actionContainer.style.display='flex'; button.innerHTML='Less...'; } 
-      else { actionContainer.style.display='none'; button.innerHTML='More...'; }
+      if (actionContainer.style.display === 'none' || actionContainer.style.display === '') { 
+        actionContainer.style.display='flex'; button.innerHTML='Less...'; 
+      } else { 
+        actionContainer.style.display='none'; button.innerHTML='More...'; 
+      }
     };
 
     card.innerHTML = `
@@ -7581,21 +7605,50 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
         <p style="color:#6a1b9a;"><strong>Date Posted:</strong> ${job.datePosted}</p>
         <p style="color:#795548;"><strong>Posted By:</strong> ${job.postedBy || "Unknown"}</p>
         <div style="margin-top:10px;">${moreButton}<div id="actionButtons-${job.id}" style="display:none;flex-wrap:wrap;gap:10px;">${actionButtons}</div></div>
-      <p id="followed-count-${job.id}" style="font-size:0.8em;color:#2196f3;margin-top:4px;">
-  ${job.followedCount || 0} people following
-</p>
-
+        <p id="followed-count-${job.id}" style="font-size:0.8em;color:#2196f3;margin-top:4px;">
+          ${job.followedCount || 0} people following
+        </p>
       </div>
     `;
 
     fragment.appendChild(card);
     updateFollowedCount(job.id);
-
   });
 
   container.appendChild(fragment);
 }
 
+/* ✅ Render contact details */
+function renderBomJobContact(job, looksLikePhone) {
+  if (job.phone) {
+    return `<p style="color:#009688;margin-bottom:8px;"><strong>Phone:</strong><br>
+      <a href="tel:${job.phone}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${job.phone}</a></p>`;
+  } else if (job.contact) {
+    return looksLikePhone(job.contact)
+      ? `<p style="color:#009688;margin-bottom:8px;"><strong>Phone:</strong><br>
+           <a href="tel:${job.contact}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${job.contact}</a></p>`
+      : `<p style="color:#009688;margin-bottom:8px;"><strong>Application Link:</strong><br>
+           <a href="${job.contact}" target="_blank" style="color:white;background:#2196f3;padding:8px 12px;border-radius:6px;text-decoration:none;">🔗 Open Link</a></p>`;
+  }
+  return "";
+}
+
+/* ✅ Unlock function */
+function unlockBomJobs(jobId, amount) {
+  showPaymentModalFor("bomJobUnlock", amount, jobId, "Unlock Job Contact");
+}
+
+/* ✅ After payment, unblur instantly */
+function unblurBomJobContact(jobId) {
+  const job = window.allBomJobs?.find(j => j.id === jobId);
+  if (!job) return;
+
+  const looksLikePhone = val => /^[\d+\s-]{6,}$/.test(val);
+  const contactDiv = document.getElementById(`contact-${jobId}`);
+  if (!contactDiv) return;
+
+  contactDiv.innerHTML = renderBomJobContact(job, looksLikePhone);
+}
 // Function to handle following a job 
 function followJob(jobId) {
   const followButton = document.querySelector(`button[onclick="followJob('${jobId}')"]`);
@@ -8736,10 +8789,12 @@ function renderSoulmateCard(d, container) {
   const isAdminUser = isAdmin === true;
   const totalLikes = d.likes || 0;
   const hasPaid = localStorage.getItem("paidForSoulmates") === "yes";
+  const unlocked = localStorage.getItem(`unlockedSoulmate_${id}`) === "yes";
 
   const card = document.createElement("div");
   card.className = "soulmate-card";
   card.id = `soulmate-${id}`;
+  card.setAttribute("data-phone", d.phone || "");
   card.style = `
     background: #e6f7ff;
     padding: 14px;
@@ -8758,40 +8813,33 @@ function renderSoulmateCard(d, container) {
       ${images.map((photo, index) => `<img src="${photo}" alt="Profile Image ${index+1}" style="width: 60px; height: 60px; object-fit: cover; margin-bottom: 10px; border-radius: 8px; cursor: pointer;" onclick="openImageModal(${index}, ${JSON.stringify(images)})">`).join('')}
     </div>` : `<div style="width: 100%; height: 200px; background: #f0f0f0; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; color: #888; cursor: pointer;" onclick="openImageModal()">No Image</div>`;
 
- const contactHTML = `<div style="margin:4px 0; font-family: Arial, sans-serif;">
-  <!-- Phone Number -->
-  <div style="border: 2px solid #4caf50; background-color: #4caf50; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 8px; max-width: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <span style="font-size: 18px; color:white; font-weight: bold;">${d.phone}</span>
-    <i class="fas fa-phone-alt" style="margin-left: 8px; color:white;"></i>
-  </div>
+  const contactHTML = `
+    <div class="contact-container" data-phone="${d.phone || ''}">
+      <div style="margin:4px 0; font-family: Arial, sans-serif;">
+        <!-- Phone Number -->
+        <div style="border: 2px solid #4caf50; background-color: #4caf50; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 8px; max-width: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <span style="font-size: 18px; color:white; font-weight: bold;">${d.phone}</span>
+          <i class="fas fa-phone-alt" style="margin-left: 8px; color:white;"></i>
+        </div>
 
-  <!-- WhatsApp -->
-  <div style="border: 2px solid #25D366; background-color: #25D366; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; max-width: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <span style="font-size: 18px; color:white; font-weight: bold;">WhatsApp</span>
-    <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
-  </div>
-</div>`;
+        <!-- WhatsApp -->
+        <div style="border: 2px solid #25D366; background-color: #25D366; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; max-width: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <span style="font-size: 18px; color:white; font-weight: bold;">WhatsApp</span>
+          <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
+        </div>
+      </div>
+    </div>`;
 
-const blurredContactHTML = `<div style="display:flex; flex-direction:column; gap:12px; margin-top:12px; font-family: 'Arial', sans-serif;">
-  <!-- Phone Number Blur -->
-  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-radius:12px; background:#f9f9f9; border:2px solid #ccc; font-weight: bold; color:#999; font-size:18px; filter: blur(4px); transition: filter 0.3s ease-in-out; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-    📞 0700000000
-  </div>
-  
-  <!-- WhatsApp Blur -->
-  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-radius:12px; background:#f9f9f9; border:2px solid #ccc; font-weight: bold; color:#999; font-size:18px; filter: blur(4px); transition: filter 0.3s ease-in-out; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-    💬 WhatsApp
-  </div>
-
-  <!-- Unlock Message -->
-  <div style="color:crimson; font-size:16px; font-weight:bold; margin-top:8px;">🔒 Pay Ksh 200 to Unlock Contacts </div>
-  
-  <!-- Pay Button -->
-  <button onclick="handleSoulmateAction('${id}', 'unlock')" 
-    style="margin-top:8px; background:crimson; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:18px; transition: background 0.3s ease, transform 0.2s ease;">
-    💳 Pay
-  </button>
-</div>`;
+  const blurredContactHTML = `
+    <div class="contact-container" data-phone="${d.phone || ''}">
+      <div class="blurred" style="display:flex; flex-direction:column; gap:12px; margin-top:12px; font-family: 'Arial', sans-serif;">
+        <div style="color:crimson; font-size:16px; font-weight:bold; margin-top:8px;">🔒 Pay Ksh 200 to Unlock Contacts</div>
+        <button onclick="showPaymentModalFor('soulmateUnlock', 200, '${id}', '${d.name || ''}')"
+          style="margin-top:8px; background:crimson; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:18px;">
+          💳 Pay
+        </button>
+      </div>
+    </div>`;
 
   const profileContent = d.isClosed ? `
     <p style="color:#999;">Profile Locked</p>
@@ -8805,7 +8853,7 @@ const blurredContactHTML = `<div style="display:flex; flex-direction:column; gap
     <p style="margin:0;color:#795548;"><strong>Status:</strong> ${d.status || '—'} ${d.status === "Single" ? "💔" : d.status === "Married" ? "💍" : ""}</p>
     <p style="margin:0;color:#607d8b;"><strong>Occupation:</strong> ${d.occupation}</p>
     <div style="margin-top:6px;">
-      ${hasPaid || isPoster || isAdminUser ? contactHTML : blurredContactHTML}
+      ${unlocked || hasPaid || isPoster || isAdminUser ? contactHTML : blurredContactHTML}
     </div>`;
 
   const adminButtons = (isAdminUser || isPoster) ? `
@@ -8854,9 +8902,8 @@ const blurredContactHTML = `<div style="display:flex; flex-direction:column; gap
 
   card.innerHTML = `
     ${profileImageHTML}
-    ${d.verified ? `<div class="verified-badge" style="position: absolute; top: 8px; right: 8px; background-color: #1DA1F2; color: white; border-radius: 25px; padding: 4px 10px; display: flex; align-items: center; font-size: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease-in-out; cursor: pointer;">
-        <i class="fas fa-check" style="transform: scale(1.2); margin-right: 5px;"></i>
-        Verified
+    ${d.verified ? `<div class="verified-badge" style="position: absolute; top: 8px; right: 8px; background-color: #1DA1F2; color: white; border-radius: 25px; padding: 4px 10px; display: flex; align-items: center; font-size: 12px;">
+        ✔ Verified
     </div>` : ""}
     ${profileContent}
     ${likeButtonHTML}
@@ -8877,6 +8924,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
+
 // 🔹 Reset soulmate badge when clicked
 function resetSoulmateBadge() {
   const soulmateBadge = document.getElementById("soulmateBadge");
@@ -8888,7 +8936,34 @@ function resetSoulmateBadge() {
     localStorage.setItem("lastSeenSoulmateTimestamp", lastSeenSoulmateTimestamp.toISOString());
   }
 }
+function unblurSoulmateContact(soulmateId) {
+  const card = document.querySelector(`#soulmate-${soulmateId}`);
+  if (!card) return;
 
+  const phone = card.getAttribute("data-phone");
+  const contactSection = card.querySelector(".blurred");
+
+  if (contactSection) {
+    const phoneHTML = `
+      <div style="margin:4px 0; font-family: Arial, sans-serif;">
+        <!-- Phone Number -->
+        <div style="border:2px solid #4caf50;background-color:#4caf50;padding:8px 16px;border-radius:12px;display:flex;align-items:center;margin-bottom:8px;max-width:180px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <span style="font-size:18px;color:white;font-weight:bold;">${phone}</span>
+          <i class="fas fa-phone-alt" style="margin-left:8px;color:white;"></i>
+        </div>
+
+        <!-- WhatsApp -->
+        <div style="border:2px solid #25D366;background-color:#25D366;padding:8px 16px;border-radius:12px;display:flex;align-items:center;max-width:180px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <span style="font-size:18px;color:white;font-weight:bold;">WhatsApp</span>
+          <i class="fab fa-whatsapp" style="margin-left:8px;color:white;"></i>
+        </div>
+      </div>
+    `;
+    contactSection.outerHTML = phoneHTML;
+  }
+
+  localStorage.setItem(`unlockedSoulmate_${soulmateId}`, "yes");
+}
 // 🔹 Prepend new soulmate card in real-time
 function prependNewSoulmate(d) {
   const container = document.querySelector("#soulmateContainer");
@@ -9118,7 +9193,7 @@ async function handleSoulmateAction(id, action) {
         showPaymentModalFor("boost", boostAmount, id, "Your Soulmate Profile");
       } else if (action === 'unlock') {
         // User is prompted to pay for unlocking contacts with correct message
-        const unlockAmount = 150; // Amount to unlock contacts
+        const unlockAmount = 1; // Amount to unlock contacts
         showPaymentModalFor("unlock", unlockAmount, id, "Pay to Unlock Contacts");
       } else if (action === 'verify') {
         // User is prompted to pay for verification
@@ -9948,6 +10023,80 @@ function handlePaymentSuccess(paymentType, itemId) {
   else if (paymentType === 'marketBoost') {
     boostMarketDirectly(itemId);
   }
+  else if (paymentType === 'swap') {
+    // ✅ Instantly unblur swap contact
+    unblurSwapContact(itemId);
+    showCustomAlert("✅ Swap contact unlocked!", "success");
+    closeUniversalModal();
+  }
+  else if (paymentType === 'bomJobUnlock') {
+    // ✅ Instantly unblur BOM job contact
+    unblurBomJobContact(itemId);
+    showCustomAlert("✅ Job contact unlocked!", "success");
+    closeUniversalModal();
+  }
+}
+
+/* ===================== 🔓 Contact Unblur Helpers ===================== */
+function unblurSwapContact(swapId) {
+  const card = document.querySelector(`.swap-card[data-id="${swapId}"]`);
+  if (!card) return;
+
+  // get swap data if already in DOM
+  const phone = card.getAttribute("data-phone");
+  if (!phone) return;
+
+  const contactHTML = `
+    <div style="margin:4px 0;">
+      📞 <a href="tel:${phone}" style="color:green;">${phone}</a><br>
+      💬 <a href="https://wa.me/254${phone.replace(/^0/, '')}" target="_blank" style="color:#25D366;">WhatsApp</a>
+    </div>
+  `;
+  const contactContainer = card.querySelector(".blurred, div[style*='🔒']");
+  if (contactContainer) {
+    contactContainer.outerHTML = contactHTML;
+  }
+
+  // mark in localStorage so next reload stays unlocked
+  localStorage.setItem(`unlockedSwap_${swapId}`, "yes");
+}
+
+function unblurBomJobContact(jobId) {
+  const card = document.querySelector(`.job-card[data-id="${jobId}"]`);
+  if (!card) return;
+
+  const phone = card.getAttribute("data-phone");
+  const contact = card.getAttribute("data-contact");
+
+  let contactHTML = "";
+  const looksLikePhone = val => /^[\d+\s-]{6,}$/.test(val);
+
+  if (phone && phone.trim() !== "") {
+    contactHTML = `
+      <p style="color:#009688;margin-bottom:8px;">
+        <strong>Phone:</strong><br>
+        <a href="tel:${phone}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${phone}</a>
+      </p>
+    `;
+  } else if (contact && contact.trim() !== "") {
+    contactHTML = looksLikePhone(contact)
+      ? `<p style="color:#009688;margin-bottom:8px;">
+          <strong>Phone:</strong><br>
+          <a href="tel:${contact}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${contact}</a>
+        </p>`
+      : `<p style="color:#009688;margin-bottom:8px;">
+          <strong>Application Link:</strong><br>
+          <a href="${contact}" target="_blank" style="color:white;background:#2196f3;padding:8px 12px;border-radius:6px;text-decoration:none;">🔗 Open Link</a>
+        </p>`;
+  }
+
+  const contactContainer = card.querySelector(".blurred, div[style*='🔒']");
+  if (contactContainer) {
+    contactContainer.outerHTML = contactHTML;
+  }
+
+  // mark in localStorage so next reload stays unlocked
+  localStorage.setItem(`unlockedJob_${jobId}`, "yes");
 }
 
 
@@ -12965,7 +13114,8 @@ function resetMarketFilters() {
   filterMarketItems();
 }
 // ✅ Set your backend URL here (update when ngrok changes)
-const BACKEND_URL = "https://acbb5b1736bc.ngrok-free.app";
+const BACKEND_URL = "https://6eed624ffd57.ngrok-free.app";
+
 
 function showPaymentModalFor(type, amount, itemId, itemName, prefilledPhone = "") {
   let titleText = "Pay to Unlock";
@@ -13091,15 +13241,6 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
     statusEl.innerText = "❌ Network error: " + err.message;
   }
 }
-
-// ✅ Handle Firestore updates
-async function handlePaymentSuccess(type, itemId, itemName, userId) {
-  console.log("Handle payment success:", type, itemId, itemName, userId);
-  // 🔹 Add your Firestore updates here
-}
-
-
-
 // ✅ Handle Firestore updates after payment
 async function handlePaymentSuccess(type, itemId, itemName, userId) {
   const now = new Date();
@@ -13107,35 +13248,116 @@ async function handlePaymentSuccess(type, itemId, itemName, userId) {
   const userRef = userId !== "anonymous" ? firebase.firestore().collection("users").doc(userId) : null;
 
   if (type === "soulmate") {
-    const boostExpiry = new Date(now.getTime() + 7*24*60*60*1000);
-    await firebase.firestore().collection("soulmates").doc(itemId).update({ boosted: true, boostExpiry });
+    const boostExpiry = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    await firebase.firestore().collection("soulmates").doc(itemId).update({
+      boosted: true,
+      boostExpiry
+    });
     showCustomAlert("✅ Soulmate profile boosted successfully!", "success");
     loadSoulmates();
   }
+
   if (type === "boost") {
-    await firebase.firestore().collection("boostedItems").doc(itemId).set({ boostedAt: isoNow, itemName, userId }, { merge: true });
+    await firebase.firestore().collection("boostedItems").doc(itemId).set(
+      { boostedAt: isoNow, itemName, userId },
+      { merge: true }
+    );
     localStorage.setItem(`boosted_${itemId}`, isoNow);
   }
+
   if (type === "unlock") {
     await userRef.set({ paidToUnlock: isoNow }, { merge: true });
     localStorage.setItem("paidToUnlock", isoNow);
   }
+
   if (type === "serviceVerification") {
     await servicesRef.doc(itemId).set({ verified: true }, { merge: true });
     showCustomAlert("✅ Service verified successfully!", "success");
     loadServices();
   }
+
   if (type === "marketVerification") {
     await marketRef.doc(itemId).set({ verified: true }, { merge: true });
     showCustomAlert("✅ Market item verified successfully!", "success");
     loadMarketItems();
   }
+
   if (type === "soulmateVerification") {
     await soulmateRef.doc(itemId).set({ verified: true }, { merge: true });
     showCustomAlert("✅ Soulmate profile verified successfully!", "success");
     loadSoulmates();
   }
+
+  // 🔹 Handle swap unlock
+  if (type === "swap") {
+    await firebase.firestore().collection("unlocks").doc(`${userId}_${itemId}`).set({
+      userId,
+      itemId,
+      type,
+      paid: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    const card = document.querySelector(`[data-swapid="${itemId}"]`);
+    if (card) {
+      const phone = card.getAttribute("data-phone");
+      const contactDiv = card.querySelector(".contact-container");
+      if (contactDiv && phone) {
+        contactDiv.innerHTML = `
+          <div style="margin:6px 0; text-align:left;">
+            📞 <a href="tel:${phone}" style="color:green;">${phone}</a><br>
+            💬 <a href="https://wa.me/254${phone.replace(/^0/,'')}" target="_blank" style="color:#25D366;">WhatsApp</a>
+          </div>
+        `;
+      }
+    }
+
+    showCustomAlert("✅ Contacts unlocked successfully!", "success");
+    closeUniversalModal(); 
+  }
+
+  // 🔹 Handle soulmate unlock
+  if (type === "soulmateUnlock") {
+    await firebase.firestore().collection("unlocks").doc(`${userId}_${itemId}`).set({
+      userId,
+      itemId,
+      type,
+      paid: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Save in localStorage so it stays unlocked
+    localStorage.setItem(`unlockedSoulmate_${itemId}`, "yes");
+
+    // Immediately update the UI: unblur contact
+    const card = document.getElementById(`soulmate-${itemId}`);
+    if (card) {
+      const contactDiv = card.querySelector(".contact-container");
+      if (contactDiv) {
+        const phone = card.getAttribute("data-phone") || "0700000000"; // fallback
+        contactDiv.innerHTML = `
+          <div style="margin:4px 0; font-family: Arial, sans-serif;">
+            <!-- Phone -->
+            <div style="border: 2px solid #4caf50; background-color: #4caf50; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 8px; max-width: 180px;">
+              <span style="font-size: 18px; color:white; font-weight: bold;">${phone}</span>
+              <i class="fas fa-phone-alt" style="margin-left: 8px; color:white;"></i>
+            </div>
+            <!-- WhatsApp -->
+            <div style="border: 2px solid #25D366; background-color: #25D366; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; max-width: 180px;">
+              <span style="font-size: 18px; color:white; font-weight: bold;">WhatsApp</span>
+              <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    showCustomAlert("✅ Soulmate contacts unlocked successfully!", "success");
+    closeUniversalModal();
+  }
 }
+
+
 
 
 
