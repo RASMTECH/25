@@ -2981,43 +2981,73 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     font-family: 'Segoe UI', Tahoma, sans-serif;
   ">
     
-    <!-- Header with Profile Image -->
-    <div style="display: flex; align-items: center; justify-content: space-between;">
-      <div>
-        <h2 style="margin: 0; font-size: 1.6rem; color: #222;">🚕 Driver Panel</h2>
-        <span style="
-          font-size: 0.9rem; 
-          color: #28a745; 
-          font-weight: bold;
-          background: #e9f9ef; 
-          padding: 4px 10px; 
-          border-radius: 12px;
-        ">✅ Online</span>
-      </div>
 
-      <!-- Constant Profile Image -->
-      <img src="https://i.imgur.com/k3kH1Li.png" alt="Driver Profile" style="
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #007bff;
-      ">
-    </div>
 
-    <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
-    
-    <!-- Driver Info -->
-    <div id="driverInfo" style="
-      background: linear-gradient(135deg, #f8f9fa, #f1f3f6);
-      border-radius: 14px;
-      padding: 15px;
-      margin-bottom: 20px;
-      font-size: 1rem;
-      color: #333;
-      line-height: 1.5;
-      border-left: 5px solid #007bff;
-    "></div>
+<!-- Header with Profile Image -->
+<div style="display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h2 style="margin: 0; font-size: 1.6rem; color: #222;">🚕 Driver Panel</h2>
+  </div>
+
+  <!-- Constant Profile Image -->
+  <img src="https://i.imgur.com/k3kH1Li.png" alt="Driver Profile" style="
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+  ">
+</div>
+
+<hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+
+<!-- Driver Info -->
+<div id="driverInfo" style="
+  background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+              url('https://i.imgur.com/k3kH1Li.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  line-height: 1.6;
+  border-left: 5px solid #007bff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+">
+  <p style="margin:0;">
+    <i class="fas fa-user" style="color:#007bff; margin-right:6px;"></i>
+    <strong style="color:#007bff;">Name:</strong>
+    <span style="background:#e3f2fd; color:#0d47a1; padding:4px 10px; border-radius:8px;">Argwings Sironga</span>
+  </p>
+
+  <p style="margin:0;">
+    <i class="fas fa-motorcycle" style="color:#ff9800; margin-right:6px;"></i>
+    <strong style="color:#ff9800;">Vehicle:</strong>
+    <span style="background:#fff3e0; color:#e65100; padding:4px 10px; border-radius:8px;">Bike - KCA 125A</span>
+  </p>
+
+  <p style="margin:0;">
+    <i class="fas fa-phone" style="color:#4caf50; margin-right:6px;"></i>
+    <strong style="color:#4caf50;">Phone:</strong>
+    <span style="background:#e8f5e9; color:#1b5e20; padding:4px 10px; border-radius:8px;">0766985642</span>
+  </p>
+
+  <p style="margin:0;">
+    <i class="fas fa-coins" style="color:#9c27b0; margin-right:6px;"></i>
+    <strong style="color:#9c27b0;">Cost per Km:</strong>
+    <span style="background:#f3e5f5; color:#4a148c; padding:4px 10px; border-radius:8px;">5,000.00 KES</span>
+  </p>
+
+  <p style="margin:0;">
+    <i class="fas fa-circle" style="color:#28a745; margin-right:6px;"></i>
+    <strong style="color:#28a745;">Status:</strong>
+    <span style="background:#e9f9ef; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:8px;">✅ Online</span>
+  </p>
+</div>
+
 
     <!-- Rides Section -->
     <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #444;">📌 Assigned Rides</h3>
@@ -13187,7 +13217,6 @@ function closeUniversalModal() {
   if (modal) modal.remove();
 }
 
-// ✅ Initiate STK Push & poll server for payment
 async function initiateStkPayment(type, amount, itemId, itemName) {
   const phoneInput = document.getElementById("universalPhone").value.trim();
   const statusEl = document.getElementById("universalPaymentStatus");
@@ -13231,7 +13260,16 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
           if (statusData.ResultCode === 0) {
             statusEl.innerText = "🎉 Payment successful!";
             clearInterval(poll);
-            handlePaymentSuccess(type, itemId, itemName, userId);
+
+            // ✅ Differentiate flows
+            if (type === "verify") {
+              verifyDriverPayment(itemId, amount);  // mark existing driver verified
+            } else if (type === "driver_registration") {
+              registerDriverAfterPayment(userId, phone, amount, itemName); // create new driver
+            } else {
+              handlePaymentSuccess(type, itemId, amount, userId);
+            }
+
             setTimeout(closeUniversalModal, 1500);
           } else {
             statusEl.innerText = `❌ Payment failed: ${statusData.ResultDesc}`;
@@ -13247,6 +13285,8 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
     statusEl.innerText = "❌ Network error: " + err.message;
   }
 }
+
+
 // ✅ Handle Firestore updates after payment
 async function handlePaymentSuccess(type, itemId, itemName, userId) {
   const now = new Date();
@@ -15368,11 +15408,55 @@ document.getElementById("driverLoginForm").addEventListener("submit", function(e
         .then(() => db.collection("drivers").doc(currentDriver.uid).get())
         .then(doc => {
           let d = doc.data();
+
+          // ✅ Updated styled Driver Info with inline verification badge/button
           document.getElementById("driverInfo").innerHTML = `
-            <p><strong>${d.name}</strong> (${d.vehicle} - ${d.plate})</p>
-            <p>📞 ${d.phone}</p>
-            <p>💲 Cost per Km: ${formatKES(d.costPerKm)} KES</p>
-            <p>Status: ${d.available ? "✅ Online" : "❌ Offline"}</p>`;
+            <p style="margin:4px 0;">
+              <i class="fas fa-user" style="color:#007bff; margin-right:6px;"></i>
+              <strong style="color:#007bff;">Name:</strong>
+              <span style="background:#e3f2fd; color:#0d47a1; padding:2px 8px; border-radius:6px;">
+                ${d.name} 
+                ${d.verified 
+                  ? '<i class="fas fa-check-circle" style="color:#1e88e5; margin-left:6px;" title="Verified Driver"></i>'
+                  : `<button onclick="showPaymentModalFor('verify', 500, '${currentDriver.uid}', '${d.name}')" 
+                        style="background:#1e88e5; color:#fff; border:none; border-radius:6px; cursor:pointer; 
+                               font-size:0.75rem; padding:2px 6px; margin-left:6px;">
+                        Verify
+                     </button>`
+                }
+              </span>
+            </p>
+
+            <p style="margin:4px 0;">
+              <i class="fas fa-motorcycle" style="color:#ff9800; margin-right:6px;"></i>
+              <strong style="color:#ff9800;">Vehicle:</strong>
+              <span style="background:#fff3e0; color:#e65100; padding:2px 8px; border-radius:6px;">${d.vehicle} - ${d.plate}</span>
+            </p>
+
+            <p style="margin:4px 0;">
+              <i class="fas fa-phone" style="color:#4caf50; margin-right:6px;"></i>
+              <strong style="color:#4caf50;">Phone:</strong>
+              <span style="background:#e8f5e9; color:#1b5e20; padding:2px 8px; border-radius:6px;">${d.phone}</span>
+            </p>
+
+            <p style="margin:4px 0;">
+              <i class="fas fa-coins" style="color:#9c27b0; margin-right:6px;"></i>
+              <strong style="color:#9c27b0;">Cost per Km:</strong>
+              <span style="background:#f3e5f5; color:#4a148c; padding:2px 8px; border-radius:6px;">${formatKES(d.costPerKm)} KES</span>
+            </p>
+
+            <p style="margin:4px 0;">
+              <i class="fas fa-circle" style="color:${d.available ? "#28a745" : "#dc3545"}; margin-right:6px;"></i>
+              <strong style="color:${d.available ? "#28a745" : "#dc3545"};">Status:</strong>
+              <span style="background:${d.available ? "#e9f9ef" : "#fdecea"}; 
+                           color:${d.available ? "#2e7d32" : "#b71c1c"}; 
+                           font-weight:bold; 
+                           padding:2px 8px; 
+                           border-radius:6px;">
+                ${d.available ? "✅ Online" : "❌ Offline"}
+              </span>
+            </p>
+          `;
 
           // ✅ Live GPS tracking
           if (navigator.geolocation) {
@@ -15442,6 +15526,43 @@ document.getElementById("driverLoginForm").addEventListener("submit", function(e
       hideSpinner();
     });
 });
+
+/* ===================== 🔹 Verify Driver After Payment ===================== */
+function verifyDriverPayment(driverId, amount) {
+  db.collection("drivers").doc(driverId).update({
+    verified: true,
+    verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    return db.collection("payments").add({
+      driverId,
+      type: "verification",
+      amount,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      status: "success"
+    });
+  }).then(() => {
+    showCustomAlert("✅ Driver verified successfully after payment!", "success");
+
+    // 🔹 Refresh driver info panel
+    db.collection("drivers").doc(driverId).get().then(doc => {
+      let d = doc.data();
+      document.getElementById("driverInfo").innerHTML = `
+        <p style="margin:4px 0;">
+          <i class="fas fa-user" style="color:#007bff; margin-right:6px;"></i>
+          <strong style="color:#007bff;">Name:</strong>
+          <span style="background:#e3f2fd; color:#0d47a1; padding:2px 8px; border-radius:6px;">
+            ${d.name} <i class="fas fa-check-circle" style="color:#1e88e5; margin-left:6px;" title="Verified Driver"></i>
+          </span>
+        </p>
+        <!-- re-render other fields here -->
+      `;
+    });
+  }).catch(err => {
+    showCustomAlert("❌ Verification failed: " + err.message, "error");
+  });
+}
+
+
 
 /* ===================== 🔹 Accept & Complete Ride ===================== */
 function acceptRide(rideId) {
@@ -15554,5 +15675,107 @@ style.innerHTML = `
 }
 `;
 document.head.appendChild(style);
+
+function handlePaymentSuccess(paymentType, itemId, amount = 0) {
+  switch (paymentType) {
+    case "swap":
+      unblurSwapContact(itemId);
+      showCustomAlert("Swap contact unlocked!", "success");
+      break;
+
+    case "bomJobUnlock":
+      unblurBomJobContact(itemId);
+      showCustomAlert("Job contact unlocked!", "success");
+      break;
+
+    case "service":
+      unblurServiceContact(itemId);
+      showCustomAlert("Service provider contact unlocked!", "success");
+      break;
+
+    case "soulmate":
+      unblurSoulmateContact(itemId);
+      showCustomAlert("Soulmate contact unlocked!", "success");
+      break;
+
+    case "boost":
+      boostItem(itemId);
+      showCustomAlert("Your post was boosted successfully!", "success");
+      break;
+
+    case "verify":
+      verifyDriverPayment(itemId, amount); // 🔹 New Firestore-based verification
+      break;
+
+    case "extraPost":
+      allowExtraPost(itemId);
+      showCustomAlert("Extra post slot unlocked!", "success");
+      break;
+
+    default:
+      console.warn("Unknown payment type:", paymentType);
+      break;
+  }
+
+  // Close modal if open
+  if (typeof closeUniversalModal === "function") {
+    closeUniversalModal();
+  }
+}
+
+/* ===================== 🔓 Unlock functions ===================== */
+function unblurSwapContact(itemId) {
+  const elem = document.querySelector(`#swapContact-${itemId}`);
+  if (elem) elem.classList.remove("blurred-number");
+}
+
+function unblurBomJobContact(itemId) {
+  const elem = document.querySelector(`#jobContact-${itemId}`);
+  if (elem) elem.classList.remove("blurred-number");
+}
+
+function unblurServiceContact(itemId) {
+  const elem = document.querySelector(`#serviceContact-${itemId}`);
+  if (elem) elem.classList.remove("blurred-number");
+}
+
+function unblurSoulmateContact(itemId) {
+  const elem = document.querySelector(`#soulmateContact-${itemId}`);
+  if (elem) elem.classList.remove("blurred-number");
+}
+
+/* ===================== 🚀 Premium feature functions ===================== */
+// Boost a post
+function boostItem(itemId) {
+  const elem = document.querySelector(`#post-${itemId}`);
+  if (elem) {
+    elem.classList.add("boosted");
+    elem.parentNode.prepend(elem); // move to top of list
+  }
+}
+
+// Verify a post (UI only)
+function verifyItem(itemId) {
+  const elem = document.querySelector(`#post-${itemId}`);
+  if (elem && !elem.querySelector(".verified-badge")) {
+    const badge = document.createElement("span");
+    badge.className = "verified-badge";
+    badge.innerHTML = "✔ Verified";
+    elem.appendChild(badge);
+  }
+}
+
+// Allow extra post
+function allowExtraPost(userId) {
+  let counterElem = document.querySelector(`#extraPosts-${userId}`);
+  if (counterElem) {
+    counterElem.textContent =
+      parseInt(counterElem.textContent || "0") + 1;
+  }
+}
+
+
+
+</script>
 
 </script>
