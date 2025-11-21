@@ -9773,23 +9773,50 @@ else if (occupation.includes("waitress")) iconClass = "fa-concierge-bell", bgCol
       } else {
         imageHTML = `<div style="width:100%; height:180px; background: #f0f0f0; border-radius:8px; margin-bottom:8px; display: flex; justify-content: center; align-items: center; color: #888; cursor: pointer;" onclick="openImageModal()">No Images</div>`;
       }
+let contactHTML = "";
 
-      const contactHTML = (d.isActive || isPoster || hasServiceAccess || isAdminUser)
-        ? `
-          <div style="display: flex; flex-direction: row; gap: 5px; padding: 8px 10px; background-color: #f1f1f1; border-radius: 8px; border: 1px solid #ccc; align-items: center; width: auto; height: 45px;">
-            <p style="display: flex; align-items: center; color: #2e7d32; font-size: 14px; font-weight: bold; margin-right: 10px;">
-              <div style="border: 1px solid #4caf50; background-color: #4caf50; padding: 4px 10px; border-radius: 6px; display: flex; align-items: center; height: 30px;">
-                <a href="tel:${d.phone}" style="color:white; font-size: 14px; text-decoration: none; font-weight: bold;"> Call</a>
-                <i class="fas fa-phone-alt" style="margin-left: 6px; color:white;"></i>
-              </div>
-            </p>
-            <p style="display: flex; align-items: center; color: #25D366; font-size: 14px; font-weight: bold;">
-              <div style="border: 1px solid #25D366; background-color: #25D366; padding: 4px 10px; border-radius: 6px; display: flex; align-items: center; height: 30px;">
-                <a href="https://wa.me/254${d.phone.replace(/^0/, '')}" target="_blank" style="color:white; font-size: 14px; text-decoration: none; font-weight: bold;">Chat</a>
-                <i class="fab fa-whatsapp" style="margin-left: 6px; color:white;"></i>
-              </div>
-            </p>
-          </div>` : ``;
+// 🟢 If the service is ACTIVE → show your normal contact block
+if (d.isActive) {
+  contactHTML = `
+    <div style="display: flex; flex-direction: row; gap: 5px; padding: 8px 10px; background-color: #f1f1f1; border-radius: 8px; border: 1px solid #ccc; align-items: center; width: auto; height: 45px;">
+      <p style="display: flex; align-items: center; color: #2e7d32; font-size: 14px; font-weight: bold; margin-right: 10px;">
+        <div style="border: 1px solid #4caf50; background-color: #4caf50; padding: 4px 10px; border-radius: 6px; display: flex; align-items: center; height: 30px;">
+          <a href="tel:${d.phone}" style="color:white; font-size: 14px; text-decoration: none; font-weight: bold;"> Call</a>
+          <i class="fas fa-phone-alt" style="margin-left: 6px; color:white;"></i>
+        </div>
+      </p>
+      <p style="display: flex; align-items: center; color: #25D366; font-size: 14px; font-weight: bold;">
+        <div style="border: 1px solid #25D366; background-color: #25D366; padding: 4px 10px; border-radius: 6px; display: flex; align-items: center; height: 30px;">
+          <a href="https://wa.me/254${d.phone.replace(/^0/, '')}" target="_blank" style="color:white; font-size: 14px; text-decoration: none; font-weight: bold;">Chat</a>
+          <i class="fab fa-whatsapp" style="margin-left: 6px; color:white;"></i>
+        </div>
+      </p>
+    </div>
+  `;
+}
+
+// 🔵 Poster but service NOT ACTIVE → personalized inactive message
+else if (isPoster) {
+  contactHTML = `
+    <div style="padding:10px; background:#fff3cd; border:1px solid #ffecb5; border-radius:8px;">
+      <p style="color:#d48806; font-weight:bold; margin:0;">
+⚠️ Activation required -Activate  your service to appear to other users.
+      </p>
+    </div>
+  `;
+}
+
+// 🔴 Other users → general inactive message
+else {
+  contactHTML = `
+    <div style="padding:10px; background:#fff3cd; border:1px solid #ffecb5; border-radius:8px;">
+      <p style="color:#d48806; font-weight:bold; margin:0;">
+        ⚠️ Service Inactive – waiting for poster to activate
+      </p>
+    </div>
+  `;
+}
+
 
   let actionButtonsHTML = `
   <div style="margin-top: 12px;">
