@@ -2558,12 +2558,6 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </a>
   </li>
 
- <li>
-  <a class="menu-box" href="#" onclick="showPage('rideSystem')">
-    <img src="https://i.imgur.com/k3kH1Li.png" alt="Ride System">
-    <span>Book Ride</span>
-  </a>
-</li>
 
 <li>
   <a class="menu-box" href="#" onclick="showPage('seekingServices')">
@@ -2578,21 +2572,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     <span>Market</span></a>
   </li>
 
-  <!-- ✅ Price Scanner Button (hidden by default) -->
-  <button id="scanPricesBtn" 
-          style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;
-                 background:#007bff; color:white; border:none; padding:10px 15px; 
-                 border-radius:6px; cursor:pointer; font-size:14px;">
-    Scan Prices
-  </button>
 
-  <!-- 🔘 Button to load payments (Admins Only) -->
-  <li id="viewPaymentsBtn" style="display:none;">
-    <a class="menu-box" href="#" onclick="showPage('payments')">
-      <img src="https://i.imgur.com/t0TUHfP.png" alt="Payments">
-      <span>💳 View Payments</span>
-    </a>
-  </li>
 
   <li style="position: relative;">
     <a class="menu-box" href="#" onclick="showPage('soulmates'); resetSoulmateBadge();">
@@ -2615,10 +2595,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </a>
   </li>
 
-  <li><a class="menu-box" href="#" onclick="showPage('resources')">
-    <img src="https://i.imgur.com/wuYiPr5.png" alt="Resources">
-    <span>Resources</span></a>
-  </li>
+ 
 
   <li id="adminNotifBtn" style="display:none;">
     <a class="menu-box" href="#" onclick="showPage('notifications')" style="position: relative;">
@@ -2628,26 +2605,6 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     </a>
   </li>
 
-  <li>
-    <a class="menu-box" href="#" onclick="openMyChats()" style="position:relative;">
-      <img src="https://i.imgur.com/9OvoTnl.jpeg" alt="My Chats">
-      <span>My Chats</span>
-      <span id="myChatsUnreadBadge" style="
-        display:none;
-        background:#f44336;
-        color:white;
-        font-size:12px;
-        padding:2px 6px;
-        border-radius:50%;
-        position:absolute;
-        top:0;
-        right:0;
-        font-weight:bold;
-        min-width:18px;
-        text-align:center;
-      ">0</span>
-    </a>
-  </li>
 
   <li>
     <a class="menu-box" href="#" onclick="loadAlerts()" style="position: relative;">
@@ -6345,8 +6302,31 @@ async function loadSwaps() {
           const hotBadge = isHotSwap ? `<span class="hot-badge" style="color:white;background:red;padding:4px;border-radius:4px;font-size:12px;margin-left:6px;">HOT</span>` : "";
 
           const contactHTML = `<div style="margin:4px 0;">📞 <a href="tel:${s.phone}" style="color:green;">${s.phone}</a><br>💬 <a href="https://wa.me/254${s.phone.replace(/^0/, '')}" target="_blank" style="color:#25D366;">WhatsApp</a></div>`;
+const blurredContactHTML = `
+  <div style="margin:6px 0; text-align:left;">
+    
+    <!-- Blurred Phone Number -->
+    <div style="margin:4px 0; padding:6px 10px; background:#4caf50; color:white; border-radius:6px; display:inline-flex; align-items:center; cursor:pointer;">
+      <span class="blurred-contact" data-contact="${s.phone}">
+        ${s.phone ? s.phone.slice(0, 4) + "••••••" : "••••••"}
+      </span>
+      <i class="fas fa-phone-alt" style="margin-left:8px; color:white;"></i>
+    </div>
 
-          const blurredContactHTML = `<div style="margin:6px 0; text-align:left;"><span style="color:crimson; font-size:13px; font-weight:bold;">🔒 Contacts locked. Pay Ksh ${isHotSwap ? 500 : 250} to unlock</span><br><button onclick="showPaymentModalFor('swap', ${isHotSwap ? 500 : 250}, '${s.id}', 'Unlock Contacts ')" style="margin-top:4px;background:crimson;color:white;border:none;padding:5px 10px;border-radius:4px;">💳 Pay Now</button></div>`;
+    <!-- Payment Message -->
+    <span style="color:crimson; font-size:13px; font-weight:bold; display:block; margin-top:4px;">
+      🔒 Contacts locked. Pay Ksh ${isHotSwap ? 500 : 250} to unlock
+    </span>
+
+    <!-- Payment Button -->
+    <button 
+      onclick="showPaymentModalFor('swap', ${isHotSwap ? 500 : 250}, '${s.id}', 'Unlock Contacts')"
+      style="margin-top:6px; background:crimson; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:14px; cursor:pointer;">
+      💳 Pay Now
+    </button>
+
+  </div>`;
+
 
           const closedContactHTML = `<div style="margin:6px 0; text-align:left; color:red; font-weight:bold;">🚫 This swap is closed</div>`;
 
@@ -7597,15 +7577,46 @@ else if (jobType.includes("intern")) iconClass = "fa-user-graduate", bgColor = "
     const looksLikePhone = val => /^[\d+\s-]{6,}$/.test(val);
     let contactSection = "";
 
-    if (isPoster || isAdmin || hasAccess) {
-      // Show directly
-      contactSection = renderBomJobContact(job, looksLikePhone);
-    } else {
-      let amount = hasPhone || looksLikePhone(job.contact) ? 350 : 50;
-      let label = hasPhone || looksLikePhone(job.contact) ? "Phone" : "Application link";
-      contactSection = `<div id="contact-${job.id}" class="blurred"><p style="color:gray;">🔒 ${label} – Pay Ksh ${amount} to unlock</p>
-        <button onclick="unlockBomJobs('${job.id}', ${amount})" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;border:none;cursor:pointer;">💳 Unlock ${label} (Ksh ${amount})</button></div>`;
-    }
+   if (isPoster || isAdmin || hasAccess) {
+
+  // FULLY VISIBLE CONTACT
+  contactSection = renderBomJobContact(job, looksLikePhone);
+
+} else {
+
+  let isPhone = hasPhone || looksLikePhone(job.contact);
+  let amount = isPhone ? 350 : 50;
+  let label = isPhone ? "Phone" : "Application link";
+
+  let blurredValue = isPhone
+    ? job.contact.slice(0, 4) + "••••••"   // mask phone number
+    : "••••••";                            // generic blur for links
+
+  contactSection = `
+    <div id="contact-${job.id}" class="blurred" style="margin:8px 0;">
+
+      <!-- Blurred Contact -->
+      <div style="border:2px solid #4caf50; background:#4caf50; padding:8px 12px; border-radius:6px; display:inline-flex; align-items:center; cursor:pointer;">
+        <span class="blurred-contact" data-contact="${job.contact}">
+          ${blurredValue}
+        </span>
+        <i class="fas fa-lock" style="margin-left:8px; color:white;"></i>
+      </div>
+
+      <!-- Message -->
+      <p style="color:gray; margin:6px 0 0;">
+        🔒 ${label} – Pay Ksh ${amount} to unlock
+      </p>
+
+      <!-- Payment Button -->
+      <button 
+        onclick="unlockBomJobs('${job.id}', ${amount})"
+        style="margin-top:6px; color:white; background:#4caf50; padding:8px 12px; border-radius:6px; border:none; cursor:pointer;">
+        💳 Unlock ${label} (Ksh ${amount})
+      </button>
+    </div>`;
+}
+
 
     const actionButtons = `
       ${(isPoster || isAdmin)? `<button onclick="confirmDeleteBOMJob('${job.id}')" style="background:#dc3545;color:white;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;">🗑️ Delete</button>` : ''}
@@ -7672,18 +7683,6 @@ function renderBomJobContact(job, looksLikePhone) {
 /* ✅ Unlock function */
 function unlockBomJobs(jobId, amount) {
   showPaymentModalFor("bomJobUnlock", amount, jobId, "Unlock Job Contact");
-}
-
-/* ✅ After payment, unblur instantly */
-function unblurBomJobContact(jobId) {
-  const job = window.allBomJobs?.find(j => j.id === jobId);
-  if (!job) return;
-
-  const looksLikePhone = val => /^[\d+\s-]{6,}$/.test(val);
-  const contactDiv = document.getElementById(`contact-${jobId}`);
-  if (!contactDiv) return;
-
-  contactDiv.innerHTML = renderBomJobContact(job, looksLikePhone);
 }
 // Function to handle following a job 
 function followJob(jobId) {
@@ -8866,16 +8865,30 @@ function renderSoulmateCard(d, container) {
       </div>
     </div>`;
 
-  const blurredContactHTML = `
-    <div class="contact-container" data-phone="${d.phone || ''}">
-      <div class="blurred" style="display:flex; flex-direction:column; gap:12px; margin-top:12px; font-family: 'Arial', sans-serif;">
-        <div style="color:crimson; font-size:16px; font-weight:bold; margin-top:8px;">🔒 Pay Ksh 200 to Unlock Contacts</div>
-        <button onclick="showPaymentModalFor('soulmateUnlock', 200, '${id}', '${d.name || ''}')"
-          style="margin-top:8px; background:crimson; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:18px;">
-          💳 Pay
-        </button>
+const blurredContactHTML = `
+  <div class="contact-container" data-phone="${d.phone || ''}">
+    <div style="display:flex; flex-direction:column; gap:12px; margin-top:12px; font-family: 'Arial', sans-serif;">
+      
+      <!-- Blurred phone number -->
+      <div style="border: 2px solid #4caf50; background-color: #4caf50; padding: 8px 16px; border-radius: 12px; display:flex; align-items:center; max-width:180px; cursor:pointer;">
+        <span class="blurred-contact" data-contact="${d.phone}">
+          ${d.phone ? d.phone.slice(0,4) + "••••••" : "••••••"}
+        </span>
+        <i class="fas fa-phone-alt" style="margin-left: 8px; color:white;"></i>
       </div>
-    </div>`;
+
+      <div style="color:crimson; font-size:16px; font-weight:bold; margin-top:8px;">
+        🔒 Pay Ksh 200 to Unlock Contacts
+      </div>
+
+      <button onclick="showPaymentModalFor('soulmateUnlock', 200, '${id}', '${d.name || ''}')"
+        style="margin-top:8px; background:crimson; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:18px;">
+        💳 Pay
+      </button>
+
+    </div>
+  </div>`;
+
 
   const profileContent = d.isClosed ? `
     <p style="color:#999;">Profile Locked</p>
@@ -8972,34 +8985,7 @@ function resetSoulmateBadge() {
     localStorage.setItem("lastSeenSoulmateTimestamp", lastSeenSoulmateTimestamp.toISOString());
   }
 }
-function unblurSoulmateContact(soulmateId) {
-  const card = document.querySelector(`#soulmate-${soulmateId}`);
-  if (!card) return;
 
-  const phone = card.getAttribute("data-phone");
-  const contactSection = card.querySelector(".blurred");
-
-  if (contactSection) {
-    const phoneHTML = `
-      <div style="margin:4px 0; font-family: Arial, sans-serif;">
-        <!-- Phone Number -->
-        <div style="border:2px solid #4caf50;background-color:#4caf50;padding:8px 16px;border-radius:12px;display:flex;align-items:center;margin-bottom:8px;max-width:180px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-          <span style="font-size:18px;color:white;font-weight:bold;">${phone}</span>
-          <i class="fas fa-phone-alt" style="margin-left:8px;color:white;"></i>
-        </div>
-
-        <!-- WhatsApp -->
-        <div style="border:2px solid #25D366;background-color:#25D366;padding:8px 16px;border-radius:12px;display:flex;align-items:center;max-width:180px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-          <span style="font-size:18px;color:white;font-weight:bold;">WhatsApp</span>
-          <i class="fab fa-whatsapp" style="margin-left:8px;color:white;"></i>
-        </div>
-      </div>
-    `;
-    contactSection.outerHTML = phoneHTML;
-  }
-
-  localStorage.setItem(`unlockedSoulmate_${soulmateId}`, "yes");
-}
 // 🔹 Prepend new soulmate card in real-time
 function prependNewSoulmate(d) {
   const container = document.querySelector("#soulmateContainer");
@@ -10046,94 +10032,7 @@ async function verifyServiceDirectly(serviceId) {
 }
 
 
-function handlePaymentSuccess(paymentType, itemId) {
-  if (paymentType === 'serviceVerification') {
-    verifyServiceDirectly(itemId);
-  }
-  else if (paymentType === 'serviceBoost') {
-    boostServiceDirectly(itemId);
-  }
-  else if (paymentType === 'marketVerification') {
-    verifyMarketDirectly(itemId);
-  }
-  else if (paymentType === 'marketBoost') {
-    boostMarketDirectly(itemId);
-  }
-  else if (paymentType === 'swap') {
-    // ✅ Instantly unblur swap contact
-    unblurSwapContact(itemId);
-    showCustomAlert("✅ Swap contact unlocked!", "success");
-    closeUniversalModal();
-  }
-  else if (paymentType === 'bomJobUnlock') {
-    // ✅ Instantly unblur BOM job contact
-    unblurBomJobContact(itemId);
-    showCustomAlert("✅ Job contact unlocked!", "success");
-    closeUniversalModal();
-  }
-}
 
-/* ===================== 🔓 Contact Unblur Helpers ===================== */
-function unblurSwapContact(swapId) {
-  const card = document.querySelector(`.swap-card[data-id="${swapId}"]`);
-  if (!card) return;
-
-  // get swap data if already in DOM
-  const phone = card.getAttribute("data-phone");
-  if (!phone) return;
-
-  const contactHTML = `
-    <div style="margin:4px 0;">
-      📞 <a href="tel:${phone}" style="color:green;">${phone}</a><br>
-      💬 <a href="https://wa.me/254${phone.replace(/^0/, '')}" target="_blank" style="color:#25D366;">WhatsApp</a>
-    </div>
-  `;
-  const contactContainer = card.querySelector(".blurred, div[style*='🔒']");
-  if (contactContainer) {
-    contactContainer.outerHTML = contactHTML;
-  }
-
-  // mark in localStorage so next reload stays unlocked
-  localStorage.setItem(`unlockedSwap_${swapId}`, "yes");
-}
-
-function unblurBomJobContact(jobId) {
-  const card = document.querySelector(`.job-card[data-id="${jobId}"]`);
-  if (!card) return;
-
-  const phone = card.getAttribute("data-phone");
-  const contact = card.getAttribute("data-contact");
-
-  let contactHTML = "";
-  const looksLikePhone = val => /^[\d+\s-]{6,}$/.test(val);
-
-  if (phone && phone.trim() !== "") {
-    contactHTML = `
-      <p style="color:#009688;margin-bottom:8px;">
-        <strong>Phone:</strong><br>
-        <a href="tel:${phone}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${phone}</a>
-      </p>
-    `;
-  } else if (contact && contact.trim() !== "") {
-    contactHTML = looksLikePhone(contact)
-      ? `<p style="color:#009688;margin-bottom:8px;">
-          <strong>Phone:</strong><br>
-          <a href="tel:${contact}" style="color:white;background:#4caf50;padding:8px 12px;border-radius:6px;text-decoration:none;">📞 ${contact}</a>
-        </p>`
-      : `<p style="color:#009688;margin-bottom:8px;">
-          <strong>Application Link:</strong><br>
-          <a href="${contact}" target="_blank" style="color:white;background:#2196f3;padding:8px 12px;border-radius:6px;text-decoration:none;">🔗 Open Link</a>
-        </p>`;
-  }
-
-  const contactContainer = card.querySelector(".blurred, div[style*='🔒']");
-  if (contactContainer) {
-    contactContainer.outerHTML = contactHTML;
-  }
-
-  // mark in localStorage so next reload stays unlocked
-  localStorage.setItem(`unlockedJob_${jobId}`, "yes");
-}
 
 
 
@@ -13286,127 +13185,6 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
   }
 }
 
-
-// ✅ Handle Firestore updates after payment
-async function handlePaymentSuccess(type, itemId, itemName, userId) {
-  const now = new Date();
-  const isoNow = now.toISOString();
-  const userRef = userId !== "anonymous" ? firebase.firestore().collection("users").doc(userId) : null;
-
-  if (type === "soulmate") {
-    const boostExpiry = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-    await firebase.firestore().collection("soulmates").doc(itemId).update({
-      boosted: true,
-      boostExpiry
-    });
-    showCustomAlert("✅ Soulmate profile boosted successfully!", "success");
-    loadSoulmates();
-  }
-
-  if (type === "boost") {
-    await firebase.firestore().collection("boostedItems").doc(itemId).set(
-      { boostedAt: isoNow, itemName, userId },
-      { merge: true }
-    );
-    localStorage.setItem(`boosted_${itemId}`, isoNow);
-  }
-
-  if (type === "unlock") {
-    await userRef.set({ paidToUnlock: isoNow }, { merge: true });
-    localStorage.setItem("paidToUnlock", isoNow);
-  }
-
-  if (type === "serviceVerification") {
-    await servicesRef.doc(itemId).set({ verified: true }, { merge: true });
-    showCustomAlert("✅ Service verified successfully!", "success");
-    loadServices();
-  }
-
-  if (type === "marketVerification") {
-    await marketRef.doc(itemId).set({ verified: true }, { merge: true });
-    showCustomAlert("✅ Market item verified successfully!", "success");
-    loadMarketItems();
-  }
-
-  if (type === "soulmateVerification") {
-    await soulmateRef.doc(itemId).set({ verified: true }, { merge: true });
-    showCustomAlert("✅ Soulmate profile verified successfully!", "success");
-    loadSoulmates();
-  }
-
-  // 🔹 Handle swap unlock
-  if (type === "swap") {
-    await firebase.firestore().collection("unlocks").doc(`${userId}_${itemId}`).set({
-      userId,
-      itemId,
-      type,
-      paid: true,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    const card = document.querySelector(`[data-swapid="${itemId}"]`);
-    if (card) {
-      const phone = card.getAttribute("data-phone");
-      const contactDiv = card.querySelector(".contact-container");
-      if (contactDiv && phone) {
-        contactDiv.innerHTML = `
-          <div style="margin:6px 0; text-align:left;">
-            📞 <a href="tel:${phone}" style="color:green;">${phone}</a><br>
-            💬 <a href="https://wa.me/254${phone.replace(/^0/,'')}" target="_blank" style="color:#25D366;">WhatsApp</a>
-          </div>
-        `;
-      }
-    }
-
-    showCustomAlert("✅ Contacts unlocked successfully!", "success");
-    closeUniversalModal(); 
-  }
-
-  // 🔹 Handle soulmate unlock
-  if (type === "soulmateUnlock") {
-    await firebase.firestore().collection("unlocks").doc(`${userId}_${itemId}`).set({
-      userId,
-      itemId,
-      type,
-      paid: true,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    // Save in localStorage so it stays unlocked
-    localStorage.setItem(`unlockedSoulmate_${itemId}`, "yes");
-
-    // Immediately update the UI: unblur contact
-    const card = document.getElementById(`soulmate-${itemId}`);
-    if (card) {
-      const contactDiv = card.querySelector(".contact-container");
-      if (contactDiv) {
-        const phone = card.getAttribute("data-phone") || "0700000000"; // fallback
-        contactDiv.innerHTML = `
-          <div style="margin:4px 0; font-family: Arial, sans-serif;">
-            <!-- Phone -->
-            <div style="border: 2px solid #4caf50; background-color: #4caf50; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 8px; max-width: 180px;">
-              <span style="font-size: 18px; color:white; font-weight: bold;">${phone}</span>
-              <i class="fas fa-phone-alt" style="margin-left: 8px; color:white;"></i>
-            </div>
-            <!-- WhatsApp -->
-            <div style="border: 2px solid #25D366; background-color: #25D366; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; max-width: 180px;">
-              <span style="font-size: 18px; color:white; font-weight: bold;">WhatsApp</span>
-              <i class="fab fa-whatsapp" style="margin-left: 8px; color:white;"></i>
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    showCustomAlert("✅ Soulmate contacts unlocked successfully!", "success");
-    closeUniversalModal();
-  }
-}
-
-
-
-
-
 function closeUniversalModal() {
   const modal = document.getElementById("universalPayModal");
   if (modal) modal.remove();
@@ -15723,29 +15501,6 @@ function handlePaymentSuccess(paymentType, itemId, amount = 0) {
   }
 }
 
-/* ===================== 🔓 Unlock functions ===================== */
-function unblurSwapContact(itemId) {
-  const elem = document.querySelector(`#swapContact-${itemId}`);
-  if (elem) elem.classList.remove("blurred-number");
-}
-
-function unblurBomJobContact(itemId) {
-  const elem = document.querySelector(`#jobContact-${itemId}`);
-  if (elem) elem.classList.remove("blurred-number");
-}
-
-function unblurServiceContact(itemId) {
-  const elem = document.querySelector(`#serviceContact-${itemId}`);
-  if (elem) elem.classList.remove("blurred-number");
-}
-
-function unblurSoulmateContact(itemId) {
-  const elem = document.querySelector(`#soulmateContact-${itemId}`);
-  if (elem) elem.classList.remove("blurred-number");
-}
-
-/* ===================== 🚀 Premium feature functions ===================== */
-// Boost a post
 function boostItem(itemId) {
   const elem = document.querySelector(`#post-${itemId}`);
   if (elem) {
@@ -15775,7 +15530,58 @@ function allowExtraPost(userId) {
 }
 
 
+// When user clicks a blurred number
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("blurred-contact")) {
+      const number = e.target.getAttribute("data-contact");
+      localStorage.setItem("pendingContact", number);
+
+      // OPEN your existing payment modal
+      document.getElementById("paymentModal").style.display = "block";
+  }
+});
+
+// Call THIS after payment is successful
+function revealPaidContact() {
+    const number = localStorage.getItem("pendingContact");
+    if (!number) return;
+
+    // Reveal all matching blurred numbers
+    document.querySelectorAll(".blurred-contact").forEach(el => {
+        if (el.getAttribute("data-contact") === number) {
+            el.textContent = number;
+            el.style.filter = "none";
+            el.style.color = "blue";
+            el.style.cursor = "default";
+        }
+    });
+
+    // Save permanently
+    let unlocked = JSON.parse(localStorage.getItem("unlockedContacts") || "[]");
+    if (!unlocked.includes(number)) unlocked.push(number);
+    localStorage.setItem("unlockedContacts", JSON.stringify(unlocked));
+
+    // Close modal
+    document.getElementById("paymentModal").style.display = "none";
+
+    localStorage.removeItem("pendingContact");
+}
+
+// Auto-restore unlocked contacts
+document.addEventListener("DOMContentLoaded", () => {
+    let unlocked = JSON.parse(localStorage.getItem("unlockedContacts") || "[]");
+    unlocked.forEach(number => {
+        document.querySelectorAll(".blurred-contact").forEach(el => {
+            if (el.getAttribute("data-contact") === number) {
+                el.textContent = number;
+                el.style.filter = "none";
+            }
+        });
+    });
+});
+
+
 
 </script>
 
-</script>
+
