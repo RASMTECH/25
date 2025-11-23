@@ -13108,54 +13108,67 @@ function showPaymentModalFor(type, amount, itemId, itemName, prefilledPhone = ""
   const existingModal = document.getElementById("universalPayModal");
   if (existingModal) existingModal.remove();
 
-  const modalHTML = `
-    <div id="universalPayModal" style="
-      display:flex; justify-content:center; align-items:center;
-      position:fixed; inset:0; background:rgba(0,0,0,.55);
-      backdrop-filter:blur(3px); z-index:9999; animation:fadeIn .25s ease-out;">
-      
-      <div class="modal-content" style="
-        padding:20px; background:#f9f9ff; border:2px solid #4CAF50;
-        width:90%; max-width:400px; border-radius:12px; text-align:center;">
+const modalHTML = `
+  <div id="universalPayModal" style="
+    display:flex; justify-content:center; align-items:center;
+    position:fixed; inset:0; background:rgba(0,0,0,.55);
+    backdrop-filter:blur(3px); z-index:9999; animation:fadeIn .25s ease-out;">
+    
+    <div class="modal-content" style="
+      padding:16px; background:#f9f9ff; border:2px solid #4CAF50;
+      width:92%; max-width:360px; border-radius:12px; text-align:center;
+      box-sizing:border-box;">
 
-        <h3 style="color:#2c3e50;">
-          ${titleText}: <span style="color:#4CAF50;">${itemName}</span>
-        </h3>
+      <h3 style="color:#2c3e50; font-size:18px; margin-bottom:8px;">
+        ${titleText}: <span style="color:#4CAF50;">${itemName}</span>
+      </h3>
 
-        <p style="font-size:16px;">
-          Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong>
-        </p>
+      <p style="font-size:14px; margin:4px 0 10px;">
+        Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong>
+      </p>
 
-        <input type="tel" id="universalPhone" value="${autoPhone}"
-          placeholder="Enter your MPESA number (07xxxxxxxx)"
-          style="padding:10px; width:100%; margin-bottom:10px;
-          border:1px solid #ccc; border-radius:8px;" />
+      <input type="tel" id="universalPhone" value="${autoPhone}"
+        placeholder="Enter MPESA number (07xxxxxxxx)"
+        style="
+          padding:8px; width:100%; margin-bottom:8px;
+          font-size:14px;
+          border:1px solid #ccc; border-radius:6px;
+        " />
 
-        <button id="payBtn"
-          onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}', event)"
-          style="background:#4CAF50; color:white; border:none;
-          padding:10px 20px; border-radius:6px; font-weight:bold; width:100%;">
-          📲 Pay with MPESA
-        </button>
+      <button id="payBtn"
+        onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}', event)"
+        style="
+          background:#4CAF50; color:white; border:none;
+          padding:10px; border-radius:6px;
+          font-weight:bold; width:100%; font-size:15px;
+        ">
+        📲 Pay with MPESA
+      </button>
 
-        <button onclick="closeUniversalModal()" 
-          style="margin-top:10px; background:#e53935; color:white; border:none;
-          padding:8px 16px; border-radius:6px; width:100%;">
-          ❌ Cancel
-        </button>
+      <button onclick="closeUniversalModal()" 
+        style="
+          margin-top:8px; background:#e53935; color:white; border:none;
+          padding:8px; border-radius:6px; width:100%; font-size:14px;
+        ">
+        ❌ Cancel
+      </button>
 
-        <button id="retryBtn"
-          onclick="retryPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
-          style="margin-top:10px; background:#ff9800; color:white; border:none;
-          padding:8px 16px; border-radius:6px; width:100%; display:none;">
-          🔄 Retry Payment
-        </button>
+      <button id="retryBtn"
+        onclick="retryPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
+        style="
+          margin-top:8px; background:#ff9800; color:white; border:none;
+          padding:8px; border-radius:6px; width:100%;
+          display:none; font-size:14px;
+        ">
+        🔄 Retry Payment
+      </button>
 
-        <p id="universalPaymentStatus" style="margin-top:10px; color:#555;"></p>
-        <p id="universalCountdown" style="margin-top:5px; color:#007bff; font-weight:bold;"></p>
-      </div>
+      <p id="universalPaymentStatus" style="margin-top:8px; color:#555; font-size:13px;"></p>
+      <p id="universalCountdown" style="margin-top:5px; color:#007bff; font-weight:bold; font-size:13px;"></p>
     </div>
-  `;
+  </div>
+`;
+
 
   document.body.insertAdjacentHTML("beforeend", modalHTML);
 
