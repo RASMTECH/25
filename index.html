@@ -3222,8 +3222,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
       
       <li><a href="#" onclick="loadAlerts()"><img src="https://i.imgur.com/IvZc6We.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>Alerts</strong></a> – Notifications when someone shows interest in your listing, follows you, or interacts with your posts.</li>
       
-      <li><a href="#" onclick="openMessagesPage()"><img src="https://i.imgur.com/XBAeDCN.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>Messages</strong></a> – View and reply to job, market, swap, or service chats. Unread messages are highlighted.</li>
-      
+  
       <li><a href="#" onclick="showPage('bomJobs')"><img src="https://i.imgur.com/8KM6Rib.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>My Jobs</strong></a> – Post jobs, view applicants, show interest in other jobs, follow updates, unlock contacts, close/reopen jobs, and leave ratings.</li>
       
       <li><a href="#" onclick="showPage('swaps')"><img src="https://i.imgur.com/iqBwsWm.png" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>Swaps</strong></a> – Browse and post swap listings  Contact owners via chat or phone.</li>
@@ -3234,8 +3233,7 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
       
       <li><a href="#" onclick="showPage('soulmates')"><img src="https://i.imgur.com/FJjbSK9.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>Soulmate</strong></a> – Discover and connect with people for social or personal networking.</li>
       
-      <li><a href="#" onclick="showPage('resources')"><img src="https://i.imgur.com/GavIBlL.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>Resources</strong></a> – Access useful information, guides, and learning materials.</li>
-      
+ 
       <li><a href="#" onclick="showPage('trendingSection'); loadTrendingItems();"><img src="https://i.imgur.com/SjtDlJi.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>🔥 Trending</strong></a> – See popular boosted jobs, services, and items. Boost your listing for 7 days to appear here.</li>
       
       <li><a href="#" onclick="showPage('usageHelp')"><img src="https://i.imgur.com/tHuRu3z.jpeg" style="width:24px; vertical-align:middle; margin-right:8px;"> <strong>📘 How to Use</strong></a> – Read this guide anytime to understand all features.</li>
@@ -13075,93 +13073,175 @@ function resetMarketFilters() {
   // Re-run filter to show all items
   filterMarketItems();
 }
-// ✅ Set your backend URL here (update when ngrok changes)
-const BACKEND_URL = "https://aa2347769813.ngrok-free.app";
+// ---------------------------------------------
+// ✅ Auto-detect backend URL (ngrok changes daily)
+// ---------------------------------------------
+const BACKEND_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "https://aa2347769813.ngrok-free.app";
 
 
+// ------------------------------------------------------------
+// ✅ Payment Modal UI + Improved Title Logic + Phone Prefill
+// ------------------------------------------------------------
 function showPaymentModalFor(type, amount, itemId, itemName, prefilledPhone = "") {
-  let titleText = "Pay to Unlock";
   const normalizedType = type.toLowerCase();
 
-  if (normalizedType === "boost") titleText = "Pay to Boost";
-  else if (normalizedType === "unlock") titleText = "Pay to Unlock Contacts";
-  else if (normalizedType.endsWith("verification")) titleText = "Pay for Verification";
-  else if (normalizedType === "driver_registration") titleText = "Pay to Register"; // ✅ driver registration
+  const titleMap = {
+    boost: "Pay to Boost",
+    unlock: "Pay to Unlock Contacts",
+    verify: "Pay for Verification",
+    driver_registration: "Pay to Register"
+  };
+
+  const titleText = titleMap[normalizedType] || "Pay to Unlock";
+
+  // Auto-fill phone
+  const autoPhone =
+    prefilledPhone ||
+    (currentUser?.phoneNumber?.startsWith("+254")
+      ? "0" + currentUser.phoneNumber.slice(4)
+      : "");
 
   // Remove existing modal
   const existingModal = document.getElementById("universalPayModal");
   if (existingModal) existingModal.remove();
 
   const modalHTML = `
-    <div id="universalPayModal" class="modal" style="
-         display:flex; justify-content:center; align-items:center;
-         position:fixed; top:0; left:0; width:100%; height:100%;
-         background:rgba(0,0,0,0.6); z-index:9999;">
+    <div id="universalPayModal" style="
+      display:flex; justify-content:center; align-items:center;
+      position:fixed; inset:0; background:rgba(0,0,0,.55);
+      backdrop-filter:blur(3px); z-index:9999; animation:fadeIn .25s ease-out;">
+      
       <div class="modal-content" style="
-           padding:20px; background:#f9f9ff; border:2px solid #4CAF50;
-           width:80%; max-width:400px; border-radius:10px; text-align:center;">
-        <h3 style="color:#2c3e50;">${titleText}: <span style="color:#4CAF50;">${itemName}</span></h3>
-        <p style="font-size:16px;">Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong></p>
-        <input type="tel" id="universalPhone" value="${prefilledPhone}"
-               placeholder="Enter your MPESA number (e.g. 0712345678)"
-               style="padding:10px; width:100%; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;" />
-        <button onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
-                style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:6px; font-weight:bold;">
+        padding:20px; background:#f9f9ff; border:2px solid #4CAF50;
+        width:90%; max-width:400px; border-radius:12px; text-align:center;">
+
+        <h3 style="color:#2c3e50;">
+          ${titleText}: <span style="color:#4CAF50;">${itemName}</span>
+        </h3>
+
+        <p style="font-size:16px;">
+          Amount: <strong style="color:#388e3c;">Ksh ${amount}</strong>
+        </p>
+
+        <input type="tel" id="universalPhone" value="${autoPhone}"
+          placeholder="Enter your MPESA number (07xxxxxxxx)"
+          style="padding:10px; width:100%; margin-bottom:10px;
+          border:1px solid #ccc; border-radius:8px;" />
+
+        <button id="payBtn"
+          onclick="initiateStkPayment('${type}', ${amount}, '${itemId}', '${itemName}', event)"
+          style="background:#4CAF50; color:white; border:none;
+          padding:10px 20px; border-radius:6px; font-weight:bold; width:100%;">
           📲 Pay with MPESA
         </button>
-        <br/>
+
         <button onclick="closeUniversalModal()" 
-                style="margin-top:10px; background:#e53935; color:white; border:none; padding:8px 16px; border-radius:6px;">
+          style="margin-top:10px; background:#e53935; color:white; border:none;
+          padding:8px 16px; border-radius:6px; width:100%;">
           ❌ Cancel
         </button>
+
+        <button id="retryBtn"
+          onclick="retryPayment('${type}', ${amount}, '${itemId}', '${itemName}')"
+          style="margin-top:10px; background:#ff9800; color:white; border:none;
+          padding:8px 16px; border-radius:6px; width:100%; display:none;">
+          🔄 Retry Payment
+        </button>
+
         <p id="universalPaymentStatus" style="margin-top:10px; color:#555;"></p>
         <p id="universalCountdown" style="margin-top:5px; color:#007bff; font-weight:bold;"></p>
       </div>
     </div>
   `;
+
   document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-  // Countdown timer (2 minutes)
+  // Close modal when clicking background
+  document.getElementById("universalPayModal").addEventListener("click", (e) => {
+    if (e.target.id === "universalPayModal") closeUniversalModal();
+  });
+
+  // Countdown
   let countdown = 120;
   const countdownEl = document.getElementById("universalCountdown");
-  const interval = setInterval(() => {
-    const minutes = Math.floor(countdown / 60);
-    const seconds = countdown % 60;
-    countdownEl.innerText = `⏳ Waiting for payment... ${minutes}:${seconds.toString().padStart(2,"0")}`;
+
+  window.universalCountdownTimer = setInterval(() => {
+    const m = Math.floor(countdown / 60);
+    const s = countdown % 60;
+    countdownEl.innerHTML = `⏳ <strong>Waiting for payment:</strong> ${m}:${s
+      .toString()
+      .padStart(2, "0")}`;
+
     countdown--;
     if (countdown < 0) {
-      clearInterval(interval);
+      clearInterval(window.universalCountdownTimer);
       countdownEl.innerText = "⌛ Payment window expired. Please try again.";
     }
   }, 1000);
 }
 
 
-// ✅ Close modal
+// ---------------------------------------------
+// ✅ Close Modal
+// ---------------------------------------------
 function closeUniversalModal() {
+  clearInterval(window.universalCountdownTimer);
   const modal = document.getElementById("universalPayModal");
   if (modal) modal.remove();
 }
 
-async function initiateStkPayment(type, amount, itemId, itemName) {
+
+// ---------------------------------------------
+// ✅ Polling Helper
+// ---------------------------------------------
+function pollPayment(accountReference, callback) {
+  const poll = setInterval(async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/payment-status/${accountReference}`);
+      const statusData = await res.json();
+
+      if (statusData.ResultCode !== undefined) {
+        clearInterval(poll);
+        callback(statusData);
+      }
+    } catch (err) {
+      console.error("Polling error:", err.message);
+    }
+  }, 3000);
+}
+
+
+// ---------------------------------------------
+// ✅ STK Push Processing + Retry Integration
+// ---------------------------------------------
+async function initiateStkPayment(type, amount, itemId, itemName, event) {
   const phoneInput = document.getElementById("universalPhone").value.trim();
   const statusEl = document.getElementById("universalPaymentStatus");
+  const btn = event.target;
 
-  // Validate phone number
-  if (!/^07\d{8}$/.test(phoneInput)) {
-    statusEl.innerText = "⚠️ Please enter a valid Safaricom number (07XXXXXXXX)";
+  // Disable button to avoid double STK spam
+  btn.disabled = true;
+  btn.innerText = "Processing...";
+
+  // Better phone validation
+  if (!/^(07|01)\d{8}$/.test(phoneInput)) {
+    statusEl.innerText = "⚠️ Enter a valid Safaricom number (07xx or 01xx)";
+    btn.disabled = false;
+    btn.innerText = "📲 Pay with MPESA";
     return;
   }
 
-  // Convert to international format (2547XXXXXXXX)
   const phone = "254" + phoneInput.substring(1);
   const userId = currentUser?.uid || "anonymous";
   const accountReference = `${userId}_${Date.now()}`;
 
-  statusEl.innerText = "⏳ Sending STK Push...";
+  // Spinner
+  statusEl.innerHTML = `<span class="loader"></span> Sending STK Push...`;
 
   try {
-    // 🔹 Call your backend
     const response = await fetch(`${BACKEND_URL}/stkpush`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -13169,53 +13249,101 @@ async function initiateStkPayment(type, amount, itemId, itemName) {
     });
 
     const data = await response.json();
+
     if (data.ResponseCode !== "0") {
       statusEl.innerText = `❌ Error: ${data.errorMessage || data.ResultDesc || "Unknown failure"}`;
+      btn.disabled = false;
+      btn.innerText = "📲 Pay with MPESA";
+      document.getElementById("retryBtn").style.display = "block";
       return;
     }
 
     statusEl.innerText = "✅ STK Push sent. Complete payment on your phone.";
 
-    // 🔹 Poll backend every 3s for payment result
-    const poll = setInterval(async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/payment-status/${accountReference}`);
-        const statusData = await res.json();
+    // Polling
+    pollPayment(accountReference, (statusData) => {
+      if (statusData.ResultCode === 0) {
+        statusEl.innerText = "🎉 Payment successful!";
 
-        if (statusData.ResultCode !== undefined) {
-          if (statusData.ResultCode === 0) {
-            statusEl.innerText = "🎉 Payment successful!";
-            clearInterval(poll);
-
-            // ✅ Differentiate flows
-            if (type === "verify") {
-              verifyDriverPayment(itemId, amount);  // mark existing driver verified
-            } else if (type === "driver_registration") {
-              registerDriverAfterPayment(userId, phone, amount, itemName); // create new driver
-            } else {
-              handlePaymentSuccess(type, itemId, amount, userId);
-            }
-
-            setTimeout(closeUniversalModal, 1500);
-          } else {
-            statusEl.innerText = `❌ Payment failed: ${statusData.ResultDesc}`;
-            clearInterval(poll);
-          }
+        if (type === "verify") {
+          verifyDriverPayment(itemId, amount);
+        } else if (type === "driver_registration") {
+          registerDriverAfterPayment(userId, phone, amount, itemName);
+        } else {
+          handlePaymentSuccess(type, itemId, amount, userId);
         }
-      } catch (err) {
-        console.error("Poll error:", err.message);
-      }
-    }, 3000);
 
+        setTimeout(closeUniversalModal, 1500);
+      } else {
+        statusEl.innerText = `❌ Payment failed: ${statusData.ResultDesc}`;
+        btn.disabled = false;
+        btn.innerText = "📲 Pay with MPESA";
+        document.getElementById("retryBtn").style.display = "block";
+      }
+    });
   } catch (err) {
     statusEl.innerText = "❌ Network error: " + err.message;
+    btn.disabled = false;
+    btn.innerText = "📲 Pay with MPESA";
+    document.getElementById("retryBtn").style.display = "block";
   }
 }
 
-function closeUniversalModal() {
-  const modal = document.getElementById("universalPayModal");
-  if (modal) modal.remove();
+
+// ---------------------------------------------
+// ✅ Retry Function
+// ---------------------------------------------
+function retryPayment(type, amount, itemId, itemName) {
+  const phone = document.getElementById("universalPhone").value.trim();
+
+  if (!phone || !/^(07|01)\d{8}$/.test(phone)) {
+    document.getElementById("universalPaymentStatus").innerText =
+      "⚠️ Enter a valid phone before retrying";
+    return;
+  }
+
+  // hide retry button until next failure
+  document.getElementById("retryBtn").style.display = "none";
+
+  // trigger payment again
+  initiateStkPayment(type, amount, itemId, itemName, { target: document.getElementById("payBtn") });
 }
+
+
+// ---------------------------------------------
+// Spinner + Animation CSS
+// ---------------------------------------------
+(function injectPaymentStyles() {
+  const css = `
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.97); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ccc;
+      border-top-color: #4CAF50;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  `;
+
+  const styleTag = document.createElement("style");
+  styleTag.type = "text/css";
+  styleTag.appendChild(document.createTextNode(css));
+  document.head.appendChild(styleTag);
+})();
+
 
 function showToast(message, type = "info") {
   const toast = document.createElement("div");
