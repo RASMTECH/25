@@ -2437,6 +2437,151 @@ body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; 
     font-size: 14px;
     text-align: center;
   }
+/* Shake animation */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+/* Red border + shake */
+.invalid-input {
+  border: 2px solid red !important;
+  animation: shake 0.4s;
+}
+
+/* Inline toast message */
+.input-error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+.multi-select {
+  position: relative;
+  width: 250px;
+  font-family: sans-serif;
+}
+
+.multi-select .selected-items {
+  border: 1px solid #ccc;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  background: white;
+}
+
+.multi-select .options {
+  display: none;
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.multi-select .options label {
+  display: block;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.multi-select .options label:hover {
+  background-color: #f0f0f0;
+}
+
+/* Shake animation */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.invalid-input {
+  border: 2px solid red !important;
+  animation: shake 0.4s;
+}
+
+.input-error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+.multi-select {
+  position: relative;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.multi-select .selected-items {
+  border: 1px solid #ccc;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.85);
+  color: red; /* selected subjects in red */
+}
+
+.multi-select .options {
+  display: none;
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: rgba(255,255,255,0.95);
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.multi-select .options label {
+  display: block;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: red; /* options text in red */
+}
+
+.multi-select .options label:hover {
+  background-color: #f0f0f0;
+}
+
+/* Shake animation for validation */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.invalid-input {
+  border: 2px solid red !important;
+  animation: shake 0.4s;
+}
+
+.input-error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+
 </style>
 </head>
 <body>
@@ -2711,6 +2856,38 @@ style="
 ">
   ✅ You have been logged out successfully see you again .
 </div>
+<!-- Active Users Badge -->
+<div id="activeUsersDisplay"
+     style="
+       position: fixed;
+       top: 15px;
+       right: 70px;
+       background: #28a745;
+       color: white;
+       padding: 6px 12px;
+       border-radius: 6px;
+       font-size: 12px;
+       font-weight: bold;
+       display: flex;
+       align-items: center;
+       gap: 5px;
+       z-index: 9999999;
+     ">
+
+  <span style="
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00ff00;
+        box-shadow: 0 0 6px #00ff00;
+        display: inline-block;
+      "></span>
+
+  <span>Active:</span>
+ <span id="activeUsersCount">--</span>
+
+</div>
+
 
 <!-- 🔹 Market Chat Modal -->
 <div id="marketChatModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
@@ -3142,7 +3319,6 @@ style="
   </div>
 </div>
 
-
 <!-- Thank You Alert -->
 <div id="thankYouAlert" style="
   position: fixed;
@@ -3519,8 +3695,60 @@ Trending
   <label for="phone" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Phone Number:</label>
   <input type="tel" id="phone" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;" />
 
-  <label for="subjectCombination" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Subject Combination:</label>
-  <input type="text" id="subjectCombination" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;" />
+  <!-- Multi-select Subject Combination -->
+<label for="subjectCombination" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">
+  Subject Combination (pick up to 2):
+</label>
+<div id="subjectWrapper" class="multi-select">
+  <div class="selected-items">Select subjects</div>
+  <div class="options">
+    <!-- Languages -->
+    <label><input type="checkbox" value="English"> English</label>
+    <label><input type="checkbox" value="Kiswahili"> Kiswahili</label>
+    <label><input type="checkbox" value="Arabic"> Arabic</label>
+    <label><input type="checkbox" value="German"> German</label>
+    <label><input type="checkbox" value="French"> French</label>
+    <label><input type="checkbox" value="SignLanguage"> Sign Language</label>
+
+    <!-- Sciences -->
+    <label><input type="checkbox" value="Mathematics"> Mathematics</label>
+    <label><input type="checkbox" value="Chemistry"> Chemistry</label>
+    <label><input type="checkbox" value="Physics"> Physics</label>
+    <label><input type="checkbox" value="Biology"> Biology</label>
+    <label><input type="checkbox" value="ScienceAndTechnology"> Science and Technology</label>
+
+    <!-- Applied Subjects -->
+    <label><input type="checkbox" value="HomeScience"> Home Science</label>
+    <label><input type="checkbox" value="Agriculture"> Agriculture</label>
+    <label><input type="checkbox" value="ComputerStudies"> Computer Studies</label>
+
+    <!-- Social Studies -->
+    <label><input type="checkbox" value="History"> History</label>
+    <label><input type="checkbox" value="Geography"> Geography</label>
+    <label><input type="checkbox" value="ReligiousEducation"> Religious Education</label>
+    <label><input type="checkbox" value="LifeSkills"> Life Skills</label>
+    <label><input type="checkbox" value="BusinessStudies"> Business Studies</label>
+    <label><input type="checkbox" value="SocialStudies"> Social Studies</label>
+
+    <!-- Creative Arts -->
+    <label><input type="checkbox" value="Music"> Music</label>
+    <label><input type="checkbox" value="ArtAndDesign"> Art and Design</label>
+    <label><input type="checkbox" value="DrawingAndDesign"> Drawing and Design</label>
+    <label><input type="checkbox" value="CreativeArts"> Creative Arts</label>
+    <label><input type="checkbox" value="PhysicalHealthEducation"> Physical and Health Education</label>
+
+    <!-- Technical Subjects -->
+    <label><input type="checkbox" value="BuildingConstruction"> Building/Construction</label>
+    <label><input type="checkbox" value="PowerAndMechanics"> Power and Mechanics</label>
+    <label><input type="checkbox" value="MetalWork"> Metal Work</label>
+    <label><input type="checkbox" value="Aviation"> Aviation</label>
+    <label><input type="checkbox" value="Woodwork"> Woodwork</label>
+    <label><input type="checkbox" value="Electronics"> Electronics</label>
+  </div>
+  <span id="subjectError" class="input-error"></span>
+</div>
+
+
 
   <label for="county" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Current County:</label>
   <select id="county" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;"></select>
@@ -3530,21 +3758,20 @@ Trending
     <option value="">Select Sub-county</option>
   </select>
 
- <label for="swapCounty" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">
-  Swap County To (Optional, select up to 3):
-</label>
+  <label for="swapCounty" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">
+    Swap County To (select up to 3):
+  </label>
 
-<!-- Container for tags -->
-<div id="swapCountyTags" style="margin-top:6px; min-height:28px;"></div>
+  <!-- Container for tags -->
+  <div id="swapCountyTags" style="margin-top:6px; min-height:28px;"></div>
 
-<select id="swapCounty" multiple size="5" style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;">
-  <option value="">Select County</option>
-</select>
+  <select id="swapCounty" multiple size="5" style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;">
+    <option value="">Select County</option>
+  </select>
 
-<small style="color:red; display:block; margin-top:4px; font-style:italic;">
-  Hold Ctrl (Cmd on Mac) to select multiple counties.
-</small>
-
+  <small style="color:red; display:block; margin-top:4px; font-style:italic;">
+    Hold Ctrl (Cmd on Mac) to select multiple counties.
+  </small>
 
   <label for="category" style="display:block; margin-top:12px; font-weight:bold; text-shadow:1px 1px 2px #000;">Category:</label>
   <select id="category" required style="width:100%; padding:10px; margin-top:6px; border:none; border-radius:6px; background:rgba(255,255,255,0.85); font-size:14px;">
@@ -3577,9 +3804,55 @@ Trending
   </button>
 </form>
 
+<h3 style="background-color: white; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
+  <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
+  🏆 Don’t wait – find your ideal swap partners and complete your triangular cycle today!
+</h3>
+
+<div id="triangularSwapSection" style="
+      margin:20px; 
+      padding:15px; 
+      background:#f1f1f1 url('https://i.imgur.com/sX7PxsF.jpeg') no-repeat center center; 
+      background-size:cover; 
+      border-radius:8px; 
+      max-width:500px; 
+      color:#fff;
+">
+  <h3 style="color:#1a237e; margin-bottom:6px;">🔺 Find Triangular Swap</h3>
+  
+<!-- Short note for users -->
+<p style="font-size:13px; color:red; margin-bottom:12px; background-color: yellow; padding: 5px; border-radius: 3px;">
+  Enter three counties to find a matching triangular swap. All three must have teachers wanting to swap in a cycle. Click "Find Triangular Swap" to see results.
+</p>
+
+  
+  <input type="text" id="countyA" placeholder="Enter County A" 
+         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
+         
+  <input type="text" id="countyB" placeholder="Enter County B" 
+         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
+         
+  <input type="text" id="countyC" placeholder="Enter County C" 
+         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
+         
+  <button id="findTriangularSwapBtn" 
+          style="margin-top:10px; padding:10px 12px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; width:100%;">
+    Find Triangular Swap
+  </button>
+  
+  <div id="triangularSwapResult" style="margin-top:12px;"></div>
+</div>
 
 
-
+<div class="scrolling-banner">
+  <div class="scrolling-banner-content">
+    🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
+  </div>
+</div>
+<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
+  <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
+  🔺 Unlock a perfect swap today – find teachers ready to exchange counties effortlessly. Let's scroll down!
+</h3>
 
 <h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-flex; align-items: center; gap: 8px;">
   <i class="fas fa-filter" style="color:#43a047;"></i>
@@ -3731,57 +4004,6 @@ Trending
 <!-- ✅ Compact Action Box Wrapper End -->
 
 <!-- ✅ Action Box Wrapper End -->
-
-<h3 style="background-color: white; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
-  <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
-  🏆 Don’t wait – find your ideal swap partners and complete your triangular cycle today!
-</h3>
-
-<div id="triangularSwapSection" style="
-      margin:20px; 
-      padding:15px; 
-      background:#f1f1f1 url('https://i.imgur.com/sX7PxsF.jpeg') no-repeat center center; 
-      background-size:cover; 
-      border-radius:8px; 
-      max-width:500px; 
-      color:#fff;
-">
-  <h3 style="color:#1a237e; margin-bottom:6px;">🔺 Find Triangular Swap</h3>
-  
-<!-- Short note for users -->
-<p style="font-size:13px; color:red; margin-bottom:12px; background-color: yellow; padding: 5px; border-radius: 3px;">
-  Enter three counties to find a matching triangular swap. All three must have teachers wanting to swap in a cycle. Click "Find Triangular Swap" to see results.
-</p>
-
-  
-  <input type="text" id="countyA" placeholder="Enter County A" 
-         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
-         
-  <input type="text" id="countyB" placeholder="Enter County B" 
-         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
-         
-  <input type="text" id="countyC" placeholder="Enter County C" 
-         style="margin:4px 0; padding:10px; width:100%; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:14px;" />
-         
-  <button id="findTriangularSwapBtn" 
-          style="margin-top:10px; padding:10px 12px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; width:100%;">
-    Find Triangular Swap
-  </button>
-  
-  <div id="triangularSwapResult" style="margin-top:12px;"></div>
-</div>
-
-
-<div class="scrolling-banner">
-  <div class="scrolling-banner-content">
-    🌟 Try Mary's Salon in Kisumu | 📦 Order from Speedy Courier Services | 📱 Fix your phone at TechHub Eldoret | 🍔 Order lunch from Mama John's Kitchen | 📸 Book events with StarPix Photography | 🛠️ Car repairs at QuickFix Nairobi | 💻 Affordable Web Design by PixelStorm | 📷 Wedding shoots by EliteLens Studios
-  </div>
-</div>
-<h3 style="background-color: yellow; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 18px; color: #000; display: inline-block;">
-  <i class="fas fa-people-arrows" style="color:#ff9800; margin-right: 8px;"></i>
-  🔺 Unlock a perfect swap today – find teachers ready to exchange counties effortlessly. Let's scroll down!
-</h3>
-
 <!-- 🔥 VIP Swaps Modal -->
 <div id="vipSwapsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; max-height:80%; overflow:auto; background:white; padding:20px; border:2px solid crimson; border-radius:10px; z-index:9999; box-shadow:0 0 12px rgba(0,0,0,0.3);">
   <h3 style="color:crimson;">🔥 Available VIP Swaps</h3>
@@ -6085,48 +6307,175 @@ window.onload = function () {
   });
 };
 
-// ✅ Swap Form Submit Handler
+// -------------------
+// Subject multi-select
+// -------------------
+const wrapper = document.getElementById("subjectWrapper");
+const selectedDiv = wrapper.querySelector(".selected-items");
+const optionsDiv = wrapper.querySelector(".options");
+const checkboxes = optionsDiv.querySelectorAll("input[type=checkbox]");
+const subjectErrorEl = document.getElementById("subjectError");
+
+// Toggle dropdown
+selectedDiv.addEventListener("click", () => {
+  optionsDiv.style.display = optionsDiv.style.display === "block" ? "none" : "block";
+});
+
+// Close dropdown if clicked outside
+document.addEventListener("click", (e) => {
+  if (!wrapper.contains(e.target)) {
+    optionsDiv.style.display = "none";
+  }
+});
+
+// Handle checkbox selection with max 2
+checkboxes.forEach(checkbox => {
+  checkbox.addEventListener("change", () => {
+    const checked = Array.from(checkboxes).filter(cb => cb.checked);
+
+    if (checked.length > 2) {
+      checkbox.checked = false;
+      subjectErrorEl.textContent = "You can select a maximum of 2 subjects only.";
+      setTimeout(() => subjectErrorEl.textContent = "", 2000);
+      return;
+    }
+
+    // Update selected text
+    selectedDiv.textContent = checked.length === 0 ? "Select subjects" : checked.map(cb => cb.value).join(", ");
+    selectedDiv.style.color = "red"; // ensure selected text is red
+  });
+});
+
 document.getElementById("swapForm").addEventListener("submit", async e => {
   e.preventDefault();
 
   if (!isLoggedIn || !currentUser) {
     showPage("login");
-    return alert("You must be logged in.");
+    showNotification("You must be logged in.", "error");
+    return;
   }
 
   const swapCountyEl = document.getElementById("swapCounty");
-  // Get selected counties as an array
   const selectedSwapCounties = Array.from(swapCountyEl.selectedOptions)
-                                    .map(opt => opt.value)
-                                    .filter(v => v);
+    .map(opt => opt.value)
+    .filter(v => v);
+
+  // Get selected subjects from multi-select
+  const selectedSubjects = Array.from(checkboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
 
   const data = {
     teacherName: document.getElementById("teacherName").value.trim(),
     phone: document.getElementById("phone").value.trim(),
-    subjectCombination: document.getElementById("subjectCombination").value.trim(),
+    subjectCombination: selectedSubjects.join(", "),
     county: document.getElementById("county").value,
     subCounty: document.getElementById("subCounty").value,
-    swapCounty: selectedSwapCounties, // array of 0–3 counties
-    swapSubCounty: document.getElementById("swapSubCounty")?.value || "", // Optional
+    swapCounty: selectedSwapCounties,
+    swapSubCounty: document.getElementById("swapSubCounty")?.value || "",
     category: document.getElementById("category").value,
     hardship: document.getElementById("hardship").value
   };
 
-  // Validate required fields except swapCounty (optional)
+  // -----------------------------
+  // Required fields
+  // -----------------------------
   const requiredFields = ['teacherName', 'phone', 'subjectCombination', 'county', 'subCounty', 'category', 'hardship'];
-  const missing = requiredFields.some(key => !data[key]);
-
-  if (missing) {
-    return alert("Please fill all required fields.");
+  if (requiredFields.some(key => !data[key])) {
+    showNotification("Please fill all required fields.", "error");
+    shakeFields(requiredFields);
+    return;
   }
 
-  // Validate max 3 counties for swapCounty
+  // -----------------------------
+  // Kenya phone validation
+  // -----------------------------
+  const phoneEl = document.getElementById("phone");
+  let phoneErrorEl = phoneEl.nextElementSibling;
+  if (!phoneErrorEl || !phoneErrorEl.classList.contains("input-error")) {
+    phoneErrorEl = document.createElement("span");
+    phoneErrorEl.className = "input-error";
+    phoneEl.parentNode.insertBefore(phoneErrorEl, phoneEl.nextSibling);
+  }
+  phoneErrorEl.textContent = "";
+
+  const kenyaRegex = /^(07\d{8}|011\d{7})$/;
+  if (!kenyaRegex.test(data.phone)) {
+    phoneEl.classList.add("invalid-input");
+    setTimeout(() => phoneEl.classList.remove("invalid-input"), 400);
+    phoneErrorEl.textContent = "Enter a valid Kenyan phone number (e.g., 0712345678 or 0112345678).";
+    phoneEl.focus();
+    return;
+  }
+
+  // -----------------------------
+  // Swap county validation
+  // -----------------------------
+  if (data.swapCounty.length === 0) {
+    showNotification("Please select at least ONE swap county.", "error");
+    swapCountyEl.classList.add("invalid-input");
+    setTimeout(() => swapCountyEl.classList.remove("invalid-input"), 400);
+    return;
+  }
   if (data.swapCounty.length > 3) {
-    return alert("You can select a maximum of 3 counties for swap.");
+    showNotification("You can select a maximum of 3 counties for swap.", "error");
+    swapCountyEl.classList.add("invalid-input");
+    setTimeout(() => swapCountyEl.classList.remove("invalid-input"), 400);
+    return;
   }
 
+  // -----------------------------
+  // Subject validation
+  // -----------------------------
+  const subjectErrorEl = document.getElementById("subjectError");
+  if (selectedSubjects.length === 0) {
+    subjectErrorEl.textContent = "Please select at least 1 subject.";
+    return;
+  }
+
+  // -----------------------------
+  // Save swap
+  // -----------------------------
   await saveSwap(data);
+  showNotification("Swap request submitted successfully!", "success");
 });
+
+
+// -----------------------------
+// Helper functions
+// -----------------------------
+
+// Custom notification function
+function showNotification(message, type = "info") {
+  let notif = document.createElement("div");
+  notif.textContent = message;
+  notif.className = `custom-notif ${type}`; // type: error, success, info
+  notif.style.position = "fixed";
+  notif.style.top = "20px";
+  notif.style.right = "20px";
+  notif.style.padding = "12px 18px";
+  notif.style.borderRadius = "8px";
+  notif.style.color = "#fff";
+  notif.style.fontWeight = "bold";
+  notif.style.zIndex = 9999;
+  notif.style.boxShadow = "0 4px 8px rgba(0,0,0,0.3)";
+  notif.style.backgroundColor = type === "error" ? "#dc3545" : type === "success" ? "#28a745" : "#17a2b8";
+  document.body.appendChild(notif);
+  setTimeout(() => notif.remove(), 4000);
+}
+
+// Shake invalid input fields
+function shakeFields(fields) {
+  fields.forEach(f => {
+    const el = document.getElementById(f);
+    if (el) {
+      el.classList.add("invalid-input");
+      setTimeout(() => el.classList.remove("invalid-input"), 400);
+    }
+  });
+}
+
+
 
 // ✅ Save Swap and Notify (Dynamic Hot Swap)
 async function saveSwap(swap) {
@@ -7789,7 +8138,30 @@ function followJob(jobId) {
   });
 }
 
+// 🔥 Fake Active Users (56–100000)
+document.addEventListener("DOMContentLoaded", () => {
 
+    const countEl = document.getElementById("activeUsersCount");
+
+    if (!countEl) {
+        console.error("Active user badge missing.");
+        return;
+    }
+
+    function getFakeActiveUsers() {
+        // 100000 - 56 + 1 = 99945 range
+        return Math.floor(Math.random() * (100000 - 56 + 1)) + 56;
+    }
+
+    // Show number immediately
+    countEl.textContent = getFakeActiveUsers();
+
+    // Change every 12 seconds
+    setInterval(() => {
+        countEl.textContent = getFakeActiveUsers();
+    }, 12000);
+
+});
 
 
 // Function to update the followed count on page load (in case of page refresh)
@@ -8467,6 +8839,7 @@ showPage("home");
 
 // ✅ Populate counties for soulmate form
 ["smCounty", "smWorkCounty"].forEach(populateCounties);
+
 document.getElementById("soulmateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -8476,16 +8849,17 @@ document.getElementById("soulmateForm").addEventListener("submit", async (e) => 
   }
 
   const age = parseInt(document.getElementById("smAge").value.trim());
-  if (isNaN(age) || age < 18) {
-    showCustomAlert("⚠️ Age must be 18 or above to post a profile.", "error");
+  if (isNaN(age) || age < 18 || age > 49) {
+    showCustomAlert("⚠️ Age must be between 18 and 49 to post a profile.", "error");
     return;
   }
 
   const phone = document.getElementById("smPhone").value.trim();
 
-  // ✅ Kenyan phone validation
-  if (!/^07\d{8}$/.test(phone) && !/^2547\d{8}$/.test(phone)) {
-    showCustomAlert("⚠️ Enter a valid Kenyan phone number (e.g. 0712345678 or 254712345678).", "error");
+  // ✅ Kenyan phone validation (07xxxxxxxx, 011xxxxxxx, 2547xxxxxxxx)
+  const phoneRegex = /^(07\d{8}|011\d{7}|2547\d{8})$/;
+  if (!phoneRegex.test(phone)) {
+    showCustomAlert("⚠️ Enter a valid Kenyan phone number (e.g. 0712345678, 0112345678, or 254712345678).", "error");
     return;
   }
 
@@ -8532,10 +8906,13 @@ document.getElementById("soulmateForm").addEventListener("submit", async (e) => 
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
 
+
     await soulmateRef.add(data);
     showCustomAlert("✅ Profile submitted!", "success");
     document.getElementById("soulmateForm").reset();
     loadSoulmates();
+  
+
 
     // ✅ Notify Admin
     await db.collection("adminNotifications").add({
